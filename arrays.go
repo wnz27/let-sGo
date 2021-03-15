@@ -29,6 +29,13 @@ func printArray3(arr *[5]int) {
 	}
 }
 
+func printArray4(arr []int) {
+	arr[0] = 100
+	for i, v := range arr {
+		fmt.Println(i, v)
+	}
+}
+
 func main() {
 	var arr1 [5]int
 	arr2 := [3]int{1, 3, 5}
@@ -68,6 +75,16 @@ func main() {
 	fmt.Println(arr1, arr3)
 
 	fmt.Println(&arr1[0], &arr1[1], &arr1[2], &arr1[3])
+
+
+	fmt.Println("arr1 with func4")
+	printArray4(arr1[:])
+
+
+	fmt.Println("arr3 with func4")
+	printArray4(arr3[:])
+
+	fmt.Println(arr1, arr3)
 }
 
 
