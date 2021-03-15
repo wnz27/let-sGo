@@ -1,8 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func printArray(arr [5]int) {
     for i, v := range arr {
