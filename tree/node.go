@@ -4,7 +4,7 @@
  * @Description struct learn
  * @Date 2021/3/23 23:43 3月
  **/
-package main
+package tree
 
 
 import (
@@ -22,9 +22,9 @@ import (
 */
 
 
-type treeNode struct {
-	value int
-	left, right *treeNode
+type Node struct {
+	Value int
+	Left, Right *Node
 }
 
 /*
@@ -33,34 +33,25 @@ func (variable_name variable_type) function_name ([parameter list]) [return_type
 }
 */
 // 函数接收者
-func (node treeNode) print() {
-	fmt.Print(node.value, " ")
+func (node Node) Print() {
+	fmt.Println(node.Value, " ")
 }
 
 // 只有使用指针接收者 才可以改变结构的内容
 /*
 ！！！！！！！  nil 指针也可以调用方法    ！！！！！！！
 */
-func (node *treeNode) setValue(value int) {
+func (node *Node) SetValue(Value int) {
 	if node == nil {
-		fmt.Println("Setting value to nil node!!!")
+		fmt.Println("Setting Value to nil tree.Node!!!")
 		return
 	}
-	node.value = value
-}
-
-func (node *treeNode) traverse() {
-	if node == nil {
-		return
-	}
-	node.left.traverse()
-	node.print()
-	node.right.traverse()
+	node.Value = Value
 }
 
 // 无法修改成功
-func (node treeNode) setValue0(value int) {
-	node.value = value
+func (node Node) SetValue0(value int) {
+	node.Value = value
 }
 
 /*
@@ -74,51 +65,6 @@ go 无需关心堆还是栈，有垃圾回收，比如这个工厂函数，可�
 */
 
 // 自定义工厂函数 返回了局部变量的地址
-func createNode(value int) * treeNode{
-	return &treeNode{value: value}  // 相当于在函数体建了个局部变量给别人用，说明局部变量也可以返回给别人用
-}
-
-func main() {
-	var root treeNode
-	root = treeNode{value: 3}
-	root.left = &treeNode{}  // 零值
-	root.right = &treeNode{5, nil, nil}
-	root.right.left = new(treeNode) // 返回的是* 也就是指针，地址
-	root.left.right = createNode(2)
-
-	root.right.left.setValue(4)
-	root.right.left.print()
-	fmt.Println()
-
-	root.right.left.setValue0(55555)
-	root.right.left.print()
-	fmt.Println()
-	// 看函数定义要什么， 函数要指针就是把调用者的地址给函数，如果函数要值，会把调用者的值copy给函数
-	root.traverse()
-
-	//pRoot := &root
-	//pRoot.print()
-	//pRoot.setValue(200)
-	//pRoot.print()
-
-	qRoot := treeNode{}  // 都是零值
-	var qRoot1 *treeNode  // nil
-	fmt.Println(qRoot, qRoot1)
-
-	fmt.Println()
-
-	//qRoot1.setValue(222)
-	//qRoot1 = &root
-	//qRoot1.setValue(333)
-	//qRoot1.print()
-
-
-	// 切片里可以有一些省略
-	//nodes := []treeNode {
-	//	{value: 4},
-	//	{},
-	//	{6, nil, &root},
-	//}
-	//fmt.Println(nodes)
-
+func CreateNode(Value int) *Node {
+	return &Node{Value: Value} // 相当于在函数体建了个局部变量给别人用，说明局部变量也可以返回给别人用
 }
