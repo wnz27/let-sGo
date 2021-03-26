@@ -20,18 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="72a7afc2-a2ed-476a-91cc-06413a2b5ca0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tree/traversal.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/let-sGo.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_iter.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/arrays.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/hello.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tree/node.go" beforeDir="false" afterPath="$PROJECT_DIR$/tree/node.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/基础笔记.md" beforeDir="false" afterPath="$PROJECT_DIR$/基础笔记.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
