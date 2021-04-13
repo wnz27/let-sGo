@@ -20,8 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="72a7afc2-a2ed-476a-91cc-06413a2b5ca0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/go_learn/question_go.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go_learn/img/bff-gateway-v1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go_learn/img/bff-gateway-v23.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go_learn/img/bff-gateway-v4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go_learn/img/micro_service_or_monolith.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go_learn/img/实施micro_service原则.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go_learn/question_go.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go_learn/un_research.md" beforeDir="false" afterPath="$PROJECT_DIR$/go_learn/un_research.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +45,14 @@
   <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="GitToolBoxStore">
     <option name="projectConfigVersion" value="2" />
@@ -78,6 +92,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/go_learn/img" />
       <recent name="$PROJECT_DIR$/array_iter" />
       <recent name="$PROJECT_DIR$/tree/entry" />
     </key>
