@@ -1,0 +1,13 @@
+## 待研究list
+- [ ] [1](https://microservices.io/index.html)
+- [ ] [2](https://blog.csdn.net/mindfloating/article/details/51221780)
+- [ ] [3](https://www.cnblogs.com/dadadechengzi/p/9373069.html)
+- [ ] [4](https://www.cnblogs.com/viaiu/archive/2018/11/24/10011376.html)
+- [ ] [5](https://www.cnblogs.com/lfs2640666960/p/9543096.html)
+- [ ] [6](https://mp.weixin.qq.com/s/L6OKJK1ev1FyVDu03CQ0OA)
+- [ ] [7](https://www.bookstack.cn/read/API-design-guide/API-design-guide-02-面向资源的设计.md)
+- [ ] [8](https://www.programmableweb.com/news/how-to-design-great-apis-api-first-design-and-raml/how-to/2015/07/10)
+- [ ] [9](http://www.dockone.io/article/394https://www.jianshu.com/p/3c7a0e81451a)
+- [ ] [10](https://www.jianshu.com/p/6e539caf662dhttps://my.oschina.net/CraneHe/blog/703173)
+- [ ] [11](https://my.oschina.net/CraneHe/blog/703169)
+- [ ] [12](https://my.oschina.net/CraneHe/blog/703160)
