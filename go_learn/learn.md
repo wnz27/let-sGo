@@ -1,5 +1,9 @@
 ## 2021-04-13
-安装kratos 命令行工具 发现 ：`command not found: kratos`
+安装 kratos
+[kratos-github](https://github.com/go-kratos/kratos)
+[kratos-官网](https://go-kratos.dev)
+
+命令行工具 发现 ：`command not found: kratos`
 go env 里是这样
 ```
 GOPATH="/Users/a27/go"
