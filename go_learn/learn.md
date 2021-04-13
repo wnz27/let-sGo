@@ -1,4 +1,5 @@
 ## 2021-04-13
+安装kratos 命令行工具 发现 ：`command not found: kratos`
 go env 里是这样
 ```
 GOPATH="/Users/a27/go"
