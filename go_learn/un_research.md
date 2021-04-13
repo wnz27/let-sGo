@@ -103,7 +103,8 @@
     - 跨横切面逻辑剥离到网关则BFF可以更加关注业务逻辑交付，实现了架构上的**关注分离（Separation of Concerns）**
   - V4是一个比较完整的现代微服务架构，从外到内依次分为：端用户体验层->网关层->BFF层->微服务层。整个架构层次清晰，职责分明，是一种灵活的演化式架构。
     - 支持第三方，前后分离单页应用的相应的配套网关和BFF
-- [ ] [微服务中的设计模式](https://www.cnblogs.com/viaiu/archive/2018/11/24/10011376.html)
+- [X] [微服务中的设计模式](https://www.cnblogs.com/viaiu/archive/2018/11/24/10011376.html)
+  - 浏览一遍，懵懵懂懂
 - [ ] [微服务架构的故障隔离及容错处理](https://www.cnblogs.com/lfs2640666960/p/9543096.html)
 - [ ] [为什么Uber微服务架构使用多租户？](https://mp.weixin.qq.com/s/L6OKJK1ev1FyVDu03CQ0OA)
 - [ ] [面向资源的设计](https://www.bookstack.cn/read/API-design-guide/API-design-guide-02-面向资源的设计.md)
