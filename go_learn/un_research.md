@@ -106,6 +106,11 @@
 - [X] [微服务中的设计模式](https://www.cnblogs.com/viaiu/archive/2018/11/24/10011376.html)
   - 浏览一遍，懵懵懂懂
 - [ ] [微服务架构的故障隔离及容错处理](https://www.cnblogs.com/lfs2640666960/p/9543096.html)
+  - 
+  - 
+  - 
+  - 
+  - 
 - [ ] [为什么Uber微服务架构使用多租户？](https://mp.weixin.qq.com/s/L6OKJK1ev1FyVDu03CQ0OA)
 - [ ] [面向资源的设计](https://www.bookstack.cn/read/API-design-guide/API-design-guide-02-面向资源的设计.md)
 - [ ] [How To Design Great APIs With API-First Design](https://www.programmableweb.com/news/how-to-design-great-apis-api-first-design-and-raml/how-to/2015/07/10)
@@ -118,5 +123,16 @@
 - [ ] [微服务实践（七）：从单体式架构迁移到微服务架构](https://my.oschina.net/CraneHe/blog/703160)
 
 
-### 其他文章
-- [康威定律](https://segmentfault.com/a/1190000011118897)
+## 其他文章
+- [康威定律（略读）](https://segmentfault.com/a/1190000011118897)
+
+## 其他书籍
+- [ ]  <<微服务设计>>，纽曼，人名邮电出版社
+- [ ]  <<微服务架构设计模式>>，克里斯.理查森，机械工业出版社
+
+## todo list
+- 看完之后总结
+  - [ ] 流程各个节点
+  - [ ] 注意事项
+  - [ ] 优缺点
+  - [ ] 发散思考
