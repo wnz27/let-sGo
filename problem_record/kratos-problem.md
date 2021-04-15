@@ -3,6 +3,8 @@
 [kratos-github](https://github.com/go-kratos/kratos)
 [kratos-官网](https://go-kratos.dev)
 
+按照官网顺序安装之后
+
 命令行工具 发现 ：`command not found: kratos`
 
 在go env 里是这样
