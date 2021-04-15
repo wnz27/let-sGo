@@ -19,6 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="72a7afc2-a2ed-476a-91cc-06413a2b5ca0" name="Default Changelist" comment="" />
+=======
     <list default="true" id="72a7afc2-a2ed-476a-91cc-06413a2b5ca0" name="Default Changelist" comment="">
 <<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/go_learn/un_research.md" beforeDir="false" afterPath="$PROJECT_DIR$/go_learn/un_research.md" afterDir="false" />
@@ -26,6 +29,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
 >>>>>>> Stashed changes
     </list>
+>>>>>>> c4abf803632bed8685c980c7ee03df196f6b505c
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
