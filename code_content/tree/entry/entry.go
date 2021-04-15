@@ -8,13 +8,13 @@ package main
 
 import (
 	"fmt"
-	"fzkprac/tree"
+	"fzkprac/code_content/tree"
 )
 
 func main() {
 	var root tree.Node
 	root = tree.Node{Value: 3}
-	root.Left = &tree.Node{}  // 零值
+	root.Left = &tree.Node{} // 零值
 	root.Right = &tree.Node{5, nil, nil}
 	root.Right.Left = new(tree.Node) // 返回的是* 也就是指针，地址
 	root.Left.Right = tree.CreateNode(2)
@@ -35,7 +35,7 @@ func main() {
 	//pRoot.print()
 
 	qRoot := tree.Node{}  // 都是零值
-	var qRoot1 *tree.Node  // nil
+	var qRoot1 *tree.Node // nil
 	fmt.Println(qRoot, qRoot1)
 
 	fmt.Println()
