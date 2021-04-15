@@ -1,6 +1,6 @@
 ## 待看文献list
 - [ ] [What are microservices?](https://microservices.io/index.html)
-  > 收获不多，应该是太菜了，还有里面目录还没有一一点进去看
+  > 里面目录还没有一一点进去看
   - 巨石架构，单体应用
   - 微服务架构
 - [x] [Microservice 微服务的理论模型和现实路径](https://blog.csdn.net/mindfloating/article/details/51221780)
