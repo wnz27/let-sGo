@@ -165,7 +165,7 @@
     - 持续测试系统的常见问题，确保服务可以在各类故障环境下运行。应该经常测试故障，以让你的团队对可能发生的事情有所准备。
     - 可以随机终止一个实例，来测单点故障。或者关闭整个服务来模拟云提供商层面的故障中断。
 
-- [ ] [面向资源的设计](https://www.bookstack.cn/read/API-design-guide/API-design-guide-02-面向资源的设计.md)
+- [X] [面向资源的设计](https://www.bookstack.cn/read/API-design-guide/API-design-guide-02-面向资源的设计.md)
   - 浏览，感觉还是需要实战中提升api的定义能力
 - [X] [How To Design Great APIs With API-First Design](https://www.programmableweb.com/news/how-to-design-great-apis-api-first-design-and-raml/how-to/2015/07/10)
   - SOAP(Simple Object Access Protocol), RAML(RESTful API Markup Language)
