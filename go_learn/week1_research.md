@@ -170,7 +170,20 @@
 - [X] [How To Design Great APIs With API-First Design](https://www.programmableweb.com/news/how-to-design-great-apis-api-first-design-and-raml/how-to/2015/07/10)
   - SOAP(Simple Object Access Protocol), RAML(RESTful API Markup Language)
 
-- [ ] [为什么Uber微服务架构使用多租户？](https://mp.weixin.qq.com/s/L6OKJK1ev1FyVDu03CQ0OA)
+- [X] [为什么Uber微服务架构使用多租户？](https://mp.weixin.qq.com/s/L6OKJK1ev1FyVDu03CQ0OA)
+  - 并行测试的问题
+      - 硬件成本
+      - 两个环境的同步问题
+      - 不可靠性测试
+      - 不精确的负载容量（capacity）测试
+  - 生产环境测试
+  - 影子流量
+  - 租户上下文
+  - 路由
+  - 数据隔离
+  - 读后感：如何让多租户的落地，觉得还是很模糊，很多都提了一下，但是讲的没那么透彻。
+  - [加上课程里多租户的讲解，这里有很多疑问，记录一下](../problem_record/多租户.md)
+
 - [ ] [微服务实战（一）：微服务架构的优势与不足](http://www.dockone.io/article/394)
 - [ ] [微服务实战（二）：构建微服务：使用API Gateway](https://www.jianshu.com/p/3c7a0e81451a)
 - [ ] [微服务实战（三）：深入微服务架构的进程间通信](https://www.jianshu.com/p/6e539caf662d)
