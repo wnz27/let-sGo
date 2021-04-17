@@ -19,6 +19,8 @@
 
 
 ## 其他
+- [ ] 查询JMS含义? java里的消息服务？
+- [ ] 什么是反应性编程模型（它要解决api gateway 中处理请求避免进入回调噩梦）
 - [ ] 什么是Go map 的随机性？
 - [ ] 根据这篇文章[python高性能微服务框架 japronto](https://www.jianshu.com/p/7483a869ff21) ，研究下这个框架：[japronto](https://github.com/squeaky-pl/japronto)
     - [ ]
