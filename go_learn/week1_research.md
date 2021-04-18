@@ -1,8 +1,9 @@
 ## 待看文献list
-- [ ] [What are microservices?](https://microservices.io/index.html)
-  > 里面目录还没有一一点进去看
+- [X] [What are microservices?](https://microservices.io/index.html)
+  > 浏览
   - 巨石架构，单体应用
   - 微服务架构
+  - **各种理论概念描述及分析**，可作为速查来使用
 - [x] [Microservice 微服务的理论模型和现实路径](https://blog.csdn.net/mindfloating/article/details/51221780)
   > 感觉到作者应该是多年经验的浓缩，我吸收起来还是有些吃力，先写印象深或者感觉自己可能懂了的地方
   - 微服务一些定义
@@ -403,9 +404,55 @@
   - 服务端发现, 下图展现了这种模式的架构
     > ![](./img/server-discovery-service.png)
     客户端通过负载均衡器向某个服务提出请求，负载均衡器向服务注册表发出请求，将每个请求转发往可用的服务实例。跟客户端发现一样，服务实例在服务注册表中注册或者注销。
+    AWS Elastic Load Balancer（ELB）是一种服务端发现路由的例子，ELB一般用于均衡从网络来的访问流量，也可以使用ELB来均衡VPC内部的流量。
+    HTTP服务和类似NGINX和NGINX Plus的负载均衡器都可以作为服务端发现均衡器。
+    - 服务端发现模式也有优缺点。
+      - 最大的优点是客户端无需关注发现的细节，客户端只需要简单的向负载均衡器发送请求，实际上减少了编程语言框架需要完成的发现逻辑。某些部署环境免费提供以上功能。
+      - 这种模式也有缺陷，除非部署环境提供负载均衡器，否则负载均衡器是另外一个需要配置管理的高可用系统功能。
+  - 服务注册表
+    > 服务注册表是服务发现很重要的部分，它是包含服务实例网络地址的数据库。
+    服务注册表需要高可用而且随时更新。客户端可以缓存从服务注册表获得的网络地址。
+    然而，这些信息最终会变得过时，客户端也无法发现服务实例。
+    因此，服务注册表由若干使用复制协议保持同步的服务器构成。
     
-    # Todo 
-  - 
+    > Netflix Eureka是一个服务注册表很好地例子，提供了REST API注册和请求服务实例。 
+    服务实例使用POST请求注册网络地址，每30秒必须使用PUT方法更新注册表，使用HTTP DELETE请求或者实例超时来注销。
+    Netflix通过在每个AWS EC2域运行一个或者多个Eureka服务实现高可用性，每个Eureka服务器都运行在拥有弹性IP地址的EC2实例上。
+    DNS TEXT记录用于存储Eureka集群配置，其中存放从可用域到一系列Eureka服务器网络地址的列表。
+    当Eureka服务启动时，向DNS请求接受Eureka集群配置，确认同伴位置，给自己分配一个未被使用的弹性IP地址。
+    客户端向DNS请求发现Eureka服务的网络地址，客户端首选使用同一域内的服务。
+    然而，如果没有可用服务，客户端会使用另外一个可用域的Eureka服务。
+    - 另外一些服务注册表例子包括：
+      - etcd – 是一个高可用，分布式的，一致性的，键值表，用于共享配置和服务发现。两个著名案例包括Kubernetes和Cloud Foundry。
+      - consul – 是一个用于发现和配置的服务。提供了一个API允许客户端注册和发现服务。Consul可以用于健康检查来判断服务可用性。
+      - Apache ZooKeeper – 是一个广泛使用，为分布式应用提供高性能整合的服务。Apache ZooKeeper最初是Hadoop的子项目，现在已经变成顶级项目。
+    > 另外，某些系统，例如Kubernetes、Marathon和AWS并没有独立的服务注册表，对他们来说，服务注册表只是一个内置的功能。
+  - 服务注册选项, 服务实例必须向注册表中注册和注销，如何注册和注销也有一些不同的方式。
+    - 自注册模式（self-registration pattern）
+      > 服务实例负责在服务注册表中注册和注销。另外，如果需要的话，一个服务实例也要发送心跳来保证注册信息不会过时。
+      ![](./img/self-register.png)一个很好地例子是 Netflix OSS Eureka client。Eureka客户端负责处理服务实例的注册和注销。
+      - 优缺点：
+        - 优点：相对简单，不需要其他系统功能
+        - 缺点则是，把服务实例跟服务注册表联系起来。必须在每种编程语言和框架内部实现注册代码。
+    - 第三方注册模式（third party registration pattern）
+      > 当使用第三方注册模式时，服务实例并不负责向服务注册表注册，而是由另外一个系统模块，叫做服务管理器，负责注册。
+      服务管理器通过**查询部署环境或订阅事件**来跟踪运行服务的改变。当管理器发现一个新可用服务，会向注册表注册此服务。
+      服务管理器也负责注销终止的服务实例。
+      ![](./img/3rd-register.png)
+      一个服务管理器的例子是开源项目[Registrator](https://github.com/gliderlabs/registrator) ，负责自动注册和注销被部署为Docker容器的服务实例。Reistrator支持多种服务管理器，包括etcd和Consul。
+      另外一个服务管理器例子是[NetflixOSS Prana](https://github.com/netflix/Prana) ，主要面向非JVM语言开发的服务，也称为附带应用（sidecar application），Prana使用Netflix Eureka注册和注销服务实例。
+      - 优缺点
+        - 优点是服务跟服务注册表是分离的，不需要为每种编程语言和架构完成服务注册逻辑。服务实例是通过一个集中化管理的服务进行管理的。
+        - 缺点是这种服务被内置于部署环境中，否则也需要配置管理一个高可用的系统。
+  - 总结
+    > 服务实例运行环境是动态变化的。实例网络地址也是动态变化的，因此，客户端为了访问服务必须使用服务发现机制。
+    服务发现关键部分是服务注册表，也就是可用服务实例的数据库。
+    服务实例注册和注销主要有两类方式。一种是服务实例自动注册到服务注册表中，也就是自注册模式；另外一种则是某个系统模块负责处理注册和注销，也就是第三方注册模式。
+    在某些部署环境中，需要配置自己的服务发现架构，例如：Netflix Eureka、etcd或者Apache ZooKeeper。
+    而在另外一些部署环境中，则自带了这种功能，例如Kubernetes和Marathon 负责处理服务实例的注册和注销。他们也在每个集群节点上运行代理，来实现服务端发现路由器的功能。
+    HTTP反向代理和负载据衡器（例如NGINX）可以用于服务发现负载均衡器。
+    服务注册表可以将路由信息推送到NGINX，激活一个实时配置更新；例如，可以使用 Consul Template。
+    NGINX Plus 支持额外的动态重新配置机制，可以使用DNS，将服务实例信息从注册表中拉下来，并且提供远程配置的API。
 - [ ] [微服务实践（五）：微服务的事件驱动数据管理](https://my.oschina.net/CraneHe/blog/703169)
 - [ ] [微服务实战（六）：选择微服务部署策略](https://my.oschina.net/CraneHe/blog/703163)
 - [ ] [微服务实践（七）：从单体式架构迁移到微服务架构](https://my.oschina.net/CraneHe/blog/703160)
@@ -504,3 +551,11 @@ A Publish-Subscribe Channel works like this: It has one input channel that split
 
 #### Rest
 HATEOAS: 这篇博客 [HATEOAS简介](https://blog.csdn.net/htxhtx123/article/details/106084364) 讲的比较清晰
+
+
+### 相关文章
+- 这篇博文就描述如何使用Consul Template来动态配置NGINX反向代理。[《Scalable Architecture DR CoN: Docker, Registrator, Consul, Consul Template and Nginx》](https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx)
+> Consul Template是周期性从存放在Consul Template注册表中配置数据重建配置文件的工具。
+当文件发生变化时，会运行一个命令。在如上博客中，Consul Template产生了一个nginx.conf文件，用于配置反向代理，
+然后运行一个命令，告诉NGINX重新调入配置文件。更复杂的例子可以用HTTP API或者DNS动态重新配置NGINX Plus。
+
