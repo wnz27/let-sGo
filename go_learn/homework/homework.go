@@ -9,5 +9,5 @@ package main
 import "fzkprac/go_learn/homework/week2_hw"
 
 func main() {
-	week2_hw.T()
+	week2_hw.Ttt()
 }
