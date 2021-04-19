@@ -1,2 +1,4 @@
 github.com/Netflix/ribbon v2.7.18+incompatible h1:cpKusReZbTQGwepNxATHCqKcg7A+g9gk9qXp3sBsGqY=
 github.com/Netflix/ribbon v2.7.18+incompatible/go.mod h1:poEDmgTo3q9rWmV3vRpVgY9HlX9GsTJOMgdlgHDplN8=
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
