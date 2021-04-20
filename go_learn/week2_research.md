@@ -1,4 +1,7 @@
 ## researchs
+- [ ] [error-values](https://go.googlesource.com/proposal/+/master/design/29934-error-values.md)
+- [ ] [go2draft-error-handling](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling.md)
+- [ ] [go2draft-error-handling-overview](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling-overview.md)
 - [ ] [Go 语言的错误处理机制引发争议](https://www.infoq.cn/news/2012/11/go-error-handle/)
 - [ ] [Why does Go not have exception](https://golang.org/doc/faq#exceptions)
 - [ ] [Error Handling In Go, Part I](https://www.ardanlabs.com/blog/2014/10/error-handling-in-go-part-i.html)

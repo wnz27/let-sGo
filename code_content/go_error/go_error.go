@@ -40,6 +40,10 @@ func fn() error {
 	return errors.Wrap(e3, "outer")
 }
 
+func fn1() error {
+	return errors.Errorf("123")
+}
+
 func main() {
 	err := fn()
 	//fmt.Printf("%+v", err)
@@ -97,4 +101,8 @@ func main() {
 	// success: 16
 	// failed: 1000 inner-split Bad Arg - too large!
 
+	aaa := fn1()
+	fmt.Println(errors.Cause(aaa))
+	fmt.Printf("%+v", aaa)
+	fmt.Println(errors.Cause(err))
 }
