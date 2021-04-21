@@ -44,6 +44,11 @@ func fn1() error {
 	return errors.Errorf("123")
 }
 
+/*
+When you have an error message that requires formatting, use the Errorf function from the fmt package:
+var ErrInvalidParam = fmt.Errorf("invalid parameter [%s]", param)
+ */
+
 func main() {
 	err := fn()
 	//fmt.Printf("%+v", err)
@@ -102,7 +107,10 @@ func main() {
 	// failed: 1000 inner-split Bad Arg - too large!
 
 	aaa := fn1()
+	fmt.Println("\n================================")
 	fmt.Println(errors.Cause(aaa))
+	fmt.Println("\n================================")
 	fmt.Printf("%+v", aaa)
+	fmt.Println("\n================================")
 	fmt.Println(errors.Cause(err))
 }

@@ -1,9 +1,11 @@
 ## researchs
-- [ ] [error-values](https://go.googlesource.com/proposal/+/master/design/29934-error-values.md)
+- [X] [error-values](https://go.googlesource.com/proposal/+/master/design/29934-error-values.md)
+  - 似懂非懂
 - [ ] [go2draft-error-handling](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling.md)
+  
 - [ ] [go2draft-error-handling-overview](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling-overview.md)
-- [ ] [Go 语言的错误处理机制引发争议](https://www.infoq.cn/news/2012/11/go-error-handle/)
-- [ ] [Why does Go not have exception](https://golang.org/doc/faq#exceptions)
+- [X] [Go 语言的错误处理机制引发争议](https://www.infoq.cn/news/2012/11/go-error-handle/)
+- [X] [Why does Go not have exception](https://golang.org/doc/faq#exceptions)
 - [ ] [Error Handling In Go, Part I](https://www.ardanlabs.com/blog/2014/10/error-handling-in-go-part-i.html)
 - [ ] [Error Handling In Go, Part II](https://www.ardanlabs.com/blog/2014/11/error-handling-in-go-part-ii.html)
 - [ ] [Design Philosophy On Logging](https://www.ardanlabs.com/blog/2017/05/design-philosophy-on-logging.html)
