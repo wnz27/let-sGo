@@ -6,7 +6,8 @@
 - [ ] [go2draft-error-handling-overview](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling-overview.md)
 - [X] [Go 语言的错误处理机制引发争议](https://www.infoq.cn/news/2012/11/go-error-handle/)
 - [X] [Why does Go not have exception](https://golang.org/doc/faq#exceptions)
-- [ ] [Error Handling In Go, Part I](https://www.ardanlabs.com/blog/2014/10/error-handling-in-go-part-i.html)
+- [X] [Error Handling In Go, Part I](https://www.ardanlabs.com/blog/2014/10/error-handling-in-go-part-i.html)
+  这个真的福音，讲的很棒啊！！！！
 - [ ] [Error Handling In Go, Part II](https://www.ardanlabs.com/blog/2014/11/error-handling-in-go-part-ii.html)
 - [ ] [Design Philosophy On Logging](https://www.ardanlabs.com/blog/2017/05/design-philosophy-on-logging.html)
 - [ ] [Error Handling in Go](https://medium.com/gett-engineering/error-handling-in-go-53b8a7112d04)
