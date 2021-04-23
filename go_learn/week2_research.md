@@ -8,13 +8,13 @@
 - [X] [Why does Go not have exception](https://golang.org/doc/faq#exceptions)
 - [X] [Error Handling In Go, Part I](https://www.ardanlabs.com/blog/2014/10/error-handling-in-go-part-i.html)
   这个真的福音，讲的很棒啊！！！！
-- [ ] [Error Handling In Go, Part II](https://www.ardanlabs.com/blog/2014/11/error-handling-in-go-part-ii.html)
+- [X] [Error Handling In Go, Part II](https://www.ardanlabs.com/blog/2014/11/error-handling-in-go-part-ii.html)
 - [ ] [Design Philosophy On Logging](https://www.ardanlabs.com/blog/2017/05/design-philosophy-on-logging.html)
-- [ ] [Error Handling in Go](https://medium.com/gett-engineering/error-handling-in-go-53b8a7112d04)
-- [ ] [Error Handling in Go 1.13](https://medium.com/gett-engineering/error-handling-in-go-1-13-5ee6d1e0a55c)
+- [X] [Error Handling in Go](https://medium.com/gett-engineering/error-handling-in-go-53b8a7112d04)
+- [X] [Error Handling in Go 1.13](https://medium.com/gett-engineering/error-handling-in-go-1-13-5ee6d1e0a55c)
 - [ ] [Why Go's Error Handling is Awesome](https://rauljordan.com/2020/07/06/why-go-error-handling-is-awesome.html)
 - [ ] [Effective error handling in Go](https://morsmachine.dk/error-handling)
-- [ ] [Go 1.13: xerrors](https://crawshaw.io/blog/xerrors)
+- [X] [Go 1.13: xerrors](https://crawshaw.io/blog/xerrors)
 - [ ] [Why Go gets exceptions right](https://dave.cheney.net/2012/01/18/why-go-gets-exceptions-right)
 - [ ] [Errors and Exceptions, redux](https://dave.cheney.net/2015/01/26/errors-and-exceptions-redux)
 - [ ] [Error handling vs. exceptions redux](https://dave.cheney.net/2014/11/04/error-handling-vs-exceptions-redux)
@@ -23,7 +23,10 @@
 - [ ] [Eliminate error handling by eliminating errors](https://dave.cheney.net/2019/01/27/eliminate-error-handling-by-eliminating-errors)
 - [ ] [Stack traces and the errors package](https://dave.cheney.net/2016/06/12/stack-traces-and-the-errors-package)
 - [ ] [Don’t just check errors, handle them gracefully](https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully)
-- [ ] [Errors are values](https://blog.golang.org/errors-are-values)
+- [X] [Errors are values](https://blog.golang.org/errors-are-values)
 - [ ] [Error handling and Go](https://blog.golang.org/error-handling-and-go)
 - [ ] [Working with Errors in Go 1.13](https://blog.golang.org/go1.13-errors)
 - [ ] [Error handling in Upspin](https://commandcenter.blogspot.com/2017/12/error-handling-in-upspin.html)
+
+好多看的时候忘更新了
+后面再check吧。。。。。
