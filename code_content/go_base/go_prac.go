@@ -9,5 +9,6 @@ package main
 import "fzkprac/code_content/go_base/prac"
 
 func main() {
+	// 修改字符串
 	prac.FixString()
 }
