@@ -9,6 +9,7 @@ package prac
 import (
 	"fmt"
 	"math"
+	"net/url"
 )
 
 type Point struct {
@@ -37,6 +38,19 @@ func (path Path) Distance() float64 {
 	return pathLength
 }
 
+//type Values map[string] []string
+//
+//func (v Values) Get(key string) string {
+//	if vs := v[key]; len(vs) == 0 {
+//		return vs[0]
+//	}
+//	return ""
+//}
+//
+//func (v Values) Add(key, value string) {
+//	v[key] = append(v[key], value)
+//}
+
 func TMethod() {
 	p := Point{1, 2}
 	q := Point{3, 4}
@@ -48,5 +62,25 @@ func TMethod() {
 		{5, 6},
 	}
 	fmt.Println(paths.Distance())
+
+
+	r := &Point{1, 2}
+	r.ScaleBy(2)
+
+	p1 := Point{1, 2}
+	p1.ScaleBy(2)
+
+
+	p2 := Point{1, 2}
+	(&p2).ScaleBy(2)
+
+	fmt.Println(r, p1, p2)
+
+	m := url.Values{"lang": {"en"}}
+
+	m = nil
+	fmt.Println(m.Get("item"))
+	m.Add("item", "123")
+
 
 }
