@@ -27,6 +27,63 @@ func TChan() {
 
  */
 
+func counter(out chan<- int){
+	for x := 0; x < 100; x ++ {
+		out <- x
+	}
+	close(out)
+}
+
+func square(out chan<- int, in <-chan int) {
+	for v := range in{
+		out <- v * v
+	}
+	close(out)
+}
+
+func printer(in <-chan int) {
+	for v := range in {
+		fmt.Println(v)
+	}
+
+}
+
+func Pipeline2(){
+	naturals := make(chan int)
+	squares := make(chan int)
+	go counter(naturals)
+	go square(squares, naturals)
+	printer(squares)
+}
+
+func PipelineWork2() {
+	naturals := make(chan int)
+	squares := make(chan int)
+
+	// counter
+	go func() {
+		for x := 0; x<100 ; x ++ {
+			//for x := 0; ; x ++ {
+			naturals <- x
+		}
+		close(naturals)
+	}()
+
+	// squarer
+	go func() {
+		for x := range naturals {
+			squares <- x * x
+		}
+		close(squares)
+	}()
+
+	// printer
+	for x := range squares{
+		fmt.Println(x)
+	}
+}
+
+// 该方法有误
 func PipelineWork() {
 	naturals := make(chan int)
 	squares := make(chan int)
@@ -51,7 +108,7 @@ func PipelineWork() {
 		}
 		close(squares)
 	}()
-
+	// printer
 	//for x := 0; x < 10 ; x ++{
 	for x := 0; ; x ++{
 		fmt.Println(<-squares)

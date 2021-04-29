@@ -6,9 +6,16 @@
  */
 package main
 
-import "fzkprac/code_content/go-chan/funcs"
+import (
+	"fmt"
+	"fzkprac/code_content/go-chan/funcs"
+)
 
 func main() {
-	funcs.PipelineWork()
+	//funcs.PipelineWork()
+	fmt.Println(" ---------------------- ----  ---------------------- ")
+	funcs.Pipeline2()
+	fmt.Println(" ---------------------- ----  ---------------------- ")
+	funcs.PipelineWork2()
 }
 
