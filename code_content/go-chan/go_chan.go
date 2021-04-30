@@ -22,6 +22,16 @@ func receivers(c <-chan string){
 	}
 }
 
+
+func pinger(c chan<- string) time.Time{
+	t := time.NewTicker(300 * time.Millisecond)
+	for {
+		c <- "Ping"
+		<- t.C
+	}
+}
+
+
 func main() {
 	//funcs.PipelineWork()
 	fmt.Println(" ---------------------- ----  ---------------------- ")
@@ -53,6 +63,21 @@ func main() {
 	//fmt.Println("lslslsls")
 	// 输出顺序不一定的
 
+
+	// 阻塞和流程控制, TODO 疑问 这里为什么只打印除了Ping, 解释：因为msg只会接收一个，然后打印然后退出
+	// TODO 因为无缓冲通道满的话就是阻塞的，pinger所谓的死循环不存在
+	//pC := make(chan string)
+	//go pinger(pC)
+	//msg := <- pC
+	//fmt.Println(msg)
+
+	// 这里只会有3次打印，如果这里也写死循环那么会无限输出
+	pC := make(chan string)
+	go pinger(pC)
+	for i := 0; i< 3 ; i++ {
+		msg := <-pC
+		fmt.Println(msg)
+	}
 
 
 }
