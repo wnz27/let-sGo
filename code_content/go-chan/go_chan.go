@@ -8,13 +8,18 @@ package main
 
 import (
 	"fmt"
-	"fzkprac/code_content/go-chan/funcs"
 	"time"
 )
 
 func slowFunc(c chan<- string){
 	time.Sleep(time.Second * 2)
 	c <- "slowFunc() finished!"
+}
+
+func receivers(c <-chan string){
+	for msg := range c {
+		fmt.Println(msg)
+	}
 }
 
 func main() {
@@ -28,14 +33,26 @@ func main() {
 	//time.Sleep(time.Second * 1)
 
 	// 1、
-	a := funcs.OutFunc()
-	print(a)
+	//a := funcs.OutFunc()
+	//print(a)
 	// 2、
 	//c := make(chan string)
 	//go slowFunc(c)
 	//
 	//msg := <- c
 	//fmt.Println(msg)
+
+	// 有缓冲
+	//messages := make(chan string, 2)
+	//messages <- "hello"
+	//messages <- "world"
+	//close(messages)
+	//fmt.Println("Pushed two messages onto Channel with no receivers")
+	//time.Sleep(time.Second * 1)
+	//go receivers(messages)
+	//fmt.Println("lslslsls")
+	// 输出顺序不一定的
+
 
 
 }

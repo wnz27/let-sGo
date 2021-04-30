@@ -27,14 +27,14 @@ func main(){
 	fmt.Println("slowQueryOrOtherConsumeTimeOperation0  not execute!")
 	fmt.Println("// ---------------------- ---  ---------------------- //")
 	// v1
-	c := make(chan string)
-	go slowQueryOrOtherConsumeTimeOperation(c)
+	slowDatas := make(chan string)
+	go slowQueryOrOtherConsumeTimeOperation(slowDatas)
 
 	// 在慢速的玩意儿整完之前我可以先做其他的
 	fmt.Println("do others")
 
 	// 等待通道信息
-	msg :=  <- c
+	msg :=  <- slowDatas
 	fmt.Println(msg)
 
 	fmt.Println("// ---------------------- ---  ---------------------- //")
