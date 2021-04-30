@@ -9,13 +9,34 @@ package main
 import (
 	"fmt"
 	"fzkprac/code_content/go-chan/funcs"
+	"time"
 )
+
+func slowFunc(c chan<- string){
+	time.Sleep(time.Second * 2)
+	c <- "slowFunc() finished!"
+}
 
 func main() {
 	//funcs.PipelineWork()
 	fmt.Println(" ---------------------- ----  ---------------------- ")
-	funcs.Pipeline2()
+	//funcs.Pipeline2()
 	fmt.Println(" ---------------------- ----  ---------------------- ")
-	funcs.PipelineWork2()
+	//funcs.PipelineWork2()
+	fmt.Println(" ---------------------- base prac  ---------------------- ")
+	//go funcs.Tg()  // 不显示为啥？
+	//time.Sleep(time.Second * 1)
+
+	// 1、
+	a := funcs.OutFunc()
+	print(a)
+	// 2、
+	//c := make(chan string)
+	//go slowFunc(c)
+	//
+	//msg := <- c
+	//fmt.Println(msg)
+
+
 }
 
