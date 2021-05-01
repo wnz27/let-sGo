@@ -147,6 +147,8 @@ exitChan := make(chan int)
 	// 标记程序返回值并退出
 	os.Exit(code)
 ```
+todo: 事实上运行不动
+命令不起作用
 
 
 

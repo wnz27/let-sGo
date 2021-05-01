@@ -51,7 +51,7 @@ func server(address string, exitChan chan int){
 		// 根据链接开启会话，这个过程需要并行执行
 		go handleSession(conn, exitChan)
 	}
-
+	fmt.Println("asdfasadf")
 }
 
 // 2．会话处理
@@ -117,7 +117,7 @@ func processTelnetCommend(str string, exitChan chan int) bool {
 }
 
 
-
+// 暂时跑不起来~~~ 输入telnet 会卡住
 func main(){
 	// 4．程序入口代码      Telnet 回音处理主流程
 	// 创建一个程序结束码的通道
