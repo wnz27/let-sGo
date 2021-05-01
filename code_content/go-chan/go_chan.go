@@ -31,6 +31,14 @@ func pinger(c chan<- string) time.Time{
 	}
 }
 
+func sender(c chan<- string) {
+	t := time.NewTicker(1 * time.Second)
+	for {
+		c <- "I'm sending a message"
+		<- t.C
+	}
+}
+
 
 func main() {
 	//funcs.PipelineWork()
@@ -72,13 +80,36 @@ func main() {
 	//fmt.Println(msg)
 
 	// 这里只会有3次打印，如果这里也写死循环那么会无限输出
-	pC := make(chan string)
-	go pinger(pC)
-	for i := 0; i< 3 ; i++ {
-		msg := <-pC
-		fmt.Println(msg)
-	}
+	//pC := make(chan string)
+	//go pinger(pC)
+	//for i := 0; i< 3 ; i++ {
+	//	msg := <-pC
+	//	fmt.Println(msg)
+	//}
 
+	/*
+	<-位于关键字左边时，表示通道在函数内是只读的。位于右边表示通道在函数内是只写的（我理解是只能往里写。）
+	没有指定<- 时， 通道可读可写
+	可以隐式转换，可读可写可以隐式转换为另外两个，但另外两个不能转换为单个功能的。
+	 */
+
+	messages1 := make(chan string)
+	stop := make(chan bool)
+	go sender(messages1)
+	go func() {
+		time.Sleep(time.Second * 3)
+		fmt.Println("Time is up!")
+		stop <- true
+	}()
+
+	for {
+		select {
+		case <- stop:
+			return
+		case msg := <-messages1:
+			fmt.Println(msg)
+		}
+	}
 
 }
 
