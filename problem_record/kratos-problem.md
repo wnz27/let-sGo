@@ -18,5 +18,8 @@ cd 到第一个里面也执行不了kratos
 
 echo $PATH 是含有GOROOT的
 
+## 解决
+zsh 的终端，.zshrc 的配置问题，重新配一下配置一下路径。
+
 
 

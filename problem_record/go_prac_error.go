@@ -4,7 +4,7 @@
  * @Description //TODO
  * @Date 2021/5/1 00:56 5月
  **/
-package main
+package problem_record
 
 import "fmt"
 

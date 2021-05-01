@@ -93,23 +93,28 @@ func main() {
 	可以隐式转换，可读可写可以隐式转换为另外两个，但另外两个不能转换为单个功能的。
 	 */
 
-	messages1 := make(chan string)
-	stop := make(chan bool)
-	go sender(messages1)
-	go func() {
-		time.Sleep(time.Second * 3)
-		fmt.Println("Time is up!")
-		stop <- true
-	}()
+	// 接收停止信号
+	//messages1 := make(chan string)
+	//stop := make(chan bool)
+	//go sender(messages1)
+	//go func() {
+	//	time.Sleep(time.Second * 3)
+	//	fmt.Println("Time is up!")
+	//	stop <- true
+	//}()
+	//
+	//for {
+	//	select {
+	//	case <- stop:
+	//		return
+	//	case msg := <-messages1:
+	//		fmt.Println(msg)
+	//	}
+	//}
 
-	for {
-		select {
-		case <- stop:
-			return
-		case msg := <-messages1:
-			fmt.Println(msg)
-		}
-	}
+	// fatal error: all goroutines are asleep - deadlock!
+	//ch1 := make(chan int)
+	//ch1 <- 0
 
 }
 
