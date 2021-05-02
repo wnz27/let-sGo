@@ -187,5 +187,146 @@ func main(){
 本例中只是对变量进行增减操作，虽然可以使用互斥锁（sync.Mutex）解决竞态问题，但是对性能消耗较大。
 在这种情况下，推荐使用原子操作（atomic）进行变量操作。
 
+###  互斥锁synx.Mutex 办证同时只有一个goroutine可以访问共享资源
+
+互斥锁是一种常用的控制共享资源访问的方法, 在go程序中使用非常简单，参见下面的代码：
+
+```
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+var (
+	// 逻辑中使用的某个变量
+	count int
+
+	// 与变量对应的使用互斥锁
+	countGuard sync.Mutex
+)
+
+func GetCount() int {
+	// 锁定
+	countGuard.Lock()
+
+	// 在函数退出时解除锁定
+	defer countGuard.Unlock()
+
+	return count
+}
+
+func setCount(c int) {
+	countGuard.Lock()
+	count = c
+	countGuard.Unlock()
+}
+
+
+func main(){
+	// 可以进行并发安全性设置
+	setCount(1)
+	// 可以进行并发安全的获取
+	fmt.Println(GetCount())
+
+
+}
+```
+
+### 读写互斥锁 synx.RWMutex 在读多写少的环境下比互斥锁更高效
+把上面代码稍作修改即可
+```
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+var (
+	// 逻辑中使用的某个变量
+	count int
+
+	// 与变量对应的使用互斥锁
+	countGuard sync.RWMutex
+
+)
+
+func GetCount() int {
+	// 锁定
+	countGuard.RLock()
+
+	// 在函数退出时解锁
+	defer countGuard.RUnlock()
+
+	return count
+}
+
+func setCount(c int) {
+	countGuard.Lock()
+	count = c
+	countGuard.Unlock()
+}
+
+
+func main(){
+	// 可以进行并发安全性设置
+	setCount(29292)
+	// 可以进行并发安全的获取
+	fmt.Println(GetCount())
+
+}
+```
+### 等待组（sync.WaitGroup） 保证在并发环境中完成指定数量的任务
+![](../img/wait_group.png)
+```
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"sync"
+)
+
+func main() {
+	// 声明一个等待组
+	var wg sync.WaitGroup
+
+	// 准备一系列的网站地址
+	var urls = []string{
+		"http://www.baidu.com",
+		"http://www.zhihu.com",
+	}
+
+	// 遍历这些网址
+	for _, url := range urls {
+		// 每一个任务开始时，等待组增加一
+		wg.Add(1)
+		// 开启一个并发
+		go func(url string) {
+			// 使用defer 表示函数完成时将等待组值减一
+			defer  wg.Done()
+
+			// 使用http 访问提供地址
+			_, err := http.Get(url)
+
+			// 访问完成后，打印地址和可能发生的错误
+			fmt.Println(url, err)
+
+			// 通过参数传递url 地址
+
+		}(url)
+	}
+
+	// 等待所有的任务完成
+	wg.Wait()
+
+	fmt.Println("over")
+}
+```
+
+
+
 
 
