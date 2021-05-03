@@ -1,8 +1,21 @@
-https://www.ardanlabs.com/blog/2018/11/goroutine-leaks-the-forgotten-sender.html
-https://www.ardanlabs.com/blog/2019/04/concurrency-trap-2-incomplete-work.html
-https://www.ardanlabs.com/blog/2014/01/concurrency-goroutines-and-gomaxprocs.html
-https://dave.cheney.net/practical-go/presentations/qcon-china.html#_concurrency
-https://golang.org/ref/mem
+## 相关文章
+- [X] [Goroutine Leaks - The Forgotten Sender](https://www.ardanlabs.com/blog/2018/11/goroutine-leaks-the-forgotten-sender.html)
+  > goroutine 内存泄露， 可以利用缓冲channel解决。"**Never start a goroutine without knowing how it will stop**"
+  - [ ] [相关阅读-context](https://blog.golang.org/context)
+  - [ ] [the-behavior-of-channels](https://www.ardanlabs.com/blog/2017/10/the-behavior-of-channels.html)
+- [X] [Concurrency Trap #2: Incomplete Work](https://www.ardanlabs.com/blog/2019/04/concurrency-trap-2-incomplete-work.html)
+  > 协程泄露相关问题，使用tracker and context来配合解决
+- [X] [concurrency-goroutines-and-gomaxprocs](https://www.ardanlabs.com/blog/2014/01/concurrency-goroutines-and-gomaxprocs.html)
+  > 逻辑多核，并发并行不同。协程切换。不是增加核的参数就好，还是应该根据性能评价来决定
+  - [ ] [Profiling Go Programs](https://blog.golang.org/pprof)
+  - [ ] [detecting-race-conditions-with-go](https://www.ardanlabs.com/blog/2013/09/detecting-race-conditions-with-go.html)
+  - [ ] [video - Google IO concurrency youtube](https://www.youtube.com/watch?v=f6kdp27TYZs)
+- [X] [concurrency](https://dave.cheney.net/practical-go/presentations/qcon-china.html#_concurrency)
+  - Keep yourself busy or do the work yourself, 不要过度使用goroutine
+  - Leave concurrency to the caller, 解耦 调用者和 异步函数（goroutine）来控制goroutine的执行
+  - Never start a goroutine without knowing how it will stop， 防止泄露，利用缓冲channel
+- [ ] [The Go Memory Model](https://golang.org/ref/mem)
+  - go 内存模型
 https://blog.csdn.net/caoshangpa/article/details/78853919
 https://blog.csdn.net/qcrao/article/details/92759907
 https://cch123.github.io/ooo/
@@ -43,3 +56,6 @@ https://zhuanlan.zhihu.com/p/34417106?hmsr=toutiao.io
 https://talks.golang.org/2014/gotham-context.slide#1
 https://medium.com/@cep21/how-to-correctly-use-context-context-in-go-1-7-8f2c0fafdf39
 
+
+## 书籍
+- [ ] 《Go语言并发之道》Katherine 著，中国电力出版社
