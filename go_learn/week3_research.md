@@ -45,9 +45,19 @@
   barrier 指令要求所有对内存的操作都必须要“扩散”到 memory 之后才能继续执行其他对 memory 的操作。
   正是 CPU 提供的 barrier 指令，我们才能实现应用层的各种同步原语，如 atomic，而 atomic 又是各种更上层的 lock 的基础。
   - [ ] [memory_barrier](https://github.com/cch123/golang-notes/blob/master/memory_barrier.md)
-- [ ] [从 Memory Reordering 说起](https://cch123.github.io/ooo/)
-https://blog.golang.org/codelab-share
-https://dave.cheney.net/2018/01/06/if-aligned-memory-writes-are-atomic-why-do-we-need-the-sync-atomic-package
+- [X] [从 Memory Reordering 说起](https://cch123.github.io/ooo/)
+  > 似懂非懂（就是不懂！）
+  - 你的系统在锁上出问题的最明显特征
+    - 压测过不了几千级别的 QPS(丢人！
+    - Goroutine 一开始很稳定，超过一定 QPS 之后暴涨
+    - 可以通过压测方便地发现问题。
+  >lock contention 的本质问题是需要进入互斥区的 g 需要等待独占 g 退出后才能进入互斥区，并行 → 串行
+  
+  > cache contention 那也是 contention，使用 atomic，或者 false sharing 就会导致 cache contention。
+  atomic 操作可以理解成 “true sharing”。 症状：在核心数增多时，单次操作的成本上升，导致程序整体性能下降。
+- [X] [Share Memory By Communicating](https://blog.golang.org/codelab-share)
+  - 有些懵逼的
+- [ ] [If aligned memory writes are atomic, why do we need the sync/atomic package?](https://dave.cheney.net/2018/01/06/if-aligned-memory-writes-are-atomic-why-do-we-need-the-sync-atomic-package)
 http://blog.golang.org/race-detector
 https://dave.cheney.net/2014/06/27/ice-cream-makers-and-data-races
 https://www.ardanlabs.com/blog/2014/06/ice-cream-makers-and-data-races-part-ii.html
