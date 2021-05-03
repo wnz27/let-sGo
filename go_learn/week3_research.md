@@ -14,9 +14,17 @@
   - Keep yourself busy or do the work yourself, 不要过度使用goroutine
   - Leave concurrency to the caller, 解耦 调用者和 异步函数（goroutine）来控制goroutine的执行
   - Never start a goroutine without knowing how it will stop， 防止泄露，利用缓冲channel
-- [ ] [The Go Memory Model](https://golang.org/ref/mem)
+- [X] [The Go Memory Model](https://golang.org/ref/mem)
+  - A receive from an unbuffered channel happens before the send on that channel completes.
+  - The kth receive on a channel with capacity C happens before the k+Cth send from that channel completes.
+  - For any sync.Mutex or sync.RWMutex variable l and n < m, call n of l.Unlock() happens before call m of l.Lock() returns.
+  - For any call to l.RLock on a sync.RWMutex variable l, there is an n such that the l.RLock happens (returns) after call n to l.Unlock and the matching l.RUnlock happens before call n+1 to l.Lock.
+  - A single call of f() from once.Do(f) happens (returns) before any call of once.Do(f) returns.
+    
   - go 内存模型
-https://blog.csdn.net/caoshangpa/article/details/78853919
+	- 1、w happens before r.
+	- 2、Any other write to the shared variable v either happens before w or after r.
+- [ ] [](https://blog.csdn.net/caoshangpa/article/details/78853919)
 https://blog.csdn.net/qcrao/article/details/92759907
 https://cch123.github.io/ooo/
 https://blog.golang.org/codelab-share
