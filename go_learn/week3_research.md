@@ -6,7 +6,7 @@
 - [X] [Concurrency Trap #2: Incomplete Work](https://www.ardanlabs.com/blog/2019/04/concurrency-trap-2-incomplete-work.html)
   > 协程泄露相关问题，使用tracker and context来配合解决
 - [X] [concurrency-goroutines-and-gomaxprocs](https://www.ardanlabs.com/blog/2014/01/concurrency-goroutines-and-gomaxprocs.html)
-  > 逻辑多核，并发并行不同。协程切换。不是增加核的参数就好，还是应该根据性能评价来决定
+  > 逻辑多核，并发并行不同。协程切换。不是增加核的参数就好，还是应该根据性能评价来决定 
   - [ ] [Profiling Go Programs](https://blog.golang.org/pprof)
   - [ ] [detecting-race-conditions-with-go](https://www.ardanlabs.com/blog/2013/09/detecting-race-conditions-with-go.html)
   - [ ] [video - Google IO concurrency youtube](https://www.youtube.com/watch?v=f6kdp27TYZs)
