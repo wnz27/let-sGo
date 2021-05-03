@@ -17,7 +17,6 @@ var once sync.Once
 
 func setup() {
 	a = "hello, world"
-	time.Sleep(time.Millisecond*100)
 	done = true
 }
 
@@ -38,6 +37,6 @@ func main(){
 	time.Sleep(time.Millisecond * 500)
 }
 
-// 但是自己模拟没有模拟出来
+// todo： 但是自己模拟没有模拟出来, 可能编译乱序的时候会出现
 // but there is no guarantee that, in doprint, observing the write to done implies observing the write to a.
 // This version can (incorrectly) print an empty string instead of "hello, world".

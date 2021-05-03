@@ -20,7 +20,7 @@ func main() {
 	}
 	print(a)
 }
-// todo  自己也没模拟出失败
+// todo  自己也没模拟出失败， 可能编译乱序的时候会出现
 // As before, there is no guarantee that, in main, observing the write to done implies observing the write to a,
 // so this program could print an empty string too.
 // Worse, there is no guarantee that the write to done will ever be observed by main,
