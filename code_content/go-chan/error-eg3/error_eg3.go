@@ -25,6 +25,6 @@ func main() {
 	print(g.msg)
 }
 
-// todo 没有复现不保证的情况
+// todo 没有复现不保证的情况， 可能编译乱序的时候会出现
 // Even if main observes g != nil and exits its loop,
 //there is no guarantee that it will observe the initialized value for g.msg.

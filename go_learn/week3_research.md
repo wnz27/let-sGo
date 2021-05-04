@@ -9,7 +9,7 @@
   > 逻辑多核，并发并行不同。协程切换。不是增加核的参数就好，还是应该根据性能评价来决定 
   - [ ] [Profiling Go Programs](https://blog.golang.org/pprof)
   - [ ] [detecting-race-conditions-with-go](https://www.ardanlabs.com/blog/2013/09/detecting-race-conditions-with-go.html)
-  - [ ] [video - Google IO concurrency youtube](https://www.youtube.com/watch?v=f6kdp27TYZs)
+  - [video - Google IO concurrency youtube, 下面应该有重复](https://www.youtube.com/watch?v=f6kdp27TYZs)
 - [X] [concurrency](https://dave.cheney.net/practical-go/presentations/qcon-china.html#_concurrency)
   - Keep yourself busy or do the work yourself, 不要过度使用goroutine
   - Leave concurrency to the caller, 解耦 调用者和 异步函数（goroutine）来控制goroutine的执行
@@ -24,26 +24,67 @@
   - go 内存模型
 	- 1、w happens before r.
 	- 2、Any other write to the shared variable v either happens before w or after r.
-- [ ] [](https://blog.csdn.net/caoshangpa/article/details/78853919)
-- [ ] [](https://blog.csdn.net/qcrao/article/details/92759907)
-https://cch123.github.io/ooo/
-https://blog.golang.org/codelab-share
-https://dave.cheney.net/2018/01/06/if-aligned-memory-writes-are-atomic-why-do-we-need-the-sync-atomic-package
-http://blog.golang.org/race-detector
-https://dave.cheney.net/2014/06/27/ice-cream-makers-and-data-races
-https://www.ardanlabs.com/blog/2014/06/ice-cream-makers-and-data-races-part-ii.html
-https://medium.com/a-journey-with-go/go-how-to-reduce-lock-contention-with-the-atomic-package-ba3b2664b549
-https://medium.com/a-journey-with-go/go-discovery-of-the-trace-package-e5a821743c3c
-https://medium.com/a-journey-with-go/go-mutex-and-starvation-3f4f4e75ad50
-https://www.ardanlabs.com/blog/2017/10/the-behavior-of-channels.html
-https://medium.com/a-journey-with-go/go-buffered-and-unbuffered-channels-29a107c00268
-https://medium.com/a-journey-with-go/go-ordering-in-select-statements-fd0ff80fd8d6
-https://www.ardanlabs.com/blog/2017/10/the-behavior-of-channels.html
-https://www.ardanlabs.com/blog/2014/02/the-nature-of-channels-in-go.html
-https://www.ardanlabs.com/blog/2013/10/my-channel-select-bug.html
-https://blog.golang.org/io2013-talk-concurrency
-https://blog.golang.org/waza-talk
-https://blog.golang.org/io2012-videos
+- [X] [理解Memory Barrier（内存屏障）](https://blog.csdn.net/caoshangpa/article/details/78853919)
+  - [相关文章](https://blog.csdn.net/world_hello_100/article/details/50131497)
+  - 编译时内存乱序访问
+  ```
+  // thread 1
+  while (!ok);
+  do(x);
+  
+  // thread 2
+  x = 42;
+  ok = 1;
+  ```
+  > 线程2两条写语句顺序不定，可能导致do的时候x不是希望的42
+  - 运行时内存乱序访问
+  - Memory Barrier 来保证顺序
+
+- [X] [内存重排](https://blog.csdn.net/qcrao/article/details/92759907)
+  > 再高速缓存还没有到内存，可能导致重排。
+  A barrier instruction forces all memory operations before it to complete before any memory operation after it can begin.
+  barrier 指令要求所有对内存的操作都必须要“扩散”到 memory 之后才能继续执行其他对 memory 的操作。
+  正是 CPU 提供的 barrier 指令，我们才能实现应用层的各种同步原语，如 atomic，而 atomic 又是各种更上层的 lock 的基础。
+  - [ ] [memory_barrier](https://github.com/cch123/golang-notes/blob/master/memory_barrier.md)
+- [X] [从 Memory Reordering 说起](https://cch123.github.io/ooo/)
+  > 似懂非懂（就是不懂！）
+  - 你的系统在锁上出问题的最明显特征
+    - 压测过不了几千级别的 QPS(丢人！
+    - Goroutine 一开始很稳定，超过一定 QPS 之后暴涨
+    - 可以通过压测方便地发现问题。
+  >lock contention 的本质问题是需要进入互斥区的 g 需要等待独占 g 退出后才能进入互斥区，并行 → 串行
+  
+  > cache contention 那也是 contention，使用 atomic，或者 false sharing 就会导致 cache contention。
+  atomic 操作可以理解成 “true sharing”。 症状：在核心数增多时，单次操作的成本上升，导致程序整体性能下降。
+- [X] [Share Memory By Communicating](https://blog.golang.org/codelab-share)
+  - 有些懵逼的
+- [X] [If aligned memory writes are atomic, why do we need the sync/atomic package?](https://dave.cheney.net/2018/01/06/if-aligned-memory-writes-are-atomic-why-do-we-need-the-sync-atomic-package)
+  > memory barrier 由来 以及 与 sync atomic 联系  
+- [X] [race-detector](http://blog.golang.org/race-detector)
+  > 略读了一下，使用 -race 来查看 data race 的情况
+- [X] [ice-cream-makers-and-data-races](https://dave.cheney.net/2014/06/27/ice-cream-makers-and-data-races)
+  > 变量竞争问题讨论， interface 结构：**todo: 还需深入理解下interface结构**, 变量引用
+  
+  > ![](assets/w3_img/interface-value.png)
+  ```
+  type interface struct {
+       Type uintptr     // points to the type of the interface implementation
+       Data uintptr     // holds the data for the interface's receiver
+  }
+  ```
+- [X] [ice-cream-makers-and-data-races-part-ii](https://www.ardanlabs.com/blog/2014/06/ice-cream-makers-and-data-races-part-ii.html)
+  > 深入冰激凌制作问题的例子，替换结构体内部变量类型，进一步论证data race 问题
+- [ ] [Go: How to Reduce Lock Contention with the Atomic Package](https://medium.com/a-journey-with-go/go-how-to-reduce-lock-contention-with-the-atomic-package-ba3b2664b549)
+- [ ] [Go: Discovery of the Trace Package](https://medium.com/a-journey-with-go/go-discovery-of-the-trace-package-e5a821743c3c)
+- [ ] [Go: Mutex and Starvation](https://medium.com/a-journey-with-go/go-mutex-and-starvation-3f4f4e75ad50)
+- [ ] [The Behavior Of Channels](https://www.ardanlabs.com/blog/2017/10/the-behavior-of-channels.html)
+- [ ] [Go: Buffered and Unbuffered Channels](https://medium.com/a-journey-with-go/go-buffered-and-unbuffered-channels-29a107c00268)
+- [ ] [Go: Ordering in Select Statements](https://medium.com/a-journey-with-go/go-ordering-in-select-statements-fd0ff80fd8d6)
+- [ ] [The Nature Of Channels In Go](https://www.ardanlabs.com/blog/2014/02/the-nature-of-channels-in-go.html)
+- [ ] [My Channel Select Bug](https://www.ardanlabs.com/blog/2013/10/my-channel-select-bug.html)
+- [ ] [Advanced Go Concurrency Patterns](https://blog.golang.org/io2013-talk-concurrency)
+- [ ] [Concurrency is not parallelism](https://blog.golang.org/waza-talk)
+- [ ] [Go videos from Google I/O 2012](https://blog.golang.org/io2012-videos)
 https://blog.golang.org/concurrency-timeouts
 https://blog.golang.org/pipelines
 https://www.ardanlabs.com/blog/2014/02/running-queries-concurrently-against.html
