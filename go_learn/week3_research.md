@@ -25,7 +25,7 @@
 	- 1、w happens before r.
 	- 2、Any other write to the shared variable v either happens before w or after r.
 - [ ] [](https://blog.csdn.net/caoshangpa/article/details/78853919)
-https://blog.csdn.net/qcrao/article/details/92759907
+- [ ] [](https://blog.csdn.net/qcrao/article/details/92759907)
 https://cch123.github.io/ooo/
 https://blog.golang.org/codelab-share
 https://dave.cheney.net/2018/01/06/if-aligned-memory-writes-are-atomic-why-do-we-need-the-sync-atomic-package
