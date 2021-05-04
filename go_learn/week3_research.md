@@ -85,7 +85,7 @@
 - [ ] [Advanced Go Concurrency Patterns](https://blog.golang.org/io2013-talk-concurrency)
 - [ ] [Concurrency is not parallelism](https://blog.golang.org/waza-talk)
 - [ ] [Go videos from Google I/O 2012](https://blog.golang.org/io2012-videos)
-https://blog.golang.org/concurrency-timeouts
+- [ ] [Go Concurrency Patterns: Timing out, moving on](https://blog.golang.org/concurrency-timeouts)
 https://blog.golang.org/pipelines
 https://www.ardanlabs.com/blog/2014/02/running-queries-concurrently-against.html
 https://blogtitle.github.io/go-advanced-concurrency-patterns-part-3-channels/
