@@ -1,0 +1,3 @@
+- [读写锁](./chapter3/rw_lock/rwLock.go)
+- [channel](./chapter3/channel/chan_prac.go)
+- [select](./chapter3/select_prac/select_prac.go)
