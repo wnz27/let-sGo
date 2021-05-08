@@ -28,3 +28,7 @@
     - [ ]
 - [ ] 抽空研究python 框架：nameko, [nameko官网](https://nameko.readthedocs.io/en/stable/what_is_nameko.html), [nameko-github](https://github.com/nameko/nameko) 
 - [ ] [kuboard_learning](https://kuboard.cn/learning/)
+
+
+## 实践
+- [ ] hexo 建个站
