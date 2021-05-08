@@ -88,7 +88,7 @@
 - [ ] [Go Concurrency Patterns: Timing out, moving on](https://blog.golang.org/concurrency-timeouts)
 https://blog.golang.org/pipelines
 https://www.ardanlabs.com/blog/2014/02/running-queries-concurrently-against.html
-https://blogtitle.github.io/go-advanced-concurrency-patterns-part-3-channels/
+- [ ] [Go advanced concurrency patterns: part 3](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-3-channels/)
 https://www.ardanlabs.com/blog/2013/05/thread-pooling-in-go-programming.html
 https://www.ardanlabs.com/blog/2013/09/pool-go-routines-to-process-task.html
 https://blogtitle.github.io/categories/concurrency/
@@ -108,3 +108,8 @@ https://medium.com/@cep21/how-to-correctly-use-context-context-in-go-1-7-8f2c0fa
 
 ## 书籍
 - [ ] 《Go语言并发之道》Katherine 著，中国电力出版社
+- [ ] 查看grpc 的metadata 的使用， 尝试抠出来作为自己的业务库使用
+- [ ] [Go advanced concurrency patterns: part 1](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-1/)
+- [ ] [Go advanced concurrency patterns: part 2](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-2-timers/)
+- [ ] [Some useful patterns](https://blogtitle.github.io/some-useful-patterns/)
+- [ ] [Go Generics](https://blogtitle.github.io/go-generics/)
