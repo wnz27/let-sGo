@@ -88,21 +88,25 @@
 - [ ] [Go Concurrency Patterns: Timing out, moving on](https://blog.golang.org/concurrency-timeouts)
 - [ ] [Go Concurrency Patterns: Pipelines and cancellation](https://blog.golang.org/pipelines)
 - [ ] [Running MongoDB Queries Concurrently With Go](https://www.ardanlabs.com/blog/2014/02/running-queries-concurrently-against.html)
-- [ ] [Go advanced concurrency patterns: part 3](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-3-channels/)
-https://www.ardanlabs.com/blog/2013/05/thread-pooling-in-go-programming.html
-https://www.ardanlabs.com/blog/2013/09/pool-go-routines-to-process-task.html
-https://blogtitle.github.io/categories/concurrency/
-https://medium.com/a-journey-with-go/go-context-and-cancellation-by-propagation-7a808bbc889c
+
+- [ ] [Thread Pooling in Go Programming](https://www.ardanlabs.com/blog/2013/05/thread-pooling-in-go-programming.html)
+- [ ] [Pool Go Routines To Process Task Oriented Work](https://www.ardanlabs.com/blog/2013/09/pool-go-routines-to-process-task.html)
+- [concurrency-rob-blog](https://blogtitle.github.io/categories/concurrency/)
+  - [ ] [Go advanced concurrency patterns: part 1](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-1/)
+  - [ ] [Go advanced concurrency patterns: part 2](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-2-timers/)
+  - [ ] [Go advanced concurrency patterns: part 3](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-3-channels/)
+  - [ ] [Sneaky race conditions and granular locks](https://blogtitle.github.io/sneaky-race-conditions-and-granular-locks/)
+  - [ ] [Using JavaScript SharedArrayBuffers and Atomics](https://blogtitle.github.io/using-javascript-sharedarraybuffers-and-atomics/)
+- [ ] [Go: Context and Cancellation by Propagation](https://medium.com/a-journey-with-go/go-context-and-cancellation-by-propagation-7a808bbc889c)
 https://blog.golang.org/context
 https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html
 https://golang.org/ref/spec#Channel_types
-https://drive.google.com/file/d/1nPdvhB0PutEJzdCq5ms6UI58dp50fcAN/view
+空连接： https://drive.google.com/file/d/1nPdvhB0PutEJzdCq5ms6UI58dp50fcAN/view
 https://medium.com/a-journey-with-go/go-context-and-cancellation-by-propagation-7a808bbc889c
-https://blog.golang.org/context
 https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html
 https://golang.org/doc/effective_go.html#concurrency
 - [ ] [Go Context的踩坑经历](https://zhuanlan.zhihu.com/p/34417106?hmsr=toutiao.io)
-https://talks.golang.org/2014/gotham-context.slide#1
+- [ ] [Cancelation, Context, and Plumbing](https://talks.golang.org/2014/gotham-context.slide#1)
 - [ ] [How to correctly use context.Context in Go 1.7](https://medium.com/@cep21/how-to-correctly-use-context-context-in-go-1-7-8f2c0fafdf39)
 
 
@@ -111,8 +115,6 @@ https://talks.golang.org/2014/gotham-context.slide#1
   
 ## 其他
 - [ ] 查看grpc 的metadata 的使用， 尝试抠出来作为自己的业务库使用
-- [ ] [Go advanced concurrency patterns: part 1](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-1/)
-- [ ] [Go advanced concurrency patterns: part 2](https://blogtitle.github.io/go-advanced-concurrency-patterns-part-2-timers/)
 - [ ] [Some useful patterns](https://blogtitle.github.io/some-useful-patterns/)
 - [ ] [Go Generics](https://blogtitle.github.io/go-generics/)
 - [ ] [7 common mistakes in Go and when to avoid them by Steve Francia (Docker)](https://www.youtube.com/watch?v=29LLRKIL_TI)
