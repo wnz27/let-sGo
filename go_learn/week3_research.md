@@ -77,7 +77,46 @@
 - [ ] [medium-Go: How to Reduce Lock Contention with the Atomic Package](https://medium.com/a-journey-with-go/go-how-to-reduce-lock-contention-with-the-atomic-package-ba3b2664b549)
 - [ ] [medium-Go: Discovery of the Trace Package](https://medium.com/a-journey-with-go/go-discovery-of-the-trace-package-e5a821743c3c)
 - [ ] [medium-Go: Mutex and Starvation](https://medium.com/a-journey-with-go/go-mutex-and-starvation-3f4f4e75ad50)
-- [ ] [The Behavior Of Channels](https://www.ardanlabs.com/blog/2017/10/the-behavior-of-channels.html)
+- [X] [The Behavior Of Channels](https://www.ardanlabs.com/blog/2017/10/the-behavior-of-channels.html)
+  - Guarantee Of Delivery
+    > ![](./assets/w3_img/chan_deliver.png)
+    Having a strong understanding of whether or not you need a guarantee is crucial when writing concurrent software.
+  - State
+    > The behavior of a channel is directly influenced by its current State. The state of a channel can be **nil**, **open** or **closed**.
+    ```
+    // ** nil channel
+    // A channel is in a nil state when it is declared to its zero value
+    var ch chan string
+    
+    // A channel can be placed in a nil state by explicitly setting it to nil.
+    ch = nil
+    
+    // ** open channel
+    // A channel is in a open state when it’s made using the built-in function make.
+    ch := make(chan string)
+    
+    // ** closed channel
+    // A channel is in a closed state when it’s closed using the built-in function close.
+    close(ch)
+    ```
+    >The state determines how the send and receive operations behave.
+    Signals are sent and received through a channel. Don’t say read/write because channels don’t perform I/O.
+    ![](./assets/w3_img/chan_state.png)
+    - With and Without Data
+      - When you signal with data, it’s usually because:
+        - A goroutine is being asked to start a new task.
+        - A goroutine reports back a result.
+      - When you signal without data, it’s usually because:
+        - A goroutine is being told to stop what they are doing.
+        - A goroutine reports back they are done with no result.
+        - A goroutine reports that it has completed processing and shut down.
+    - Signaling With Data
+      > When you are going to signal with data, there are three channel configuration options you can choose depending on the type of guarantee you need.
+      ![](./assets/w3_img/signal_with_data.png)
+      The size of the buffer must never be a random number, It must always be calculated for some well defined constraint. There is no infinity in computing, everything must have some well defined constraint whether that is time or space.
+    - Signaling Without Data
+      > Signaling without data is mainly reserved for cancellation. It allows one goroutine to signal another goroutine to cancel what they are doing and move on. Cancellation can be implemented using both Unbuffered and Buffered channels, but using a Buffered channel when no data will be sent is a code smell.
+      ![](./assets/w3_img/signal_without_data.png)
 - [ ] [medium-Go: Buffered and Unbuffered Channels](https://medium.com/a-journey-with-go/go-buffered-and-unbuffered-channels-29a107c00268)
 - [ ] [medium-Go: Ordering in Select Statements](https://medium.com/a-journey-with-go/go-ordering-in-select-statements-fd0ff80fd8d6)
 - [ ] [The Nature Of Channels In Go](https://www.ardanlabs.com/blog/2014/02/the-nature-of-channels-in-go.html)
