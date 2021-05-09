@@ -100,5 +100,7 @@ func main() {
 
 
 /*
-todo 多监听了一个端口号就hang 死了， Wait 产生了永久等待在这个位置： shutting down server!, 后面再找下问题。。。。。蛋疼。。。
+todo 多监听了一个端口号就hang 死了， Wait 产生了永久等待在这个位置： shutting down server!, 后面再找下问题。。。。。蛋疼。。。找到了问题
+也解决了但是还是感觉有点儿蠢。。。
+【见： demo_2.go】
  */

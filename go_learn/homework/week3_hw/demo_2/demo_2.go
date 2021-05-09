@@ -31,8 +31,8 @@ func main() {
 
 	// 模拟中断服务
 	serverOut := make(chan struct{})
-	//serverOutMux := http.NewServeMux()
-	serviceMux.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
+	serverOutMux := http.NewServeMux()
+	serverOutMux.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		serverOut <- struct{}{}
 	})
 
@@ -42,10 +42,10 @@ func main() {
 		Addr:    ":8080",
 	}
 
-	//shutdownServer := http.Server{
-	//	Handler: serverOutMux,
-	//	Addr:    ":8081",
-	//}
+	shutdownServer := http.Server{
+		Handler: serverOutMux,
+		Addr:    ":8081",
+	}
 
 	/*
 		g1 退出后, g2, g3, g4 都会随之退出
@@ -59,10 +59,10 @@ func main() {
 		g2 退出后, g1, g3, g4 都会随之退出
 		然后 main 函数中的 g.Wait() 退出，所有协程都会退出
 	*/
-	//g.Go(
-	//	func() error {
-	//		return shutdownServer.ListenAndServe()
-	//	})
+	g.Go(
+		func() error {
+			return shutdownServer.ListenAndServe()
+		})
 
 	/*
 		g3 退出时，调用了 shutdown，g1 g2 会退出
@@ -82,6 +82,21 @@ func main() {
 
 		log.Println("shutting down server!")
 		return serviceServer.Shutdown(timeoutCtx)
+	})
+
+	g.Go(func() error {
+		select {
+		case <-ctx.Done():
+			log.Println("errgroup exit!")
+		case <-serverOut:
+			log.Println("server out!")
+		}
+
+		timeoutCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+
+		log.Println("shutting down server!")
+		return shutdownServer.Shutdown(timeoutCtx)
 	})
 
 	/*
