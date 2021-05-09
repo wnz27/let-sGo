@@ -1,5 +1,6 @@
-https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html
-https://www.ardanlabs.com/blog/2017/02/design-philosophy-on-packaging.html
+- [ ] [Develop Your Design Philosophy](https://www.ardanlabs.com/blog/2017/01/develop-your-design-philosophy.html)
+- [ ] [Design Philosophy On Packaging](https://www.ardanlabs.com/blog/2017/02/design-philosophy-on-packaging.html)
+- [ ] [Package Oriented Design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html)
 https://github.com/golang-standards/project-layout
 https://github.com/golang-standards/project-layout/blob/master/README_zh.md
 https://www.cnblogs.com/zxf330301/p/6534643.html
