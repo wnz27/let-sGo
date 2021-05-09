@@ -48,16 +48,14 @@ func main() {
 	//}
 
 	/*
-		g1 退出后, g2, g3, g4 都会随之退出
-		然后 main 函数中的 g.Wait() 退出，所有协程都会退出
+		监听地址goroutine 退出后, 后面goroutine 都会随之退出
 	 */
 	g.Go(
 		func() error {
 			return serviceServer.ListenAndServe()
 		})
 	/*
-		g2 退出后, g1, g3, g4 都会随之退出
-		然后 main 函数中的 g.Wait() 退出，所有协程都会退出
+		退出后, 其他 都会随之退出
 	*/
 	//g.Go(
 	//	func() error {
@@ -65,9 +63,7 @@ func main() {
 	//	})
 
 	/*
-	g3 退出时，调用了 shutdown，g1 g2 会退出
-	g3 退出后, context 将不再阻塞，g4 会随之退出
-	然后 main 函数中的 g.Wait() 退出，所有协程都会退出
+	退出时，调用了 shutdown, context 会做相应取消
 	 */
 	g.Go(func() error {
 		select {
@@ -85,10 +81,7 @@ func main() {
 	})
 
 	/*
-	g4 捕获到 os 退出信号将会退出
-	g4 退出后, context 将不再阻塞，g2 g1 会退出
-	g4 退出时，调用了 shutdown，g1 会退出
-	然后 main 函数中的 g.Wait() 退出，所有协程都会退出
+	捕获到 os 退出信号将会退出
 	 */
 	g.Go(func() error {
 		quit := make(chan os.Signal, 0)
