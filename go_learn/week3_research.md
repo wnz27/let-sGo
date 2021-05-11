@@ -176,7 +176,7 @@
   https://blog.golang.org/context
   https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html
   https://golang.org/ref/spec#Channel_types
-- [ ] [Rethinking-Classical-Concurrency-Patterns](../book-resource/Rethinking%20Classical%20Concurrency%20Patterns.pdf)
+- [ ] [Rethinking-Classical-Concurrency-Patterns](../book-resource/RethinkingClassicalConcurrencyPatterns.pdf)
   https://medium.com/a-journey-with-go/go-context-and-cancellation-by-propagation-7a808bbc889c
   https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html
   https://golang.org/doc/effective_go.html#concurrency
