@@ -1,6 +1,90 @@
-- [ ] [Develop Your Design Philosophy](https://www.ardanlabs.com/blog/2017/01/develop-your-design-philosophy.html)
-- [ ] [Design Philosophy On Packaging](https://www.ardanlabs.com/blog/2017/02/design-philosophy-on-packaging.html)
-- [ ] [Package Oriented Design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html)
+- [X] [Develop Your Design Philosophy](https://www.ardanlabs.com/blog/2017/01/develop-your-design-philosophy.html)
+  > A design philosophy is important because it should be driving everything you do and every decision you make when writing code and structuring a project. It forces you to ask:
+    - Who is your audience?
+    - What are your priorities?
+    - When do you take exceptions to the rules?
+    - How do things work?
+    - Why you are making the decisions you make?
+    
+    > With that understanding you are capable of:
+    - Reasoning about tradeoffs and costs
+    - Determining when and why you do things
+    - Developing best practices and guidelines
+    - Smelling out good code from bad
+    - Appreciating others opinions
+    - Participating in healthy debates
+    - Refactoring your philosophy as your learn more
+- [X] [Design Philosophy On Packaging](https://www.ardanlabs.com/blog/2017/02/design-philosophy-on-packaging.html)
+  - Design Philosophies
+    - Purpose
+        - Packages must be named with the intent to describe what it provides.
+        - Packages must not become a dumping ground of disparate concerns.
+    - Usability
+        - Packages must be intuitive and simple to use.
+        - Packages must respect their impact on resources and performance.
+        - Packages must protect the user’s application from cascading changes.
+        - Packages must prevent the need for type assertions to the concrete.
+        - Packages must reduce, minimize and simplify its code base.
+    - Portability
+        - Packages must aspire for the highest level of portability.
+        - Packages must reduce setting policies when it’s reasonable and practical.
+        - Packages must not become a single point of dependency.
+- [X] [Package Oriented Design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html)
+  Project Structure
+    - Kit Projects
+      > Think of the Kit project as a company’s standard library, so there should only be one. 
+      The packages that belong to the Kit project need to be designed with the highest levels of portability in mind. 
+      These packages should be usable across multiple Application projects and provide a very specific but foundational domain of functionality. 
+      To this end, the Kit project is not allowed to have a vendor folder. 
+      If any of packages are dependent on 3rd party packages, they must always build against the latest version of those dependences.
+      ```
+        github.com/ardanlabs/kit
+        ├── CONTRIBUTORS
+        ├── LICENSE
+        ├── README.md
+        ├── cfg/
+        ├── examples/
+        ├── log/
+        ├── pool/
+        ├── tcp/
+        ├── timezone/
+        ├── udp/
+        └── web/
+      ```
+    - Application Projects
+    > Each Application project contains three root level folders. These are cmd/, internal/ and vendor/. There is also a platform/ folder inside of the internal/ folder, which has different design constraints from the other packages that live inside of internal/.
+    ```
+    github.com/servi-io/api
+    ├── cmd/
+    │   ├── servi/
+    │   │   ├── cmdupdate/
+    │   │   ├── cmdquery/
+    │   │   └── servi.go
+    │   └── servid/
+    │       ├── routes/
+    │       │   └── handlers/
+    │       ├── tests/
+    │       └── servid.go
+    ├── internal/
+    │   ├── attachments/
+    │   ├── locations/
+    │   ├── orders/
+    │   │   ├── customers/
+    │   │   ├── items/
+    │   │   ├── tags/
+    │   │   └── orders.go
+    │   ├── registrations/
+    │   └── platform/
+    │       ├── crypto/
+    │       ├── mongo/
+    │       └── json/
+    └── vendor/
+    ├── github.com/
+    │   ├── ardanlabs/
+    │   ├── golang/
+    │   ├── prometheus/
+    └── golang.org/
+    ```
 - [ ] [golang-standards-project-layout](https://github.com/golang-standards/project-layout)
 https://github.com/golang-standards/project-layout/blob/master/README_zh.md
 https://www.cnblogs.com/zxf330301/p/6534643.html
