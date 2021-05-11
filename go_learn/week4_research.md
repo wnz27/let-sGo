@@ -1,7 +1,7 @@
 - [ ] [Develop Your Design Philosophy](https://www.ardanlabs.com/blog/2017/01/develop-your-design-philosophy.html)
 - [ ] [Design Philosophy On Packaging](https://www.ardanlabs.com/blog/2017/02/design-philosophy-on-packaging.html)
 - [ ] [Package Oriented Design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html)
-https://github.com/golang-standards/project-layout
+- [ ] [golang-standards-project-layout](https://github.com/golang-standards/project-layout)
 https://github.com/golang-standards/project-layout/blob/master/README_zh.md
 https://www.cnblogs.com/zxf330301/p/6534643.html
 https://blog.csdn.net/k6T9Q8XKs6iIkZPPIFq/article/details/109192475?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522160561008419724839224387%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=160561008419724839224387&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v28-6-109192475.first_rank_ecpm_v3_pc_rank_v2&utm_term=阿里技术专家详解DDD系列&spm=1018.2118.3001.4449
