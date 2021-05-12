@@ -87,12 +87,12 @@
     ```
 - [ ] [golang-standards-project-layout](https://github.com/golang-standards/project-layout)
 https://github.com/golang-standards/project-layout/blob/master/README_zh.md
-https://www.cnblogs.com/zxf330301/p/6534643.html
+- [ ] [浅析VO、DTO、DO、PO的概念、区别和用处](https://www.cnblogs.com/zxf330301/p/6534643.html)
 https://blog.csdn.net/k6T9Q8XKs6iIkZPPIFq/article/details/109192475?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522160561008419724839224387%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=160561008419724839224387&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v28-6-109192475.first_rank_ecpm_v3_pc_rank_v2&utm_term=阿里技术专家详解DDD系列&spm=1018.2118.3001.4449
 https://blog.csdn.net/chikuai9995/article/details/100723540?biz_id=102&utm_term=阿里技术专家详解DDD系列&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-0-100723540&spm=1018.2118.3001.4449
 https://blog.csdn.net/Taobaojishu/article/details/101444324?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522160561008419724838528569%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=160561008419724838528569&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-1-101444324.first_rank_ecpm_v3_pc_rank_v2&utm_term=阿里技术专家详解DDD系列&spm=1018.2118.3001.4449
 https://blog.csdn.net/taobaojishu/article/details/106152641
-https://cloud.google.com/apis/design/errors
+- [ ] [ Google API 的错误模型](https://cloud.google.com/apis/design/errors)
 https://kb.cnblogs.com/page/520743/
 https://zhuanlan.zhihu.com/p/105466656
 https://zhuanlan.zhihu.com/p/105648986
