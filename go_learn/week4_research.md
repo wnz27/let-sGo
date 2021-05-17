@@ -127,7 +127,7 @@ https://hackernoon.com/golang-clean-archithecture-efd6d7c43047
 https://hackernoon.com/trying-clean-architecture-on-golang-2-44d615bf8fdf
 https://manuel.kiessling.net/2012/09/28/applying-the-clean-architecture-to-go-applications/
 https://github.com/katzien/go-structure-examples
-https://www.youtube.com/watch?v=MzTcsI6tn-0
+- [ ] [Ashley McNamara + Brian Ketelsen. Go best practices](https://www.youtube.com/watch?v=MzTcsI6tn-0)
 https://www.appsdeveloperblog.com/dto-to-entity-and-entity-to-dto-conversion/
 https://travisjeffery.com/b/2019/11/i-ll-take-pkg-over-internal/
 https://github.com/google/wire/blob/master/docs/best-practices.md
