@@ -1,0 +1,12 @@
+http://www.360doc.com/content/16/1124/21/31263000_609259745.shtml
+http://www.infoq.com/cn/articles/basis-frameworkto-implement-micro-service/
+http://www.infoq.com/cn/news/2017/04/linkerd-celebrates-one-year
+https://medium.com/netflix-techblog/netflix-edge-load-balancing-695308b5548c
+https://mp.weixin.qq.com/s?__biz=MzAwNjQwNzU2NQ==&mid=402841629&idx=1&sn=f598fec9b370b8a6f2062233b31122e0&mpshare=1&scene=23&srcid=0404qP0fH8zRiIiFzQBiuzuU#rd
+https://mp.weixin.qq.com/s?__biz=MzIzMzk2NDQyMw==&mid=2247486641&idx=1&sn=1660fb41b0c5b8d8d6eacdfc1b26b6a6&source=41#wechat_redirect
+https://blog.acolyer.org/2018/11/16/overload-control-for-scaling-wechat-microservices/
+https://www.cs.columbia.edu/~ruigu/papers/socc18-final100.pdf
+https://github.com/alibaba/Sentinel/wiki/系统负载保护
+https://blog.csdn.net/okiwilldoit/article/details/81738782
+http://alex-ii.github.io/notes/2019/02/13/predictive_load_balancing.html
+https://blog.csdn.net/m0_38106113/article/details/81542863

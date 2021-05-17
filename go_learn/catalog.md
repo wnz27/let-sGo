@@ -2,4 +2,5 @@
 - [2. Go - error 处理](./week2_research.md)
 - [3. GO - 并发编程](./week3_research.md)
 - [4. Go - 工程化实践](./week4_research.md)
+- [5. Go - 微服务（微服务可用性设计）](./week5_research.md)
 
