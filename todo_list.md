@@ -36,6 +36,12 @@
 - [ ] [MySQL索引背后的数据结构及算法原理](http://blog.codinglabs.org/articles/theory-of-mysql-index.html)
 - [ ] [MySQL 性能优化神器 Explain 使用分析](https://segmentfault.com/a/1190000008131735)
 - [ ] [大众点评订单系统分库分表实践](https://tech.meituan.com/2016/11/18/dianping-order-db-sharding.html)
+- [ ] [『浅入浅出』MySQL 和 InnoDB](https://draveness.me/mysql-innodb/)
+- [ ] [MySQL locking for the busy web developer](https://www.brightbox.com/blog/2013/10/31/on-mysql-locks/)
+- [ ] [The basics of the InnoDB undo logging and history system](https://blog.jcole.us/2014/04/16/the-basics-of-the-innodb-undo-logging-and-history-system/)
+- [ ] [Database Normalization and Normal Forms with an Example](https://aksakalli.github.io/2012/03/12/database-normalization-and-normal-forms-with-an-example.html)
+- [ ] [Chapter 14 The InnoDB Storage Engine](https://dev.mysql.com/doc/refman/5.7/en/innodb-storage-engine.html)
+- [ ] [Innodb中的事务隔离级别和锁的关系](https://tech.meituan.com/2014/08/20/innodb-lock.html)
 - [ ] 输出收获
 
 
