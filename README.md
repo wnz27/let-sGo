@@ -5,3 +5,4 @@ learn go
 - [其他积累](other_learn/catalog.md)
 - [Todo](./todo_list.md)
 - [Go工程化学习](./go_learn/catalog.md)
+- [learn-go-with-tests](./learn_go_with_tests/learn_line.md)
