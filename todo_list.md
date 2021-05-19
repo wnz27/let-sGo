@@ -20,6 +20,7 @@
 
 
 ## 其他
+- [ ] [浅析控制反转](https://zhuanlan.zhihu.com/p/60995312)
 - [ ] 直接进程间通信：基于RPC机制，试图唤醒远程服务看起来跟唤醒本地服务一样。 这个是什么意思呢？？！？！？
 - [ ] 断路器模式中的返回缓存或者默认值为啥称为回滚？
 - [X] 查询JMS含义? java里的消息服务？
@@ -29,6 +30,13 @@
     - [ ]
 - [ ] 抽空研究python 框架：nameko, [nameko官网](https://nameko.readthedocs.io/en/stable/what_is_nameko.html), [nameko-github](https://github.com/nameko/nameko) 
 - [ ] [kuboard_learning](https://kuboard.cn/learning/)
+
+## mysql
+- [ ] [服务端指南 数据存储篇 | MySQL（09） 分库与分表带来的分布式困境与应对之策](http://blog.720ui.com/2017/mysql_core_09_multi_db_table2/)
+- [ ] [MySQL索引背后的数据结构及算法原理](http://blog.codinglabs.org/articles/theory-of-mysql-index.html)
+- [ ] [MySQL 性能优化神器 Explain 使用分析](https://segmentfault.com/a/1190000008131735)
+- [ ] [大众点评订单系统分库分表实践](https://tech.meituan.com/2016/11/18/dianping-order-db-sharding.html)
+- [ ] 输出收获
 
 
 ## 实践
