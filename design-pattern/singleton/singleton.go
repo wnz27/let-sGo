@@ -4,8 +4,6 @@
 * Date:    2021/5/5 10:49 上午
 * Description:
  */
-package main
+package singleton
 
-func main(){
 
-}
