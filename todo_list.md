@@ -42,6 +42,11 @@
 - [ ] [Database Normalization and Normal Forms with an Example](https://aksakalli.github.io/2012/03/12/database-normalization-and-normal-forms-with-an-example.html)
 - [ ] [Chapter 14 The InnoDB Storage Engine](https://dev.mysql.com/doc/refman/5.7/en/innodb-storage-engine.html)
 - [ ] [Innodb中的事务隔离级别和锁的关系](https://tech.meituan.com/2014/08/20/innodb-lock.html)
+- [ ] [MySQL锁总结](https://zhuanlan.zhihu.com/p/29150809)
+- [ ] 输出收获
+
+## redis
+
 - [ ] 输出收获
 
 
