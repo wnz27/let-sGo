@@ -1,2 +1,50 @@
+# 软件架构编年史
+- 20 世纪 50 年代
+    - 非结构化编程
+    - ~1951 – 汇编
+- 20 世纪 60 年代
+    - 结构化编程
+    - 分层: 用户界面、业务逻辑数据存储都在一层。
+    - ~1958 – Algol
+- 20 世纪 70 年代
+    - 过程式/函数式编程
+    - ~1970 – Pascal
+    - ~1972 – C
+    - 1979 – MVC 模式(Model-View-Controller)
+- 20 世纪 80 年代
+    - 面向对象编程 (但其思想在 20 世纪 60 年代晚期已经第一次提出)
+    - 分层: 两层，第一层是用户界面，第二层是业务逻辑和数据存储
+    - ~1980 – C++
+    - CORBA – 通用物件请求代理架构(尽管1991 年才推出第一个稳定版，但最早使用可以追溯到 20 世纪 80 年代)
+    - ~1986 – Erlang
+    - ~1987 – Perl
+    - 1987 – PAC 即 HMVC 模式(Hierarchical Model-View-Controller)
+    - 1988 – LSP(里氏替换原则) (~SOLID)
+- 20 世纪 90 年代
+    - 分层: 三层，第一层是用户界面，第二层是业务逻辑(以及浏览器作为客户端时的用户界面展现逻辑)，第三层是数据存储
+    - ~1991 – 消息总线
+    - ~1991 – Python
+    - 1992 – EBI 架构(Entity-Boundary-Interactor) 即 EBC 或 EIC
+    - ~1993 – Ruby
+    - ~1995 – Delphi, Java, Javascript, PHP
+    - 1996 – MVP 模式(Model-View-Presenter)
+    - 1996 – OCP, ISP, DIP (~SOLID), REP, CRP, CCP, ADP
+    - 1997 – SDP, SAP
+    - [1997](http://www.cs.ubc.ca/gregor/papers/kiczales-ECOOP1997-AOP.pdf) – 面向方面编程
+    - ~1997 – Web 服务
+    - ~1997 – ESB – 企业服务总线 (尽管创造该术语的书籍 2004 年才出版，但这个概念早已被使用)
+- 21 世纪 00 年代
+    - 2002 – SRP (~SOLID)
+    - 2003 – 领域驱动设计
+    - 2005 – MVVM 模式(Model-View-ViewModel)
+    - 2005 – 端口和适配器架构即六边形架构
+    - 2006? – CQRS 与 ES (命令查询职责分离与事件溯源)
+    - 2008 – 洋葱架构
+    - 2009 – 微服务(Netflix)
+- 21 世纪 10 年代
+    - 2010 – DCI 架构(Data-Context-Interaction)
+    - 2012 – 整洁架构
+    - 2014 – C4 模型
 
+# 领域驱动设计
 
