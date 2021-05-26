@@ -52,3 +52,10 @@
 
 ## 实践
 - [ ] hexo 建个站
+
+
+## 算法
+- [ ] [压缩算法介绍](https://ng-tech.icu/Algorithm-Series/#/%E5%8E%8B%E7%BC%A9/GZip) 可以手撸下试试~~~~
+
+
+
