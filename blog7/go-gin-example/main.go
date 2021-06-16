@@ -22,7 +22,7 @@ func main() {
 		Handler:        router,
 		ReadTimeout:    setting.ReadTimeout,
 		WriteTimeout:   setting.WriteTimeout,
-		MaxHeaderBytes: 1 << 20,
+		MaxHeaderBytes: 1 << 20,  // 1 * 2^20次方
 	}
 
 	s.ListenAndServe()
