@@ -80,7 +80,7 @@ go-gin-example/
 ├── middleware
 ├── models
 ├── pkg
-│ └── setting
+│   └── setting
 ├── routers
 ├── runtime
 └── test.go
@@ -157,8 +157,8 @@ INSERT INTO `blog`.`blog_auth` (`id`, `username`, `password`) VALUES (null, 'tes
 ```
 ## 编写项目配置包
 在 go-gin-example 应用目录下，拉取 go-ini/ini 的依赖包，如下：
-```go
-go get -u github.com/go-ini/ini
+```shell
+$ go get -u github.com/go-ini/ini
 ```
 
 接下来我们需要编写基础的应用配置文件，
@@ -188,8 +188,382 @@ TABLE_PREFIX = blog_
 建立调用配置的setting模块，在go-gin-example的pkg目录下新建setting目录（注意新增 replace 配置），
 新建 setting.go 文件，写入内容：
 ```go
+package setting
+
+import (
+	"log"
+	"time"
+
+	"github.com/go-ini/ini"
+)
+
+var (
+	Cfg *ini.File
+
+	RunMode string
+
+	HTTPPort int
+	ReadTimeout time.Duration
+	WriteTimeout time.Duration
+
+	PageSize int
+	JwtSecret string
+)
+
+func init() {
+	var err error
+	Cfg, err = ini.Load("conf/app.ini")
+	if err != nil {
+		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
+	}
+
+	LoadBase()
+	LoadServer()
+	LoadApp()
+}
+
+func LoadBase() {
+	RunMode = Cfg.Section("").Key("RUN_MODE").MustString("debug")
+}
+
+func LoadServer() {
+	sec, err := Cfg.GetSection("server")
+	if err != nil {
+		log.Fatalf("Fail to get section 'server': %v", err)
+	}
+
+	HTTPPort = sec.Key("HTTP_PORT").MustInt(8000)
+	ReadTimeout = time.Duration(sec.Key("READ_TIMEOUT").MustInt(60)) * time.Second
+	WriteTimeout =  time.Duration(sec.Key("WRITE_TIMEOUT").MustInt(60)) * time.Second
+}
+
+func LoadApp() {
+	sec, err := Cfg.GetSection("app")
+	if err != nil {
+		log.Fatalf("Fail to get section 'app': %v", err)
+	}
+
+	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
+	PageSize = sec.Key("PAGE_SIZE").MustInt(10)
+}
+```
+当前的目录结构：
+```go
+go-gin-example/
+├── conf
+│   └── app.ini
+├── go.mod
+├── go.sum
+├── middleware
+├── models
+├── pkg
+│   └── setting
+├── routers
+├── runtime
+└── test.go
+```
+## 编写 API 错误码包
+建立错误码的e模块，在go-gin-example的pkg目录下新建e目录（注意新增 replace 配置），
+新建code.go和msg.go文件，写入内容
+1、 code.go：
+```go
+/*
+* Author:  a27
+* Version: 1.0.0
+* Date:    2021/6/16 5:42 下午
+* Description:
+ */
+package e
+
+const (
+	SUCCESS = 200
+	ERROR = 500
+	INVALID_PARAMS = 400
+
+	ERROR_EXIST_TAG = 10001
+	ERROR_NOT_EXIST_TAG = 10002
+	ERROR_NOT_EXIST_ARTICLE = 10003
+
+	ERROR_AUTH_CHECK_TOKEN_FAIL = 20001
+	ERROR_AUTH_CHECK_TOKEN_TIMEOUT = 20002
+	ERROR_AUTH_TOKEN = 20003
+	ERROR_AUTH = 20004
+)
+```
+2、 msg.go：
+```go
+package e
+
+var MsgFlags = map[int]string {
+	SUCCESS : "ok",
+	ERROR : "fail",
+	INVALID_PARAMS : "请求参数错误",
+	ERROR_EXIST_TAG : "已存在该标签名称",
+	ERROR_NOT_EXIST_TAG : "该标签不存在",
+	ERROR_NOT_EXIST_ARTICLE : "该文章不存在",
+	ERROR_AUTH_CHECK_TOKEN_FAIL : "Token鉴权失败",
+	ERROR_AUTH_CHECK_TOKEN_TIMEOUT : "Token已超时",
+	ERROR_AUTH_TOKEN : "Token生成失败",
+	ERROR_AUTH : "Token错误",
+}
+
+func GetMsg(code int) string {
+	msg, ok := MsgFlags[code]
+	if ok {
+		return msg
+	}
+
+	return MsgFlags[ERROR]
+}
+```
+## 编写工具包
+在go-gin-example的pkg目录下新建util目录（注意新增 replace 配置），并拉取com的依赖包，如下：
+```shell
+$ go get -u github.com/unknwon/com
+```
+新增replace
+```go
+github.com/EDDYCJY/go-gin-example/pkg/util => ~/your-app-path/go-gin-example/pkg/util v1.7.2
+```
+编写分页页码的获取方法
+在util目录下新建pagination.go，写入内容：
+```go
+package util
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
+
+	"github.com/EDDYCJY/go-gin-example/pkg/setting"
+)
+
+func GetPage(c *gin.Context) int {
+	result := 0
+	page, _ := com.StrTo(c.Query("page")).Int()
+    if page > 0 {
+        result = (page - 1) * setting.PageSize
+    }
+
+    return result
+}
+```
+## 编写 models init
+拉取gorm的依赖包，如下：
+```shell
+$ go get -u github.com/jinzhu/gorm
+```
+拉取mysql驱动的依赖包，如下：
+```shell
+$ go get -u github.com/go-sql-driver/mysql
+```
+完成后，在go-gin-example的models目录下新建models.go，用于models的初始化使用
+```go
+package models
+
+import (
+	"log"
+	"fmt"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+
+	"github.com/EDDYCJY/go-gin-example/pkg/setting"
+)
+
+var db *gorm.DB
+
+type Model struct {
+	ID int `gorm:"primary_key" json:"id"`
+	CreatedOn int `json:"created_on"`
+	ModifiedOn int `json:"modified_on"`
+}
+
+func init() {
+	var (
+		err error
+		dbType, dbName, user, password, host, tablePrefix string
+	)
+
+	sec, err := setting.Cfg.GetSection("database")
+	if err != nil {
+		log.Fatal(2, "Fail to get section 'database': %v", err)
+	}
+
+	dbType = sec.Key("TYPE").String()
+	dbName = sec.Key("NAME").String()
+	user = sec.Key("USER").String()
+	password = sec.Key("PASSWORD").String()
+	host = sec.Key("HOST").String()
+	tablePrefix = sec.Key("TABLE_PREFIX").String()
+
+	db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		user,
+		password,
+		host,
+		dbName))
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	gorm.DefaultTableNameHandler = func (db *gorm.DB, defaultTableName string) string  {
+	    return tablePrefix + defaultTableName;
+	}
+
+	db.SingularTable(true)
+	db.LogMode(true)
+	db.DB().SetMaxIdleConns(10)
+	db.DB().SetMaxOpenConns(100)
+}
+
+func CloseDB() {
+	defer db.Close()
+}
+```
+## 编写项目启动、路由文件
+
+编写 Demo
+在go-gin-example下建立main.go作为启动文件（也就是main包），我们先写个Demo，帮助大家理解，写入文件内容：
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+
+    "github.com/gin-gonic/gin"
+
+    "github.com/EDDYCJY/go-gin-example/pkg/setting"
+)
+
+func main() {
+    router := gin.Default()
+    router.GET("/test", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "test",
+		})
+	})
+
+	s := &http.Server{
+		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Handler:        router,
+		ReadTimeout:    setting.ReadTimeout,
+		WriteTimeout:   setting.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	s.ListenAndServe()
+}
+```
+执行`go run main.go`，查看命令行是否显示
+```shell
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /test                     --> main.main.func1 (3 handlers)
+```
+在本机执行curl 127.0.0.1:8000/test，检查是否返回{"message":"test"}
+
+## 知识点
+
+### 标准库
+- [fmt](https://golang.org/pkg/fmt/) ：实现了类似 C 语言 printf 和 scanf 的格式化 I/O。格式化动作（‘verb’）源自 C 语言但更简单
+- [net/http](https://golang.org/pkg/net/http/) ：提供了 HTTP 客户端和服务端的实现
+- Gin
+    - [gin.Default()](https://gowalker.org/github.com/gin-gonic/gin#Default) ：返回 Gin 的type Engine struct{...}，里面包含RouterGroup，相当于创建一个路由Handlers，可以后期绑定各类的路由规则和函数、中间件等
+    - [router.GET(…){…}](https://gowalker.org/github.com/gin-gonic/gin#IRoutes) ：创建不同的 HTTP 方法绑定到Handlers中，也支持 POST、PUT、DELETE、PATCH、OPTIONS、HEAD 等常用的 Restful 方法
+    - [gin.H{…}](https://gowalker.org/github.com/gin-gonic/gin#H) ：就是一个map[string]interface{}
+    - [gin.Context](https://gowalker.org/github.com/gin-gonic/gin#Context) ：Context是gin中的上下文，它允许我们在中间件之间传递变量、管理流、验证 JSON 请求、响应 JSON 请求等，在gin中包含大量Context的方法，例如我们常用的DefaultQuery、Query、DefaultPostForm、PostForm等等
+    
+### &http.Server 和 ListenAndServe？
+#### 1、http.Server：
+```go
+type Server struct {
+    Addr    string
+    Handler Handler
+    TLSConfig *tls.Config
+    ReadTimeout time.Duration
+    ReadHeaderTimeout time.Duration
+    WriteTimeout time.Duration
+    IdleTimeout time.Duration
+    MaxHeaderBytes int
+    ConnState func(net.Conn, ConnState)
+    ErrorLog *log.Logger
+}
+```
+- Addr：监听的 TCP 地址，格式为:8000
+- Handler：http 句柄，实质为ServeHTTP，用于处理程序响应 HTTP 请求
+- TLSConfig：安全传输层协议（TLS）的配置
+- ReadTimeout：允许读取的最大时间
+- ReadHeaderTimeout：允许读取请求头的最大时间
+- WriteTimeout：允许写入的最大时间
+- IdleTimeout：等待的最大时间
+- MaxHeaderBytes：请求头的最大字节数
+- ConnState：指定一个可选的回调函数，当客户端连接发生变化时调用
+- ErrorLog：指定一个可选的日志记录器，用于接收程序的意外行为和底层系统错误；如果未设置或为nil则默认以日志包的标准日志记录器完成（也就是在控制台输出） 
+  
+#### 2、 ListenAndServe：
+```go
+func (srv *Server) ListenAndServe() error {
+    addr := srv.Addr
+    if addr == "" {
+        addr = ":http"
+    }
+    ln, err := net.Listen("tcp", addr)
+    if err != nil {
+        return err
+    }
+    return srv.Serve(tcpKeepAliveListener{ln.(*net.TCPListener)})
+}
+```
+开始监听服务，监听 TCP 网络地址，Addr 和调用应用程序处理连接上的请求。
+
+我们在源码中看到Addr是调用我们在&http.Server中设置的参数，因此我们在设置时要用&，
+我们要改变参数的值，因为我们ListenAndServe和其他一些方法需要用到&http.Server中的参数，他们是相互影响的。
+#### 3、 http.ListenAndServe和 连载一 的r.Run()有区别吗？
+我们看看r.Run的实现：
+```go
+func (engine *Engine) Run(addr ...string) (err error) {
+    defer func() { debugPrintError(err) }()
+
+    address := resolveAddress(addr)
+    debugPrint("Listening and serving HTTP on %s\n", address)
+    err = http.ListenAndServe(address, engine)
+    return
+}
+```
+通过分析源码，得知本质上没有区别，同时也得知了启动gin时的监听 debug 信息在这里输出。
+
+#### 4、 为什么 Demo 里会有WARNING？
+首先我们可以看下Default()的实现
+```go
+// Default returns an Engine instance with the Logger and Recovery middleware already attached.
+func Default() *Engine {
+	debugPrintWARNINGDefault()
+	engine := New()
+	engine.Use(Logger(), Recovery())
+	return engine
+}
+```
+大家可以看到默认情况下，已经附加了日志、恢复中间件的引擎实例。
+并且在开头调用了debugPrintWARNINGDefault()，而它的实现就是输出该行日志
+```go
+func debugPrintWARNINGDefault() {
+	debugPrint(`[WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+`)
+}
+```
+而另外一个Running in "debug" mode. Switch to "release" mode in production.，是运行模式原因，并不难理解，
+已在配置文件的管控下 :-)，运维人员随时就可以修改它的配置。
+
+#### 5、 Demo 的router.GET等路由规则可以不写在main包中吗？
+我们发现router.GET等路由规则，在 Demo 中被编写在了main包中，感觉很奇怪，我们去抽离这部分逻辑！
+
+在go-gin-example下routers目录新建router.go文件，写入内容：
+```go
 
 ```
-
-
 
