@@ -111,5 +111,85 @@ replace (
 > 注：后续每新增一个本地应用目录，你都需要主动去 go.mod 文件里新增一条 replace（我不会提醒你），如果你漏了，那么编译时会出现报错，
 找不到那个模块。
 
+## 初始项目数据库
+新建 blog 数据库，编码为utf8_general_ci，在 blog 数据库下，新建以下表
+1、 标签表
+```mysql
+CREATE TABLE `blog_tag` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT '' COMMENT '标签名称',
+  `created_on` int(10) unsigned DEFAULT '0' COMMENT '创建时间',
+  `created_by` varchar(100) DEFAULT '' COMMENT '创建人',
+  `modified_on` int(10) unsigned DEFAULT '0' COMMENT '修改时间',
+  `modified_by` varchar(100) DEFAULT '' COMMENT '修改人',
+  `deleted_on` int(10) unsigned DEFAULT '0',
+  `state` tinyint(3) unsigned DEFAULT '1' COMMENT '状态 0为禁用、1为启用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章标签管理';
+```
+2、 文章表
+```mysql
+CREATE TABLE `blog_article` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tag_id` int(10) unsigned DEFAULT '0' COMMENT '标签ID',
+  `title` varchar(100) DEFAULT '' COMMENT '文章标题',
+  `desc` varchar(255) DEFAULT '' COMMENT '简述',
+  `content` text,
+  `created_on` int(11) DEFAULT NULL,
+  `created_by` varchar(100) DEFAULT '' COMMENT '创建人',
+  `modified_on` int(10) unsigned DEFAULT '0' COMMENT '修改时间',
+  `modified_by` varchar(255) DEFAULT '' COMMENT '修改人',
+  `deleted_on` int(10) unsigned DEFAULT '0',
+  `state` tinyint(3) unsigned DEFAULT '1' COMMENT '状态 0为禁用1为启用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章管理';
+```
+3、 认证表
+```mysql
+CREATE TABLE `blog_auth` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) DEFAULT '' COMMENT '账号',
+  `password` varchar(50) DEFAULT '' COMMENT '密码',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `blog`.`blog_auth` (`id`, `username`, `password`) VALUES (null, 'test', 'test123456');
+```
+## 编写项目配置包
+在 go-gin-example 应用目录下，拉取 go-ini/ini 的依赖包，如下：
+```go
+go get -u github.com/go-ini/ini
+```
+
+接下来我们需要编写基础的应用配置文件，
+在 go-gin-example 的conf目录下新建app.ini文件，写入内容：
+```go
+#debug or release
+RUN_MODE = debug
+
+[app]
+PAGE_SIZE = 10
+JWT_SECRET = 23347$040412
+
+[server]
+HTTP_PORT = 8000
+READ_TIMEOUT = 60
+WRITE_TIMEOUT = 60
+
+[database]
+TYPE = mysql
+USER = 数据库账号
+PASSWORD = 数据库密码
+#127.0.0.1:3306
+HOST = 数据库IP:数据库端口号
+NAME = blog
+TABLE_PREFIX = blog_
+```
+建立调用配置的setting模块，在go-gin-example的pkg目录下新建setting目录（注意新增 replace 配置），
+新建 setting.go 文件，写入内容：
+```go
+
+```
+
 
 
