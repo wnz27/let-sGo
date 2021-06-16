@@ -564,6 +564,58 @@ func debugPrintWARNINGDefault() {
 
 在go-gin-example下routers目录新建router.go文件，写入内容：
 ```go
+package routers
 
+import (
+    "github.com/gin-gonic/gin"
+
+    "github.com/EDDYCJY/go-gin-example/pkg/setting"
+)
+
+func InitRouter() *gin.Engine {
+    r := gin.New()
+
+    r.Use(gin.Logger())
+
+    r.Use(gin.Recovery())
+
+    gin.SetMode(setting.RunMode)
+
+    r.GET("/test", func(c *gin.Context) {
+        c.JSON(200, gin.H{
+            "message": "test",
+        })
+    })
+
+    return r
+}
 ```
+修改main.go的文件内容：
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+
+	"github.com/EDDYCJY/go-gin-example/routers"
+	"github.com/EDDYCJY/go-gin-example/pkg/setting"
+)
+
+func main() {
+	router := routers.InitRouter()
+
+	s := &http.Server{
+		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Handler:        router,
+		ReadTimeout:    setting.ReadTimeout,
+		WriteTimeout:   setting.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	s.ListenAndServe()
+}
+```
+
+
 
