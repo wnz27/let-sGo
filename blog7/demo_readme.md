@@ -856,6 +856,226 @@ func DeleteTag(c *gin.Context) {
 
 在获取标签列表接口中，我们可以根据name、state、page来筛选查询条件，分页的步长可通过app.ini进行配置，以lists、total的组合返回达到分页效果。
 
+## 编写新增标签的 models 逻辑
+接下来我们编写新增标签的接口
+打开models目录下的tag.go，修改文件（增加 2 个方法）：
+```go
+func ExistTagByName(name string) bool {
+	var tag Tag
+	db.Select("id").Where("name = ?", name).First(&tag)
+	if tag.ID > 0 {
+		return true
+	}
+
+	return false
+}
+
+func AddTag(name string, state int, createdBy string) bool{
+	db.Create(&Tag {
+		Name : name,
+		State : state,
+		CreatedBy : createdBy,
+	})
+
+	return true
+}
+
+```
+编写新增标签的路由逻辑
+打开routers目录下的tag.go，修改文件（变动 AddTag 方法）：
+```go
+package v1
+
+import (
+    "log"
+    "net/http"
+
+    "github.com/gin-gonic/gin"
+    "github.com/astaxie/beego/validation"
+    "github.com/Unknwon/com"
+
+    "gin-blog/pkg/e"
+    "gin-blog/models"
+    "gin-blog/pkg/util"
+    "gin-blog/pkg/setting"
+)
+
+...
+
+//新增文章标签
+func AddTag(c *gin.Context) {
+    name := c.Query("name")
+    state := com.StrTo(c.DefaultQuery("state", "0")).MustInt()
+    createdBy := c.Query("created_by")
+
+    valid := validation.Validation{}
+    valid.Required(name, "name").Message("名称不能为空")
+    valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
+    valid.Required(createdBy, "created_by").Message("创建人不能为空")
+    valid.MaxSize(createdBy, 100, "created_by").Message("创建人最长为100字符")
+    valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+
+    code := e.INVALID_PARAMS
+    if ! valid.HasErrors() {
+        if ! models.ExistTagByName(name) {
+            code = e.SUCCESS
+            models.AddTag(name, state, createdBy)
+        } else {
+            code = e.ERROR_EXIST_TAG
+        }
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "code" : code,
+        "msg" : e.GetMsg(code),
+        "data" : make(map[string]string),
+    })
+}
+...
+```
+用Postman用 POST 访问http://127.0.0.1:8000/api/v1/tags?name=1&state=1&created_by=test，查看code是否返回200及blog_tag表中是否有值，有值则正确。
+
+## 编写 models callbacks
+但是这个时候大家会发现，我明明新增了标签，但created_on居然没有值，那做修改标签的时候modified_on会不会也存在这个问题？
+
+为了解决这个问题，我们需要打开models目录下的tag.go文件，修改文件内容（修改包引用和增加 2 个方法）：
+```go
+package models
+
+import (
+    "time"
+
+    "github.com/jinzhu/gorm"
+)
+
+...
+
+func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
+    scope.SetColumn("CreatedOn", time.Now().Unix())
+
+    return nil
+}
+
+func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
+    scope.SetColumn("ModifiedOn", time.Now().Unix())
+
+    return nil
+}
+```
+重启服务，再在用Postman用 POST 访问http://127.0.0.1:8000/api/v1/tags?name=2&state=1&created_by=test，发现created_on已经有值了！
+
+在这几段代码中，涉及到知识点：
+
+> 这属于gorm的Callbacks，可以将回调方法定义为模型结构的指针，在创建、更新、查询、删除时将被调用，如果任何回调返回错误，gorm 将停止未来操作并回滚所有更改。
+
+gorm所支持的回调方法：
+- 创建：BeforeSave、BeforeCreate、AfterCreate、AfterSave
+- 更新：BeforeSave、BeforeUpdate、AfterUpdate、AfterSave
+- 删除：BeforeDelete、AfterDelete
+- 查询：AfterFind
+
+## 编写其余接口的路由逻辑
+接下来，把剩下两个接口（EditTag、DeleteTag）完成
+打开routers目录下 v1 版本的tag.go文件，修改内容：
+```go
+//修改文章标签
+func EditTag(c *gin.Context) {
+    id := com.StrTo(c.Param("id")).MustInt()
+    name := c.Query("name")
+    modifiedBy := c.Query("modified_by")
+
+    valid := validation.Validation{}
+
+    var state int = -1
+    if arg := c.Query("state"); arg != "" {
+        state = com.StrTo(arg).MustInt()
+        valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+    }
+
+    valid.Required(id, "id").Message("ID不能为空")
+    valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
+    valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
+    valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
+
+    code := e.INVALID_PARAMS
+    if ! valid.HasErrors() {
+        code = e.SUCCESS
+        if models.ExistTagByID(id) {
+            data := make(map[string]interface{})
+            data["modified_by"] = modifiedBy
+            if name != "" {
+                data["name"] = name
+            }
+            if state != -1 {
+                data["state"] = state
+            }
+
+            models.EditTag(id, data)
+        } else {
+            code = e.ERROR_NOT_EXIST_TAG
+        }
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "code" : code,
+        "msg" : e.GetMsg(code),
+        "data" : make(map[string]string),
+    })
+}
+
+//删除文章标签
+func DeleteTag(c *gin.Context) {
+    id := com.StrTo(c.Param("id")).MustInt()
+
+    valid := validation.Validation{}
+    valid.Min(id, 1, "id").Message("ID必须大于0")
+
+    code := e.INVALID_PARAMS
+    if ! valid.HasErrors() {
+        code = e.SUCCESS
+        if models.ExistTagByID(id) {
+            models.DeleteTag(id)
+        } else {
+            code = e.ERROR_NOT_EXIST_TAG
+        }
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "code" : code,
+        "msg" : e.GetMsg(code),
+        "data" : make(map[string]string),
+    })
+}
+```
+## 编写其余接口的 models 逻辑
+打开models下的tag.go，修改文件内容：
+```go
+func ExistTagByID(id int) bool {
+    var tag Tag
+    db.Select("id").Where("id = ?", id).First(&tag)
+    if tag.ID > 0 {
+        return true
+    }
+
+    return false
+}
+
+func DeleteTag(id int) bool {
+    db.Where("id = ?", id).Delete(&Tag{})
+
+    return true
+}
+
+func EditTag(id int, data interface {}) bool {
+    db.Model(&Tag{}).Where("id = ?", id).Updates(data)
+
+    return true
+}
+```
+### 验证功能
+重启服务，用 Postman
+PUT 访问 http://127.0.0.1:8000/api/v1/tags/1?name=edit1&state=0&modified_by=edit1 ，查看 code 是否返回 200
+DELETE 访问 http://127.0.0.1:8000/api/v1/tags/1 ，查看 code 是否返回 200
 
 
 
