@@ -1,3 +1,5 @@
+[demo学习来源 -- 煎鱼哥博客](https://eddycjy.com/go-categories/)
+
 #  题外话 go 本身结构
 `tree -L 1 /usr/local/go` 输出：
 ```go
@@ -1076,6 +1078,18 @@ func EditTag(id int, data interface {}) bool {
 重启服务，用 Postman
 PUT 访问 http://127.0.0.1:8000/api/v1/tags/1?name=edit1&state=0&modified_by=edit1 ，查看 code 是否返回 200
 DELETE 访问 http://127.0.0.1:8000/api/v1/tags/1 ，查看 code 是否返回 200
+
+## 目标
+
+完成博客的文章类接口定义和编写
+
+## 定义接口
+
+- 获取文章列表：GET("/articles”)
+- 获取指定文章：POST("/articles/:id”)
+- 新建文章：POST("/articles”)
+- 更新指定文章：PUT("/articles/:id”)
+- 删除指定文章：DELETE("/articles/:id”)
 
 
 
