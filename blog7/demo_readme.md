@@ -616,6 +616,149 @@ func main() {
 	s.ListenAndServe()
 }
 ```
+当前目录结构
+```shell
+go-gin-example
+├── conf
+│   └── app.ini
+├── go.mod
+├── go.sum
+├── main.go
+├── middleware
+├── models
+│   └── models.go
+├── pkg
+│   ├── e
+│   │   ├── code.go
+│   │   └── msg.go
+│   ├── setting
+│   └── util
+|       └── pagination.go
+├── routers
+│   └── router.go
+├── runtime
+└── test.go
+```
+## 接下来涉及
+- Gin：Golang 的一个微框架，性能极佳。
+- [beego-validation](https://github.com/astaxie/beego/tree/master/validation) ：本节采用的 beego 的表单验证库，[中文文档](https://beego.me/docs/mvc/controller/validation.md) 。
+- [gorm](https://github.com/jinzhu/gorm) ，对开发人员友好的 ORM 框架，[英文文档](https://gorm.io/docs/)
+- [com](https://github.com/Unknwon/com) ，一个小而美的工具包。
+
+## 定义接口
+一般接口为增删改查是基础的
+
+- 获取标签列表：GET("/tags”)
+- 新建标签：POST("/tags”)
+- 更新指定标签：PUT("/tags/:id”)
+- 删除指定标签：DELETE("/tags/:id”)
+
+编写路由空壳
+开始编写路由文件逻辑，在routers下新建api目录，我们当前是第一个 API 大版本，因此在api下新建v1目录，再新建tag.go文件，写入内容：
+```go
+package v1
+
+import (
+	"github.com/gin-gonic/gin"
+)
+
+//获取多个文章标签
+func GetTags(c *gin.Context) {
+}
+
+//新增文章标签
+func AddTag(c *gin.Context) {
+}
+
+//修改文章标签
+func EditTag(c *gin.Context) {
+}
+
+//删除文章标签
+func DeleteTag(c *gin.Context) {
+}
+```
+## 注册路由
+我们打开routers下的router.go文件，修改文件内容为：
+```go
+package routers
+
+import (
+	v1 "github.com/EDDYCJY/go-gin-example/routers/api/v1"
+	"github.com/gin-gonic/gin"
+
+	"github.com/EDDYCJY/go-gin-example/pkg/setting"
+)
+
+func InitRouter() *gin.Engine {
+	r := gin.New()
+
+	r.Use(gin.Logger())
+
+	r.Use(gin.Recovery())
+
+	gin.SetMode(setting.RunMode)
+
+	apiv1 := r.Group("/api/v1")
+	{
+		//获取标签列表
+		apiv1.GET("/tags", v1.GetTags)
+		//新建标签
+		apiv1.POST("/tags", v1.AddTag)
+		//更新指定标签
+		apiv1.PUT("/tags/:id", v1.EditTag)
+		//删除指定标签
+		apiv1.DELETE("/tags/:id", v1.DeleteTag)
+	}
+
+	return r
+}
+```
+当前目录结构：
+```go
+go-gin-example
+├── conf
+│   └── app.ini
+├── go.mod
+├── go.sum
+├── main.go
+├── middleware
+├── models
+│   └── models.go
+├── pkg
+│     ├── e
+│     │   ├── code.go
+│     │   └── msg.go
+│     ├── setting
+│     │   └── setting.go
+│     └── util
+│         └── pagination.go
+├── routers
+│   ├── api
+│   │   └── v1
+│   │       └── tag.go
+│   └── router.go
+├── runtime
+└── test.go
+```
+### 检验路由是否注册成功
+回到命令行，执行go run main.go，检查路由规则是否注册成功。
+```shell
+$ go run main.go
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:   export GIN_MODE=release
+ - using code:  gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/v1/tags              --> gin-blog/routers/api/v1.GetTags (3 handlers)
+[GIN-debug] POST   /api/v1/tags              --> gin-blog/routers/api/v1.AddTag (3 handlers)
+[GIN-debug] PUT    /api/v1/tags/:id          --> gin-blog/routers/api/v1.EditTag (3 handlers)
+[GIN-debug] DELETE /api/v1/tags/:id          --> gin-blog/routers/api/v1.DeleteTag (3 handlers)
+```
+## 下载依赖包
+首先我们要拉取validation的依赖包，在后面的接口里会使用到表单验证
+```shell
+$ go get -u github.com/astaxie/beego/validation
+```
 
 
 

@@ -3,6 +3,8 @@ module github.com/EDDYCJY/go-gin-example
 go 1.16
 
 require (
+	github.com/OwnLocal/goes v1.0.0 // indirect
+	github.com/astaxie/beego v1.12.3 // indirect
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-ini/ini v1.62.0 // indirect
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
@@ -14,6 +16,9 @@ require (
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
+	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726 // indirect
+	github.com/siddontang/ledisdb v0.0.0-20181029004158-becf5f38d373 // indirect
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/unknwon/com v1.0.1 // indirect
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
@@ -26,7 +31,9 @@ replace (
 	github.com/EDDYCJY/go-gin-example/conf => ~/fzk27/learn/let-sGo/blog7/go-gin-example/conf v1.7.2
 	github.com/EDDYCJY/go-gin-example/middleware => ~/fzk27/learn/let-sGo/blog7/go-gin-example/middleware v1.7.2
 	github.com/EDDYCJY/go-gin-example/models => ~/fzk27/learn/let-sGo/blog7/go-gin-example/models v1.7.2
+	github.com/EDDYCJY/go-gin-example/pkg/e => ~/fzk27/learn/let-sGo/blog7/go-gin-example/pkg/e v1.7.2
 	github.com/EDDYCJY/go-gin-example/pkg/setting => ~/fzk27/learn/let-sGo/blog7/go-gin-example/pkg/setting v1.7.2
 	github.com/EDDYCJY/go-gin-example/pkg/util => ~/fzk27/learn/let-sGo/blog7/go-gin-example/pkg/util v1.7.2
 	github.com/EDDYCJY/go-gin-example/routers => ~/fzk27/learn/let-sGo/blog7/go-gin-example/routers v1.7.2
+	github.com/EDDYCJY/go-gin-example/routers/api => ~/fzk27/learn/let-sGo/blog7/go-gin-example/routers/api v1.7.2
 )
