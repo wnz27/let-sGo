@@ -759,6 +759,103 @@ $ go run main.go
 ```shell
 $ go get -u github.com/astaxie/beego/validation
 ```
+## 编写标签列表的 models 逻辑
+创建models目录下的tag.go，写入文件内容：
+```go
+package models
+
+type Tag struct {
+    Model
+
+    Name string `json:"name"`
+    CreatedBy string `json:"created_by"`
+    ModifiedBy string `json:"modified_by"`
+    State int `json:"state"`
+}
+
+func GetTags(pageNum int, pageSize int, maps interface {}) (tags []Tag) {
+    db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
+
+    return
+}
+
+func GetTagTotal(maps interface {}) (count int){
+    db.Model(&Tag{}).Where(maps).Count(&count)
+
+    return
+}
+```
+1. 我们创建了一个Tag struct{}，用于Gorm的使用。并给予了附属属性json，这样子在c.JSON的时候就会自动转换格式，非常的便利
+2. 可能会有的初学者看到return，而后面没有跟着变量，会不理解；其实你可以看到在函数末端，我们已经显示声明了返回值，这个变量在函数体内也可以直接使用，因为他在一开始就被声明了
+3. 有人会疑惑db是哪里来的；因为在同个models包下，因此db *gorm.DB是可以直接使用的
+
+## 编写标签列表的路由逻辑
+打开routers目录下 v1 版本的tag.go，第一我们先编写获取标签列表的接口
+修改文件内容：
+```go
+package v1
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
+	"net/http"
+
+	"github.com/EDDYCJY/go-gin-example/models"
+	"github.com/EDDYCJY/go-gin-example/pkg/e"
+	"github.com/EDDYCJY/go-gin-example/pkg/setting"
+	"github.com/EDDYCJY/go-gin-example/pkg/util"
+)
+
+//获取多个文章标签
+func GetTags(c *gin.Context) {
+	name := c.Query("name")
+
+	maps := make(map[string]interface{})
+	data := make(map[string]interface{})
+
+	if name != "" {
+		maps["name"] = name
+	}
+
+	var state int = -1
+	if arg := c.Query("state"); arg != "" {
+		state = com.StrTo(arg).MustInt()
+		maps["state"] = state
+	}
+
+	code := e.SUCCESS
+
+	data["lists"] = models.GetTags(util.GetPage(c), setting.PageSize, maps)
+	data["total"] = models.GetTagTotal(maps)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code" : code,
+		"msg" : e.GetMsg(code),
+		"data" : data,
+	})
+}
+
+//新增文章标签
+func AddTag(c *gin.Context) {
+}
+
+//修改文章标签
+func EditTag(c *gin.Context) {
+}
+
+//删除文章标签
+func DeleteTag(c *gin.Context) {
+}
+```
+1. c.Query可用于获取?name=test&state=1这类 URL 参数，而c.DefaultQuery则支持设置一个默认值
+2. code变量使用了e模块的错误编码，这正是先前规划好的错误码，方便排错和识别记录
+3. util.GetPage保证了各接口的page处理是一致的
+4. c *gin.Context是Gin很重要的组成部分，可以理解为上下文，它允许我们在中间件之间传递变量、管理流、验证请求的 JSON 和呈现 JSON 响应
+
+在本机执行curl 127.0.0.1:8000/api/v1/tags，正确的返回值为{"code":200,"data":{"lists":[],"total":0},"msg":"ok"}，若存在问题请结合 gin 结果进行拍错。
+
+在获取标签列表接口中，我们可以根据name、state、page来筛选查询条件，分页的步长可通过app.ini进行配置，以lists、total的组合返回达到分页效果。
+
 
 
 
