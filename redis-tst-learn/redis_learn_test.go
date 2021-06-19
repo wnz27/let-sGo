@@ -12,12 +12,12 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
-func TestHelloTo(t *testing.T) {
+func TestBefore(t *testing.T) {
 	displayMem := func(t *testing.T) {
 		t.Helper()  // ！！！！！会打出具体失败位置
 		v, _ := mem.VirtualMemory()
-		fmt.Printf("Total: %v, Available: %v, UsedPercent:%f%%\n", v.Total, v.Available, v.UsedPercent)
-		fmt.Println(v)
+		fmt.Printf("Before ---> Total: %v, Available: %v, UsedPercent:%f%%\n", v.Total, v.Available, v.UsedPercent)
+		//fmt.Println(v)
 	}
 
 	t.Run("before set", func(t *testing.T) {
@@ -25,5 +25,17 @@ func TestHelloTo(t *testing.T) {
 	})
 }
 
+func TestAfter(t *testing.T) {
+	displayMem := func(t *testing.T) {
+		t.Helper()  // ！！！！！会打出具体失败位置
+		v, _ := mem.VirtualMemory()
+		fmt.Printf("After ---> Total: %v, Available: %v, UsedPercent:%f%%\n", v.Total, v.Available, v.UsedPercent)
+		//fmt.Println(v)
+	}
+
+	t.Run("after set", func(t *testing.T) {
+		displayMem(t)
+	})
+}
 
 
