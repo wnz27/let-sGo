@@ -337,6 +337,70 @@ Summary:
         1.552     0.632     1.247     3.071     5.559   127.039
 ```
 
+## 单机 -c 1  单客户端10000 请求 -n 10000 值大小1000字节 -d 10
+```shell
+====== SET ======
+  10000 requests completed in 11.05 seconds
+  1 parallel clients
+  1000 bytes payload
+  keep alive: 1
+  host configuration "save": 3600 1 300 100 60 10000
+  host configuration "appendonly": no
+  multi-thread: no
+
+Summary:
+  throughput summary: 905.22 requests per second
+  latency summary (msec):
+          avg       min       p50       p95       p99       max
+        1.088     0.592     0.983     1.543     2.791   118.911
+
+
+====== GET ======
+  10000 requests completed in 11.33 seconds
+  1 parallel clients
+  1000 bytes payload
+  keep alive: 1
+  host configuration "save": 3600 1 300 100 60 10000
+  host configuration "appendonly": no
+  multi-thread: no
+
+Summary:
+  throughput summary: 882.61 requests per second
+  latency summary (msec):
+          avg       min       p50       p95       p99       max
+        1.116     0.672     1.047     1.551     2.351    14.671
+```
+## 单机 -c 1  单客户端10000 请求 -n 10000 值大小2000字节 -d 10
+```shell
+====== SET ======
+  10000 requests completed in 12.82 seconds
+  1 parallel clients
+  2000 bytes payload
+  keep alive: 1
+  host configuration "save": 3600 1 300 100 60 10000
+  host configuration "appendonly": no
+  multi-thread: no
+  
+Summary:
+  throughput summary: 780.15 requests per second
+  latency summary (msec):
+          avg       min       p50       p95       p99       max
+        1.264     0.624     1.175     1.807     3.367    25.663
+====== GET ======
+  10000 requests completed in 12.30 seconds
+  1 parallel clients
+  2000 bytes payload
+  keep alive: 1
+  host configuration "save": 3600 1 300 100 60 10000
+  host configuration "appendonly": no
+  multi-thread: no
+
+Summary:
+  throughput summary: 812.94 requests per second
+  latency summary (msec):
+          avg       min       p50       p95       p99       max
+        1.212     0.600     1.159     1.727     2.751    13.767
+```
 
 
 # 2、 [内存占用测试](./redis_learn_test.go)
