@@ -30,7 +30,7 @@ func TestRedisSetGetCapacityMemInfo(t *testing.T) {
 
 	setValue2Redis := func(t *testing.T, value interface{}) {
 		var n2 int64 = 10
-		fmt.Printf("n2 的类型 %T n2占中的字节数是 %d", n2, unsafe.Sizeof(n2))
+		fmt.Printf("\n n2 的类型 %T n2占中的字节数是 %d \n", n2, unsafe.Sizeof(n2))
 	}
 
 	t.Run("before set", func(t *testing.T) {
