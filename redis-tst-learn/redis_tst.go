@@ -8,9 +8,11 @@ package redis_tst_learn
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"strconv"
+	"time"
 	"unsafe"
 )
 
@@ -31,25 +33,28 @@ func setValue(groupNum int, dataSize int) {
 		keys = append(keys, "key" + intStr)
 	}
 
-	var slice1 []int = make([]int, dataSize)
-
-	fmt.Printf("slice1, 占用字节:%d \n", unsafe.Sizeof(slice1))
-
-
-	var n2 int64 = 10 // 8字节
-	err := rdb.Set(ctx, "key1", n2, 0).Err()
-	if err != nil {
-		panic(err)
+	var longStr string
+	for i := 0; i < dataSize; i ++ {
+		currI := int64(i)
+		longStr += strconv.FormatInt(currI, 10)
 	}
 
+	// 存json数据
+	imap := map[string]string{}
+	for i := 0; i < dataSize; i ++ {
+		currI := int64(i)
+		intStr := strconv.FormatInt(currI, 10)
+		k := "key" + intStr
+		imap[k] = longStr
+	}
 
-	fmt.Printf("\n n2 的类型 %T n2占中的字节数是 %d \n", n2, unsafe.Sizeof(n2))
+	// 将map转换成json数据
+	v1, _ := json.Marshal(imap)
 
-	//val, err := rdb.Get(ctx, "key").Result()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//fmt.Println("key", val)
+	fmt.Printf("imap, 占用字节:%d \n", unsafe.Sizeof(v1))
 
-	//rdb.Set(ctx, "t1", , 300)
+	for _, key := range keys {
+		//fmt.Println(key)
+		_ = rdb.Set(ctx, key, v1, time.Second * 300).Err()
+	}
 }
