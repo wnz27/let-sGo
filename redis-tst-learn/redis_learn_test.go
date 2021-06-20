@@ -28,7 +28,7 @@ func TestRedisSetGetCapacityMemInfo(t *testing.T) {
 	}
 
 	setValue2Redis := func(t *testing.T, value interface{}) {
-		setValue()
+		setValue(1000, 10000)
 
 	}
 

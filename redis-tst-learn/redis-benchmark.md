@@ -404,4 +404,10 @@ Summary:
 
 
 ## 2、 [内存占用测试](./redis_learn_test.go)
-暂 未完全完成
+- redis-server --port 6379
+- cd 目标test目录下
+- go test -run ''
+查看输出:
+```shell
+
+```
