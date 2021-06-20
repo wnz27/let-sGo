@@ -7,10 +7,12 @@
 package redis_tst_learn
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"github.com/shirou/gopsutil/mem"
 	"unsafe"
+	"github.com/go-redis/redis/v8"
 )
 
 func TestRedisSetGetCapacityMemInfo(t *testing.T) {
@@ -30,6 +32,25 @@ func TestRedisSetGetCapacityMemInfo(t *testing.T) {
 
 	setValue2Redis := func(t *testing.T, value interface{}) {
 		var n2 int64 = 10
+		rdb := redis.NewClient(&redis.Options{
+			Addr:     "localhost:6377",
+			Password: "", // no password set
+			DB:       0,  // use default DB
+		})
+		var ctx = context.Background()
+
+		err := rdb.Set(ctx, "key1", n2, 0).Err()
+		if err != nil {
+			panic(err)
+		}
+
+		//val, err := rdb.Get(ctx, "key").Result()
+		//if err != nil {
+		//	panic(err)
+		//}
+		//fmt.Println("key", val)
+
+		//rdb.Set(ctx, "t1", , 300)
 		fmt.Printf("\n n2 的类型 %T n2占中的字节数是 %d \n", n2, unsafe.Sizeof(n2))
 	}
 

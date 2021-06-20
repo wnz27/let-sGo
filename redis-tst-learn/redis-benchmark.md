@@ -1,5 +1,5 @@
-# 1、redis-benchmark
-## 本机信息
+##  1、redis-benchmark
+### 本机信息
 ```
   型号名称：	MacBook Pro
   型号标识符：	MacBookPro14,1
@@ -403,4 +403,5 @@ Summary:
 ```
 
 
-# 2、 [内存占用测试](./redis_learn_test.go)
+## 2、 [内存占用测试](./redis_learn_test.go)
+暂 未完全完成
