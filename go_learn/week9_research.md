@@ -1,5 +1,5 @@
-https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-netpoller/
-https://www.liwenzhou.com/posts/Go/15_socket/
+- [ ] [网络轮询器](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-netpoller/)
+- [ ] [Go语言基础之网络编程](https://www.liwenzhou.com/posts/Go/15_socket/)
 https://hit-alibaba.github.io/interview/basic/network/HTTP.html
 https://www.cdn77.com/blog/improving-webperf-security-tls-1-3
 https://cloud.google.com/dns/docs/dns-overview?hl=zh-cn
