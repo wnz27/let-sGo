@@ -13,7 +13,7 @@
 
 ## 实现一个从 socket connection 中解码出 goim 协议的解码器。
 - [goim 协议长这样](http://goim.io/docs/protocol.html)
-- [编解码器](./goim_decoder_attempt/goim_decoder.go)
+- [解码器--- 有些不太会处理，未来得及检测](./goim_decoder_attempt/goim_decoder.go)
 - 实际尝试
   - [client--暂未实现](./goim_decoder_attempt/mock_goim_protocal_c/mock_goim_p_c.go)
   - [server--暂未实现](./goim_decoder_attempt/decode_goim_s/decode_goim_s.go)
