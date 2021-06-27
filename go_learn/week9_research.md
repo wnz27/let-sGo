@@ -18,12 +18,12 @@
   看的不细致
 - [ ] [Android微信智能心跳方案](https://cloud.tencent.com/developer/article/1030660)
   懵懂
-- [ ] [goim 架构与定制](https://juejin.cn/post/6844903827536117774)
-  
-- [ ] [如何设计一个亿级消息量的 IM 系统](https://xie.infoq.cn/article/19e95a78e2f5389588debfb1c)
-- [ ] [Leaf：美团分布式ID生成服务开源](https://tech.meituan.com/2019/03/07/open-source-project-leaf.html)
-- [ ] [系统调优，你所不知道的TIME_WAIT和CLOSE_WAIT](https://mp.weixin.qq.com/s/8WmASie_DjDDMQRdQi1FDg)
-- [ ] [Java核心（五）深入理解BIO、NIO、AIO](https://www.imooc.com/article/265871)
+- [X] [goim 架构与定制](https://juejin.cn/post/6844903827536117774)
+- [x] [如何设计一个亿级消息量的 IM 系统](https://xie.infoq.cn/article/19e95a78e2f5389588debfb1c)
+- [x] [Leaf：美团分布式ID生成服务开源](https://tech.meituan.com/2019/03/07/open-source-project-leaf.html)
+- [x] [系统调优，你所不知道的TIME_WAIT和CLOSE_WAIT](https://mp.weixin.qq.com/s/8WmASie_DjDDMQRdQi1FDg)
+  回收的重要参数说明
+- [X] [Java核心（五）深入理解BIO、NIO、AIO](https://www.imooc.com/article/265871)
 - [ ] [从无到有：微信后台系统的演进之路](https://www.infoq.cn/article/the-road-of-the-growth-weixin-background)
 - [ ] [DESIGN A CHAT SYSTEM](https://systeminterview.com/design-a-chat-system.php)
 - [ ] [How Discord Stores Billions of Messages](https://blog.discord.com/how-discord-stores-billions-of-messages-7fa6ec7ee4c7)
