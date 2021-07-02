@@ -115,6 +115,19 @@ func main() {
 	Go 中的数组是值类型，可比较，另外一方面，数组的⻓度也是数组类型的组成部分，所以 a 和 b 是不同的类型，是不能比较的，所以编译错误。
 	 */
 
+
+	var s111 []int
+	//var s222 = []int{}
+	if s111 == nil {
+		fmt.Println("yes nil")
+	}else{
+		fmt.Println("no nil")
+	}
+	/*
+	只有s111 可以 和 nil做判断
+	nil 切片和 nil 相等，一般用来表示一个不存在的切片; 空切片和 nil 不相等，表示一个空的集合。
+	 */
+
 }
 
 

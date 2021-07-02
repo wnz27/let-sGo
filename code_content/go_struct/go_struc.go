@@ -10,6 +10,8 @@ import (
 	"fmt"
 )
 
+
+
 type Test struct {
 	name string
 }
@@ -25,6 +27,23 @@ type person struct {
 func hello(num ...int) {
 	num[0] = 18
 }
+
+type People struct{}
+func (p *People) ShowA() {
+	fmt.Println("showA")
+	p.ShowB()
+}
+func (p *People) ShowB() {
+	fmt.Println("showB")
+}
+
+type Teacher struct {
+	People
+}
+func (t *Teacher) ShowB() {
+	fmt.Println("teacher showB")
+}
+
 
 
 func main() {
@@ -99,6 +118,12 @@ func main() {
 	i := []int{5, 6, 7}
 	hello(i...)
 	fmt.Println(i[0])
+
+
+	t := Teacher{}
+	t.ShowB()
+	t.ShowA()
+
 }
 
 
