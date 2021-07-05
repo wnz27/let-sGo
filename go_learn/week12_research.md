@@ -10,7 +10,7 @@
 - [ ] [Kafka设计解析（五）- Kafka性能测试方法及Benchmark报告](https://zhuanlan.zhihu.com/p/31322840)
 - [ ] [Kafka设计解析（六）- Kafka高性能架构之道](https://zhuanlan.zhihu.com/p/31322994)
 - [ ] [两万字深入剖析Kafka，你学会了吗？](https://mp.weixin.qq.com/s/X301soSDWRfOemQhk9AuPw)
-https://www.cnblogs.com/wxd0108/p/6519973.html
+- [X] [kafka集群partition分布原理分析](https://www.cnblogs.com/wxd0108/p/6519973.html)
 https://tech.meituan.com/2015/01/13/kafka-fs-design-theory.html
 https://mp.weixin.qq.com/s/fX26tCdYSMgwM54_2CpVrw
 https://mp.weixin.qq.com/s/TUFNictt8XXLmmyWlfnj4g
