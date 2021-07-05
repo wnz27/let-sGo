@@ -7,4 +7,6 @@
 - [8.  Go - 分布式缓存分布式事务](./week8_research.md)
 - [9.  Go - go语言网络编程](./week9_research.md)
 - [10. Go - 日志&链路追踪](./week10_research.md)
+- [11. Go - DNS & CDN & 多活架构](./week11_research.md)
+- [12. Go - 消息队列kafka](./week12_research.md)
 
