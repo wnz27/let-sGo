@@ -26,6 +26,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 	"time"
 )
 
@@ -71,14 +75,84 @@ TODO channel通信
 	也就是说，CSP 描述这样一种并发模型：多个Process 使用一个 Channel 进行通信, 这个 Channel 连结的 Process 通常是匿名的，消息传递通常是同步的（有别于 Actor Model）。
 
  */
+func consumer1(stop <-chan bool) {
+	for {
+		select {
+		case <-stop:
+			fmt.Println("exit sub goroutine")
+			return
+		default:
+			fmt.Println("running...")
+			time.Sleep(500 * time.Millisecond)
+		}
+	}
+}
 func type2() {
-	fmt.Println(1)
+	stop := make(chan bool)
+	var wg sync.WaitGroup
+	// Spawn example consumers
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
+		go func(stop <-chan bool) {
+			defer wg.Done()
+			consumer1(stop)
+		}(stop)
+	}
+	waitForSignal()
+	close(stop)
+	fmt.Println("stop all jobs")
+	wg.Wait()
 }
 
+func waitForSignal() {
+	sigs := make(chan os.Signal)
+	signal.Notify(sigs, os.Interrupt)
+	signal.Notify(sigs, syscall.SIGTERM)
+	<- sigs
+}
+
+/*
+首先了解下channel，可以理解为管道，它的主要功能点是：
+
+队列存储数据
+
+阻塞和唤醒goroutine
+
+channel 实现集中在文件 runtime/chan.go 中，channel底层数据结构是这样的：
+
+ 1 type hchan struct {
+ 2    qcount   uint           // 队列中数据个数
+ 3    dataqsiz uint           // channel 大小
+ 4    buf      unsafe.Pointer // 存放数据的环形数组
+ 5    elemsize uint16         // channel 中数据类型的大小
+ 6    closed   uint32         // 表示 channel 是否关闭
+ 7    elemtype *_type // 元素数据类型
+ 8    sendx    uint   // send 的数组索引
+ 9    recvx    uint   // recv 的数组索引
+10    recvq    waitq  // 由 recv 行为（也就是 <-ch）阻塞在 channel 上的 goroutine 队列
+11    sendq    waitq  // 由 send 行为 (也就是 ch<-) 阻塞在 channel 上的 goroutine 队列
+12
+13    // lock protects all fields in hchan, as well as several
+14    // fields in sudogs blocked on this channel.
+15    //
+16    // Do not change another G's status while holding this lock
+17    // (in particular, do not ready a G), as this can deadlock
+18    // with stack shrinking.
+19    lock mutex
+20}
+
+从源码可以看出它其实就是一个队列加一个锁（轻量），代码本身不复杂，但涉及到上下文很多细节，故而不易通读，
+有兴趣的同学可以去看一下，我的建议是，从上面总结的两个功能点出发，一个是 ring buffer，用于存数据；
+一个是存放操作（读写）该channel的goroutine 的队列。
+
+buf是一个通用指针，用于存储数据，看源码时重点关注对这个变量的读写
+
+recvq 是读操作阻塞在 channel 的 goroutine 列表，sendq 是写操作阻塞在 channel 的 goroutine 列表。
+列表的实现是 sudog，其实就是一个对 g 的结构的封装，看源码时重点关注，是怎样通过这两个变量阻塞和唤醒goroutine的
+
+ */
+
 func main() {
-
-
-
 }
 
 
