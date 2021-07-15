@@ -16,13 +16,13 @@ https://mp.weixin.qq.com/s/fX26tCdYSMgwM54_2CpVrw
 https://mp.weixin.qq.com/s/TUFNictt8XXLmmyWlfnj4g
 https://mp.weixin.qq.com/s/EY6-rA5DJr28-dyTh5BP8w
 https://mp.weixin.qq.com/s/ByIqEgKIdQ2CRsq4_rTPmA
-https://zhuanlan.zhihu.com/p/77677075?utm_source=wechat_timeline&utm_medium=social&utm_oi=670706646783889408&from=timeline
+https://zhuanlan.zhihu.com/   p/77677075?utm_source=wechat_timeline&utm_medium=social&utm_oi=670706646783889408&from=timeline
 https://mp.weixin.qq.com/s/LRM8GWFQbxQnKoq6HgCcwQ
-https://www.slidestalk.com/FlinkChina/ApacheKafka_in_Meituan
+https://www.slidestalk    .com/FlinkChina/ApacheKafka_in_Meituan
 https://tech.meituan.com/2021/01/14/kafka-ssd.html
 https://www.infoq.cn/article/eq3ecYUJSGgWVDGqg5oE?utm_source=related_read_bottom&utm_medium=article
 https://mp.weixin.qq.com/s/Zz35bvw7Sjdn3c8B12y8Mw
-https://tool.lu/deck/pw/detail?slide=20
+https://tool.lu/deck /pw/detail?slide=20
 https://www.jiqizhixin.com/articles/2019-07-23-11
 https://www.jianshu.com/p/c987b5e055b0
 https://blog.csdn.net/u013256816/article/details/71091774
