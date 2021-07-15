@@ -6,7 +6,10 @@
  **/
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 // return bigger value
 func max(a int, b int) int {
@@ -26,15 +29,32 @@ func sum_valus(values ...int) {
 	fmt.Println(total)
 }
 
+
+func hello() []string {
+	return nil
+}
+
+
 func main() {
+	h := hello
+	if h == nil {
+		fmt.Println("nil")
+	} else {
+		fmt.Println("not nil")
+		fmt.Println(h, reflect.TypeOf(h))
+	}
 	// fmt.Println(max(4, 5))
 
-	sum_valus(1, 2, 3)
-	sum_valus(5, 6)
+	//sum_valus(1, 2, 3)
+	//sum_valus(5, 6)
 
 	// 传数组, 注意语法
-	nums := []int{1, 2, 3, 4, 5}
-	sum_valus(nums...)
+	//nums := []int{1, 2, 3, 4, 5}
+	//sum_valus(nums...)
+
+	fmt.Println("========================================================================")
+
+
 
 
 }

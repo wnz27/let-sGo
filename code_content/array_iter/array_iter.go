@@ -57,6 +57,77 @@ func main() {
 
 	fmt.Printf("s1=%v, len(s1) = %d, cap(s1) = %d\n", s1, len(s1), cap(s1))
 	fmt.Printf("s2=%v, len(s2) = %d, cap(s2) = %d\n", s2, len(s2), cap(s2))
+
+
+	fmt.Println("========================================================================")
+
+	s := make([]int, 5)
+	s = append(s, 1, 2, 3)
+	fmt.Println(s)
+
+	ss := make([]int, 0)
+	ss = append(ss, 1, 2, 3, 4)
+	fmt.Println(ss)
+
+	fmt.Println("========================================================================")
+
+	ss1 := []int{1, 2, 3}
+	ss2 := []int{4, 5}
+	//ss1 = append(ss1, ss2)
+	ss1 = append(ss1, ss2...)
+
+	fmt.Println("========================================================================")
+
+	slice := []int{0, 1, 2, 3}
+	m := make(map[int]*int)
+
+	for index, val := range slice {
+		m[index] = &val
+	}
+
+	for k, v := range m {
+		fmt.Println(k, "->", *v)
+		fmt.Println(k, "->", &v)
+	}
+
+	// 上面的看打印就知道 每个变量用的是 同一个地址，每次拷贝到那里
+
+	fmt.Println("XXXXXXXXXXXX")
+
+	// 如果每个都保存则需要:
+	for index, v := range slice {
+		value := v
+		m[index] = &value
+	}
+	for k, v := range m {
+		fmt.Println(k, "====>", *v)
+		fmt.Println(k, "====>", &v)
+	}
+
+	/*
+	a := [2]int{5, 6}
+	  b := [3]int{5, 6}
+	  if a == b {
+	    fmt.Println("equal")
+	  } else {
+	    fmt.Println("not equal")
+	  }
+	Go 中的数组是值类型，可比较，另外一方面，数组的⻓度也是数组类型的组成部分，所以 a 和 b 是不同的类型，是不能比较的，所以编译错误。
+	 */
+
+
+	var s111 []int
+	//var s222 = []int{}
+	if s111 == nil {
+		fmt.Println("yes nil")
+	}else{
+		fmt.Println("no nil")
+	}
+	/*
+	只有s111 可以 和 nil做判断
+	nil 切片和 nil 相等，一般用来表示一个不存在的切片; 空切片和 nil 不相等，表示一个空的集合。
+	 */
+
 }
 
 

@@ -11,10 +11,9 @@
 - [ ] [Kafka设计解析（六）- Kafka高性能架构之道](https://zhuanlan.zhihu.com/p/31322994)
 - [ ] [两万字深入剖析Kafka，你学会了吗？](https://mp.weixin.qq.com/s/X301soSDWRfOemQhk9AuPw)
 - [X] [kafka集群partition分布原理分析](https://www.cnblogs.com/wxd0108/p/6519973.html)
-https://tech.meituan.com/2015/01/13/kafka-fs-design-theory.html
-https://mp.weixin.qq.com/s/fX26tCdYSMgwM54_2CpVrw
-https://mp.weixin.qq.com/s/TUFNictt8XXLmmyWlfnj4g
-https://mp.weixin.qq.com/s/EY6-rA5DJr28-dyTh5BP8w
+- [X] [Kafka文件存储机制那些事](https://tech.meituan.com/2015/01/13/kafka-fs-design-theory.html)
+- [ ] [一文彻底搞清 Kafka 的副本复制机制](https://mp.weixin.qq.com/s/TUFNictt8XXLmmyWlfnj4g)
+- [ ] [如何理解Kafka的消息可靠性策略？](https://mp.weixin.qq.com/s/EY6-rA5DJr28-dyTh5BP8w)
 https://mp.weixin.qq.com/s/ByIqEgKIdQ2CRsq4_rTPmA
 https://zhuanlan.zhihu.com/   p/77677075?utm_source=wechat_timeline&utm_medium=social&utm_oi=670706646783889408&from=timeline
 https://mp.weixin.qq.com/s/LRM8GWFQbxQnKoq6HgCcwQ
