@@ -149,9 +149,8 @@
                     p := <-ch 
               }
                 ```
-          - Cost/Benefit
-            > An Unbuffered channel provides a guarantee that a signal being sent was received. This is great, but nothing is free. The cost of this guarantee is unknown latency. In the Wait For Task scenario, the employee has no idea how long it’s going to take for you to send that paper. In the Wait For Result scenario, you have no idea how long it’s going to take the employee to send you that result.
-            In both scenarios, this unknown latency is something we have to live with because the guarantee is required. The logic doesn’t work without this guaranteed behavior.
+            - Cost/Benefit
+              > An Unbuffered channel provides a guarantee that a signal being sent was received. This is great, but nothing is free. The cost of this guarantee is unknown latency. In the Wait For Task scenario, the employee has no idea how long it’s going to take for you to send that paper. In the Wait For Result scenario, you have no idea how long it’s going to take the employee to send you that result. In both scenarios, this unknown latency is something we have to live with because the guarantee is required. The logic doesn’t work without this guaranteed behavior.
         - Signal With Data - No Guarantee - Buffered Channels >1
 - [ ] [medium-Go: Buffered and Unbuffered Channels](https://medium.com/a-journey-with-go/go-buffered-and-unbuffered-channels-29a107c00268)
 - [ ] [medium-Go: Ordering in Select Statements](https://medium.com/a-journey-with-go/go-ordering-in-select-statements-fd0ff80fd8d6)
@@ -180,7 +179,16 @@
   https://medium.com/a-journey-with-go/go-context-and-cancellation-by-propagation-7a808bbc889c
   https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html
   https://golang.org/doc/effective_go.html#concurrency
-- [ ] [Go Context的踩坑经历](https://zhuanlan.zhihu.com/p/34417106?hmsr=toutiao.io)
+- [X] [Go Context的踩坑经历](https://zhuanlan.zhihu.com/p/34417106?hmsr=toutiao.io)
+    - context上下文数据的存储就像一个树，每个结点只存储一个key/value对。WithValue()
+      保存一个key/value对，它将父context嵌入到新的子context，并在节点中保存了key/value数据。Value()
+      查询key对应的value数据，会从当前context中查询，如果查不到，会递归查询父context中的数据。 
+      值得注意的是，context中的上下文数据并不是全局的，它只查询本节点及父节点们的数据，不能查询兄弟节点的数据。
+    - 经验教训，由于go大量的官方库、第三方库使用了context，所以调用接收context的函数时要小心，要清楚context在什么时候cancel，
+      什么行为会触发cancel。笔者在程序经常使用gRpc传出来的context，产生了一些非预期的结果，之后花时间总结了gRpc、
+      内部基础库中context的生命期及行为，以避免出现同样的问题。
+
+
 - [ ] [Cancelation, Context, and Plumbing](https://talks.golang.org/2014/gotham-context.slide#1)
 - [ ] [How to correctly use context.Context in Go 1.7](https://medium.com/@cep21/how-to-correctly-use-context-context-in-go-1-7-8f2c0fafdf39)
 
