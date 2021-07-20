@@ -24,7 +24,7 @@ func printStats(mem runtime.MemStats) {
 ```
 GODEBUG=gctrace=1 go run gColl.go
 ```
-所以，如果你在任何 `go run` 命令􏰁面加上 `GODEBUG=gctrace=1` ，go就会去打印关于垃圾回收操作的一些分析数据。
+所以，如果你在任何 `go run` 命令前面加上 `GODEBUG=gctrace=1` ，go就会去打印关于垃圾回收操作的一些分析数据。
 长这样：
 ```go
 gc 4 @0.025s 0%: 0.002+0.65+0.018 ms clock, 0.021+0.040/0.057/0.
