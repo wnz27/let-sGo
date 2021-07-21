@@ -11,42 +11,44 @@ reference : [技巧分享：多 Goroutine 如何优雅处理错误？](https://m
 communicating）。 第二种的方法：利用 channel 来传输多个 goroutine 中的 errors：
 
 ```go
+package main
+
 func main() {
-gerrors := make(chan error)
-wgDone := make(chan bool)
+	gerrors := make(chan error)
+	wgDone := make(chan bool)
 
-var wg sync.WaitGroup
-wg.Add(2)
+	var wg sync.WaitGroup
+	wg.Add(2)
 
-go func () {
-wg.Done()
-}()
-go func () {
-err := returnError()
-if err != nil {
-gerrors <- err
-}
-wg.Done()
-}()
+	go func() {
+		wg.Done()
+	}()
+	go func() {
+		err := returnError()
+		if err != nil {
+			gerrors <- err
+		}
+		wg.Done()
+	}()
 
-go func () {
-wg.Wait()
-close(wgDone)
-}()
+	go func() {
+		wg.Wait()
+		close(wgDone)
+	}()
 
-select {
-case <-wgDone:
-break
-case err := <-gerrors:
-close(gerrors)
-fmt.Println(err)
-}
+	select {
+	case <-wgDone:
+		break
+	case err := <-gerrors:
+		close(gerrors)
+		fmt.Println(err)
+	}
 
-time.Sleep(time.Second)
+	time.Sleep(time.Second)
 }
 
 func returnError() error {
-return errors.New("煎鱼报错了...")
+	return errors.New("煎鱼报错了...")
 }
 ```
 
@@ -67,28 +69,30 @@ func (g *Group) Wait() error
 结合其特性能够非常便捷的针对多 goroutine 进行错误处理：
 
 ```go
+package main
+
 func main() {
-g := new(errgroup.Group)
-var urls = []string{
-"http://www.golang.org/",
-"https://golang2.eddycjy.com/",
-"https://eddycjy.com/",
-}
-for _, url := range urls {
-url := url
-g.Go(func () error {
-resp, err := http.Get(url)
-if err == nil {
-resp.Body.Close()
-}
-return err
-})
-}
-if err := g.Wait(); err == nil {
-fmt.Println("Successfully fetched all URLs.")
-} else {
-fmt.Printf("Errors: %+v", err)
-}
+	g := new(errgroup.Group)
+	var urls = []string{
+		"http://www.golang.org/",
+		"https://golang2.eddycjy.com/",
+		"https://eddycjy.com/",
+	}
+	for _, url := range urls {
+		url := url
+		g.Go(func() error {
+			resp, err := http.Get(url)
+			if err == nil {
+				resp.Body.Close()
+			}
+			return err
+		})
+	}
+	if err := g.Wait(); err == nil {
+		fmt.Println("Successfully fetched all URLs.")
+	} else {
+		fmt.Printf("Errors: %+v", err)
+	}
 }
 ```
 
