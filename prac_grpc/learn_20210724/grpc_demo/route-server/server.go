@@ -11,9 +11,11 @@ import (
 	pb "fzkprac/prac_grpc/learn_20210724/grpc_demo/route"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
+	"io"
 	"log"
 	"math"
 	"net"
+	"time"
 )
 
 type routeGuideServer struct {
@@ -57,7 +59,55 @@ func (r *routeGuideServer) ListFeatures(rectangle *pb.Rectangle, server pb.Route
 	return nil
 }
 
+func toRadians(num float64) float64 {
+	return num * math.Pi / float64(180)
+}
+// 给地球 俩点计算距离 结果单位 米 m
+// calcDistance calculates the distance between two points using the "haversine" formula.
+// The formula is based on http://mathforum.org/library/drmath/view/51879.html.
+func calcDistance(p1 *pb.Point, p2 *pb.Point) int32 {
+	const CordFactor float64 = 1e7
+	const R = float64(6371000) // earth radius in metres
+	lat1 := toRadians(float64(p1.Latitude) / CordFactor)
+	lat2 := toRadians(float64(p2.Latitude) / CordFactor)
+	lng1 := toRadians(float64(p1.Longitude) / CordFactor)
+	lng2 := toRadians(float64(p2.Longitude) / CordFactor)
+	dlat := lat2 - lat1
+	dlng := lng2 - lng1
+
+	a := math.Sin(dlat/2)*math.Sin(dlat/2) +
+		math.Cos(lat1)*math.Cos(lat2)*
+			math.Sin(dlng/2)*math.Sin(dlng/2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+
+	distance := R * c
+	return int32(distance)
+}
+
 func (r *routeGuideServer) RecordRoute(server pb.RouteGuid_RecordRouteServer) error {
+	startTime := time.Now()
+	var pointCount, distance int32
+	var prevPoint *pb.Point
+	for {
+		point, err := server.Recv()
+		if err == io.EOF {
+			// conclude a route summary
+			endTime := time.Now()
+			return server.SendAndClose(&pb.RouteSummary{
+				PointCount: pointCount,
+				Distance: distance,
+				ElapsedTime: int32(endTime.Sub(startTime).Seconds()),
+			})
+		}
+		if err != nil {
+			return err
+		}
+		pointCount ++
+		if prevPoint != nil {
+			distance += calcDistance(prevPoint, point)
+		}
+		prevPoint = point
+	}
 	return nil
 }
 

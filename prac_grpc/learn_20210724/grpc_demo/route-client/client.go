@@ -12,8 +12,11 @@ import (
 	pb "fzkprac/prac_grpc/learn_20210724/grpc_demo/route"
 	"google.golang.org/grpc"
 	"io"
+	"log"
+	"time"
 )
 
+// unary
 func runFirst(c pb.RouteGuidClient) {
 	feature, err := c.GetFeature(context.Background(), &pb.Point{
 		Latitude:  310235000,
@@ -25,6 +28,7 @@ func runFirst(c pb.RouteGuidClient) {
 	fmt.Println(feature)
 }
 
+// server side stream
 func runSecond(c pb.RouteGuidClient) {
 	serverStream, err := c.ListFeatures(context.Background(), &pb.Rectangle{
 		Lo: &pb.Point{Latitude: 313374060, Longitude: 121358540},
@@ -47,6 +51,32 @@ func runSecond(c pb.RouteGuidClient) {
 	}
 }
 
+// client side stream
+func runThird(c pb.RouteGuidClient) {
+	// dummy data 假设客户上传这些数据
+	points := []*pb.Point{
+		{Latitude: 313374060, Longitude: 121358540},
+		{Latitude: 311034130, Longitude: 121598790},
+		{Latitude: 310235000, Longitude: 121437403},
+	}
+
+	clientStream, err := c.RecordRoute(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, point := range points {
+		if err := clientStream.Send(point); err != nil {
+			log.Fatal(err)
+		}
+		time.Sleep(time.Second)
+	}
+	summary, err := clientStream.CloseAndRecv()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(summary)
+}
+
 func main() {
 	con, err := grpc.Dial("localhost:5000", grpc.WithInsecure(), grpc.WithBlock())
 
@@ -57,6 +87,7 @@ func main() {
 
 	client := pb.NewRouteGuidClient(con)
 	//runFirst(client)
-	runSecond(client)
+	//runSecond(client)
+	runThird(client)
 }
 
