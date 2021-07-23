@@ -28,8 +28,8 @@ remote process call
 
 - [proto文件](grpc_demo/route/route.proto)
 - [桩代码生成](grpc_demo/route/gen.sh)
-- [client - 暂无]()
-- [server - 暂无]()
+- [client](grpc_demo/route-client/client.go)
+- [server](grpc_demo/route-server/server.go)
 
 
 
