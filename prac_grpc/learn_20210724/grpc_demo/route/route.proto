@@ -1,0 +1,65 @@
+/*描述一个向导服务，服务名称为RouteGuide:
+    - [ ] 定义四种不同的信息类型分别为Point，Rectangle, Feature, RouteSummary以及Chat
+ */
+
+syntax = "proto3";
+
+option go_package = "fzkprac/prac_grpc/learn_20210724/grpc_demo/route/route.proto";
+
+package route;
+
+// 点
+message Point {
+  int32 latitude = 1;
+  int32 longitude = 2;
+}
+
+// 特性
+message Feature {
+  string name = 1;
+  Point location = 2;
+}
+
+// 区域
+message Rectangle {
+  Point lo = 1;
+  Point li = 2;
+}
+// 路线信息
+message RouteSummary {
+  int32 point_count = 1;
+  int32 distance = 2;
+  int32 elapsed_time = 3;
+}
+
+// 枚举
+enum RecommendationMode {
+  GetFarthest = 0;
+  GetNearest = 1;
+}
+// 要哪种推荐
+message recommendationRequest {
+  RecommendationMode mode = 1;
+  Point point = 2;
+}
+/*
+定义四个方法：
+    - [ ] GetFeature(输入一个Point) 返回这个点的Feature
+    - [ ] ListFeatures(输入一个Rectangle) 输出流这个区域所有的Feature)
+    - [ ] RecordRoute(输入流为每个时间点的位置Point) 返回一个RouteSummary
+    - [ ] Recommend(输入流RecommendationRequest) 输出流Feature
+ */
+service RouteGuid {
+  // unary
+  rpc GetFeature(Point) returns (Feature) {}
+
+  // Server-side streaming
+  rpc ListFeatures(Rectangle) returns (stream Feature) {}
+
+  // Client-side streaming
+  rpc RecordRoute(stream Point) returns (RouteSummary) {}
+
+  // Bidirectional streaming
+  rpc Recommend(stream recommendationRequest) returns (stream Feature) {}
+}
+

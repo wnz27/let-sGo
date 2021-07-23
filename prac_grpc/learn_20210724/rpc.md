@@ -19,13 +19,17 @@ remote process call
 
 ### TODO
 描述一个向导服务，服务名称为RouteGuide:
-- [ ] 定义四种不同的信息类型分别为Point，Rectangle, Feature, RouteSummary以及Chat
+- [X] 定义四种不同的信息类型分别为Point，Rectangle, Feature, RouteSummary以及Chat
 定义四个方法：
-- [ ] GetFeature(输入一个Point) 返回这个点的Feture
-- [ ] ListFeatures(输入一个Rectangle) 输出流这个区域所有的Feature)
-- [ ] RecordRoute(输入流为每个时间点的位置Point) 返回一个RouteSummary
-- [ ] Recommend(输入流RecommendationRequest) 输出流Feature
+- [X] GetFeature(输入一个Point) 返回这个点的Feature
+- [X] ListFeatures(输入一个Rectangle) 输出流这个区域所有的Feature)
+- [X] RecordRoute(输入流为每个时间点的位置Point) 返回一个RouteSummary
+- [X] Recommend(输入流RecommendationRequest) 输出流Feature
 
+- [proto文件](grpc_demo/route/route.proto)
+- [桩代码生成](grpc_demo/route/gen.sh)
+- [client - 暂无]()
+- [server - 暂无]()
 
 
 
