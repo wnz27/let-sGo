@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	pb "fzkprac/prac_grpc/learn_20210724/grpc_demo/route"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
@@ -108,11 +109,49 @@ func (r *routeGuideServer) RecordRoute(server pb.RouteGuid_RecordRouteServer) er
 		}
 		prevPoint = point
 	}
-	return nil
+}
+
+func (r *routeGuideServer) recommendOnce(req *pb.RecommendationRequest) (*pb.Feature, error) {
+	var nearest, farthest *pb.Feature
+	var nearestDistance, farthestDistance int32
+
+	for _, feature := range r.features {
+		distance := calcDistance(feature.Location, req.Point)
+
+		if nearest == nil || distance < nearestDistance {
+			nearestDistance = distance
+			nearest = feature
+		}
+
+		if farthest == nil || distance > farthestDistance {
+			farthestDistance = distance
+			farthest = feature
+		}
+	}
+
+	if req.Mode == pb.RecommendationMode_GetFarthest {
+		return farthest, nil
+	} else {
+		return nearest, nil
+	}
 }
 
 func (r *routeGuideServer) Recommend(server pb.RouteGuid_RecommendServer) error {
-	return nil
+	for {
+		req, err := server.Recv()
+		fmt.Println("0000000000000000------>1", err)
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		recommendedFeature, err := r.recommendOnce(req)
+		if err != nil {
+			return err
+		}
+		return server.Send(recommendedFeature)
+	}
 }
 
 //func (r routeGuideServer) mustEmbedUnimplementedRouteGuidServer() {
