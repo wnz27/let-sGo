@@ -8,10 +8,11 @@ package main
 
 import (
 	"context"
-	"google.golang.org/protobuf/proto"
 	pb "fzkprac/prac_grpc/learn_20210724/grpc_demo/route"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/proto"
 	"log"
+	"math"
 	"net"
 )
 
@@ -20,7 +21,23 @@ type routeGuideServer struct {
 	pb.UnimplementedRouteGuidServer
 }
 
-func (r routeGuideServer) GetFeature(ctx context.Context, point *pb.Point) (*pb.Feature, error) {
+// check if a point is inside a rectangle
+func inRange(point *pb.Point, rect *pb.Rectangle) bool {
+	left := math.Min(float64(rect.Lo.Longitude), float64(rect.Li.Longitude))
+	right := math.Max(float64(rect.Lo.Longitude), float64(rect.Li.Longitude))
+	top := math.Max(float64(rect.Lo.Latitude), float64(rect.Li.Latitude))
+	bottom := math.Min(float64(rect.Lo.Latitude), float64(rect.Li.Latitude))
+
+	if float64(point.Longitude) >= left &&
+		float64(point.Longitude) <= right &&
+		float64(point.Latitude) >= bottom &&
+		float64(point.Latitude) <= top {
+		return true
+	}
+	return false
+}
+
+func (r *routeGuideServer) GetFeature(ctx context.Context, point *pb.Point) (*pb.Feature, error) {
 	for _, f := range r.features {
 		if proto.Equal(f.Location, point) {
 			return f, nil
@@ -29,15 +46,22 @@ func (r routeGuideServer) GetFeature(ctx context.Context, point *pb.Point) (*pb.
 	return nil, nil
 }
 
-func (r routeGuideServer) ListFeatures(rectangle *pb.Rectangle, server pb.RouteGuid_ListFeaturesServer) error {
+func (r *routeGuideServer) ListFeatures(rectangle *pb.Rectangle, server pb.RouteGuid_ListFeaturesServer) error {
+	for _, f := range r.features {
+		if inRange(f.Location, rectangle) {
+			if err := server.Send(f); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
-func (r routeGuideServer) RecordRoute(server pb.RouteGuid_RecordRouteServer) error {
+func (r *routeGuideServer) RecordRoute(server pb.RouteGuid_RecordRouteServer) error {
 	return nil
 }
 
-func (r routeGuideServer) Recommend(server pb.RouteGuid_RecommendServer) error {
+func (r *routeGuideServer) Recommend(server pb.RouteGuid_RecommendServer) error {
 	return nil
 }
 
