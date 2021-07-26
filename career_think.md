@@ -14,6 +14,7 @@
 - mysql
     - 索引树
     - 连接
+    - tidb 研究
 - 操作系统
     - 缓存模型，mesi
     - 进程
@@ -35,6 +36,7 @@
     - 一致性hash
 - 消息队列
     - kafka
+    - pulsar
 - 计算机网络
     - tcp
     - udp
