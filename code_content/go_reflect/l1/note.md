@@ -52,4 +52,78 @@ func main() {
 而后定义了两个结构类型Cat和Dog，都定义了这个方法。
 这样，我们就可以将Cat和Dog对象赋值给Animal类型的变量了。
 
+接口变量包含两部分：类型和值，即(type, value)。
+类型就是赋值给接口变量的值的类型，值就是赋值给接口变量的值。
+如果知道接口中存储的变量类型，我们也可以使用类型断言通过接口变量获取具体类型的值：
+```go
+type Animal interface {
+  Speak()
+}
+
+type Cat struct {
+  Name string
+}
+
+func (c Cat) Speak() {
+  fmt.Println("Meow")
+}
+
+func main() {
+  var a Animal
+
+  a = Cat{Name: "kitty"}
+  a.Speak()
+
+  c := a.(Cat)
+  fmt.Println(c.Name)
+}
+```
+上面代码中，我们知道接口a中保存的是Cat对象，直接使用类型断言a.(Cat)获取Cat对象。
+但是，如果类型断言的类型与实际存储的类型不符，会直接 panic。
+所以实际开发中，通常使用另一种类型断言形式`c, ok := a.(Cat)`。
+如果类型不符，这种形式不会 panic，而是通过将第二个返回值置为 false 来表明这种情况。
+
+有时候，一个类型定义了很多方法，而不只是接口约定的方法。
+通过接口，我们只能调用接口中约定的方法。当然我们也可以将其类型断言为另一个接口，
+然后调用这个接口约定的方法，前提是原对象实现了这个接口：
+```go
+var r io.Reader
+r = new(bytes.Buffer)
+w = r.(io.Writer)
+```
+io.Reader和io.Writer是标准库中使用最为频繁的两个接口：
+```go
+// src/io/io.go
+type Reader interface {
+  Read(p []byte) (n int, err error)
+}
+type Writer interface {
+  Write(p []byte) (n int, err error)
+}
+```
+
+bytes.Buffer同时实现了这两个接口，所以byte.Buffer对象可以赋值给io.Reader变量r，
+然后r可以断言为io.Writer，因为接口io.Reader中存储的值也实现了io.Writer接口。
+
+如果一个接口A包含另一个接口B的所有方法，那么接口A的变量可以直接赋值给B的变量，
+因为A中存储的值一定实现了A约定的所有方法，那么肯定也实现了B。
+此时，无须类型断言。
+例如标准库io中还定义了一个io.ReadCloser接口，此接口变量可以直接赋值给io.Reader：
+```go
+// src/io/io.go
+type ReadCloser interface {
+  Reader
+  Closer
+}
+```
+空接口interface{}是比较特殊的一个接口，它没有约定任何方法。
+所有类型值都可以赋值给空接口类型的变量，因为它没有任何方法限制。
+有一点特别重要，接口变量之间类型断言也好，直接赋值也好，其内部存储的(type, value)类型-值对是没有变化的。
+只是通过不同的接口能调用的方法有所不同而已。
+也是由于这个原因，接口变量中存储的值一定不是接口类型。
+
+## 反射基础
+
+
+
 

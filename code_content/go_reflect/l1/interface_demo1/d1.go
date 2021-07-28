@@ -13,6 +13,7 @@ type Animal interface {
 }
 
 type Cat struct {
+	Name string
 }
 
 func (c Cat) Speak() {
@@ -20,6 +21,7 @@ func (c Cat) Speak() {
 }
 
 type Dog struct {
+	Name string
 }
 
 func (d Dog) Speak() {
@@ -36,4 +38,10 @@ func main() {
 	a = Dog{}
 	a.Speak()
 	fmt.Printf("%v\n", &a)
+
+	a = Cat{Name: "kitty"}
+	a.Speak()
+
+	c := a.(Cat)
+	fmt.Println(c.Name)
 }
