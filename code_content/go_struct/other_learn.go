@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"fzkprac/other_learn/content"
+	"fzkprac/code_content/go_struct/content"
 )
 
 func main() {
