@@ -4,4 +4,6 @@
     - [demo3 - 线程切换](goroutine/g3/g3.go)
 - sync 包
     - [waitGroup - 使用和注意](sync/s1/s1.go) 
+    - [互斥锁](sync/s2/s2.go)
+    - [读写锁](sync/s3/s3.go)
 - 
