@@ -1,4 +1,7 @@
 - goroutine
-    - [demo1](goroutine/g1/g1.go)
-    - [demo2](goroutine/g2/g2.go)
+    - [demo1 - 内存管理相关](goroutine/g1/g1.go)
+    - [demo2 - goroutine 大小](goroutine/g2/g2.go)
+    - [demo3 - 线程切换](goroutine/g3/g3.go)
+- sync 包
+    - [] 
 - 
