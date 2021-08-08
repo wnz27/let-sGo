@@ -3,9 +3,9 @@
     - [demo2 - goroutine 大小](goroutine/g2/g2.go)
     - [demo3 - 线程切换](goroutine/g3/g3.go)
 - sync 包
-    - [waitGroup - 使用和注意](sync/s1/s1.go) 
-    - [互斥锁](sync/s2/s2.go)
-    - [读写锁(TODO: 书上讲解理解不到位)](sync/s3/s3.go)
+    - [waitGroup - 使用和注意](sync/waitGroup/s1.go) 
+    - [互斥锁](sync/互斥锁/s2.go)
+    - [读写锁(TODO: 书上讲解理解不到位)](sync/读写锁/s3.go)
     - Cond
         - [demo1]()
         - [demo2]()

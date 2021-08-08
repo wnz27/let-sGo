@@ -18,15 +18,15 @@ func main() {
 	fmt.Println("arr[:6] =", arr[:6])
 
 	s1 := arr[2:]
-	fmt.Println("s1 =", s1)
-	fmt.Println("After updateSlice(s1)")
+	fmt.Println("waitGroup =", s1)
+	fmt.Println("After updateSlice(waitGroup)")
 	updateSlice(s1)
 	fmt.Println(s1)
 	fmt.Println(arr)
 
 	s2 := arr[:]
-	fmt.Println("s2 =", s2)
-	fmt.Println("After updateSlice(s2)")
+	fmt.Println("互斥锁 =", s2)
+	fmt.Println("After updateSlice(互斥锁)")
 	updateSlice(s2)
 	fmt.Println(s2)
 	fmt.Println(arr)
@@ -44,8 +44,8 @@ func main() {
 	arr1 := [...]int{0, 1, 2, 3, 4, 5, 6, 7}
 	s1 = arr1[2:6]
 	s2 = s1[3:5]
-	fmt.Println("s1 = ", s1)
-	fmt.Println("s2 = ", s2)
+	fmt.Println("waitGroup = ", s1)
+	fmt.Println("互斥锁 = ", s2)
 	/*
 		slice:
 		ptr 指向开头元素 len 长度，方括号取值小于这个长度，大于等于报错越界
@@ -55,8 +55,8 @@ func main() {
 	*/
 	fmt.Println("arr1 =", arr1)
 
-	fmt.Printf("s1=%v, len(s1) = %d, cap(s1) = %d\n", s1, len(s1), cap(s1))
-	fmt.Printf("s2=%v, len(s2) = %d, cap(s2) = %d\n", s2, len(s2), cap(s2))
+	fmt.Printf("waitGroup=%v, len(waitGroup) = %d, cap(waitGroup) = %d\n", s1, len(s1), cap(s1))
+	fmt.Printf("互斥锁=%v, len(互斥锁) = %d, cap(互斥锁) = %d\n", s2, len(s2), cap(s2))
 
 
 	fmt.Println("========================================================================")
