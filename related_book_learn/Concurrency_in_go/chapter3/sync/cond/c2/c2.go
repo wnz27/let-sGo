@@ -93,7 +93,7 @@ func main() {
 	这是Cond类型提供的两种方法中的一种，它提供通知goroutine阻塞的调用Wait，条件已经被触发。
 
 	另一种方法叫Broadcast。运行时内部维护一个FIFO列表，等待接收信号；
-	Signal 发现等待最长时间的goroutine 并通知他，而broadcast 向所有等待的goroutine 发送信号。
+	Signal 发现【等待最长时间的goroutine 并通知他】，而broadcast 向所有等待的goroutine 发送信号。
 	Broadcast 可以说是这两种方法中比较有趣的一种，因为它提供了一种同时与多个goroutine通信的方法。
 
 	我们可以通过channel 对信号进行简单的复制，但是重复调用Broadcast的行为将会更加困难。
