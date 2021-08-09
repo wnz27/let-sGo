@@ -2,7 +2,7 @@
 - goroutine
     - [demo1 - 内存管理相关](goroutine/g1/g1.go)
     - [demo2 - goroutine 大小](goroutine/g2/g2.go)
-    - [demo3 - 线程切换](goroutine/g3/g3.go)
+    - [demo3 - 线程切换](goroutine/g3/g3_test.go)
 - sync 包
     - [waitGroup - 使用和注意](sync/waitGroup/s1.go) 
     - [互斥锁](sync/互斥锁/s2.go)
@@ -16,5 +16,7 @@
         - [demo2 - once.Do 不同方法](sync/once/o2/once2.go)
         - [demo2 - once.Do 注意死锁](sync/once/o3/once3.go)
     - 池
-        - [demo1 - Pool todo ](sync/pool/p1/p1.go)
+        - [demo1 - Pool 简单示例 ](sync/pool/p1/p1.go)
+        - [demo2 - Pool todo ](sync/pool/p2/p2.go)
+    
 - 
