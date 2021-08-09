@@ -17,6 +17,7 @@
         - [demo2 - once.Do 注意死锁](sync/once/o3/once3.go)
     - 池
         - [demo1 - Pool 简单示例 ](sync/pool/p1/p1.go)
-        - [demo2 - Pool todo ](sync/pool/p2/p2.go)
+        - [demo2 - Pool 池化减少内存分配 ](sync/pool/p2/p2.go)
+        - [demo3 - Pool todo ](sync/pool/p3/p3.go)
     
 - 
