@@ -23,7 +23,7 @@ func main() {
 		New: func () interface{} {
 			numCalcsCreated += 1
 			mem := make([]byte, 1024)
-			return &mem
+			return &mem // 正在存储bytes 切片的地址
 		},
 	}
 
@@ -39,7 +39,7 @@ func main() {
 	for i := numWorkers; i > 0; i -- {
 		go func() {
 			defer wg.Done()
-			mem := calcPool.Get().(*[]byte)
+			mem := calcPool.Get().(*[]byte)  // 断言类型是一个指向bytes切片的指针
 			defer calcPool.Put(mem)
 
 			// 做一些有趣的假设，但是很快就会用这个内存完成
