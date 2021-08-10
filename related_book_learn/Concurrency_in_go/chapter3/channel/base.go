@@ -27,4 +27,14 @@ func main() {
 	invalid operation: <-writeStream(receive from send-only type chan<- interface{})
 	invalid operation: readStream <- struct {} literal (send to receive-only type <-chan interface{})
 	 */
+
+	stringStream2 := make(chan string)
+	go func() {
+		if 0 != 1 {
+			return
+		}
+		// 因为上面的条件，下面不会写入成功的
+		stringStream2 <- "hello"
+	}()
+	fmt.Println(<-stringStream2)
 }

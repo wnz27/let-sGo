@@ -86,7 +86,7 @@ readStream := make(<-chan interface{})
 readStream <- struct{}
 ```
 编译不能通过：
-```go
+```shell
 invalid operation: <-writeStream(receive from send-only type chan<- interface{})
 invalid operation: readStream <- struct {} literal (send to receive-only type <-chan interface{})
 ```
@@ -106,9 +106,62 @@ fmt.Println(<-stringStream)  // 我们读取channel的字符串字面量并将�
 ```
 因为Go语言中channel是阻塞的。这意味着只要channel内的数据被消费后，新的数据才能写入，
 而任何试图从空channel读取数据的goroutine将等待至少一条数据被写入channel后才能读到。
+上面例子正好符合这个要求。写入成功之前goroutine不会退出，main goroutine也不会瞬间执行完。
 
+如果不正确的构造程序，会导致死锁。看下面示例：
+```go
+package main
 
+import "fmt"
 
+func main() {
+	stringStream := make(chan string)
+	go func() {
+		if 0 != 1 {
+			return
+		}
+		// 因为上面的条件，下面不会写入成功的
+		stringStream <- "hello"
+	}()
+	fmt.Println(<-stringStream)
+}
+```
+上面例子会直接panic:
+```shell
+fatal error: all goroutines are asleep - deadlock!
 
+goroutine 1 [chan receive]:
+main.main()
+        /Users/fzk27/fzk27/let-sGo/related_book_learn/Concurrency_in_go/chapter3/channel/base.go:39 +0x156
+Process finished with exit code 2
+```
+main goroutin在等一个值被写入stringStream channel, 但由于我们的逻辑，这将永远不会发生。
+当匿名的goroutine退出时，检测到所有的goroutine都没有运行，并报了一个死锁。
 
+本章后面会讲如何构造程序才能做到简单的防止这种死锁，在下一章中会讲如何完全避免这些问题。
+
+[上面涉及部分demo](base.go)
+
+## channel 消费问题
+
+通过 <- 操作符的接受刑事也可选择返回两个值：
+```go
+package main
+
+import "fmt"
+
+func main() {
+	stringStream := make(chan string)
+	go func() {
+		stringStream <- "hello"
+	}()
+	salutation, ok := <- stringStream
+	fmt.Printf("(ok: %v): %v", ok, salutation)
+	// 输出如下：
+	// (ok: true): hello
+```
+第二个返回值是读取操作的一种方式，用于表示该channel上有新数据写入，或者是由closed channel生成的默认值。
+closed channel是什么?
+
+### 关闭channel
 

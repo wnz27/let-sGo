@@ -21,5 +21,5 @@
         - [demo3 - Pool benchmark 普通连接操作耗时 ](sync/pool/p3/p3_test.go)
         - [demo3 - Pool benchmark 池化后连接操作耗时 ](sync/pool/p3/p4_test.go)
 - channel
-    - [demo1 - 基本概念]()
+    - [demo1 - 基本概念](channel/base.md)
 - 
