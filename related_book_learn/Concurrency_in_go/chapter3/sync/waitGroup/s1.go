@@ -72,6 +72,9 @@ func main() {
 	for i := 0; i < numGoroutines; i ++ {
 		go hello(&wg2, i + 1)
 	}
+	// 以下两行证明不是到Wait语句goroutine才开始执行
+	//time.Sleep(time.Second * 2)
+	//fmt.Println("--------------")
 	wg2.Wait()
 	/*
 	输出可能如下：
