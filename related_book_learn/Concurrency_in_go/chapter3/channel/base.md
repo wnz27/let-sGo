@@ -370,5 +370,79 @@ main goroutine将每个结果都推送出去之前就退出。
 
 ### nil channel
 channel的默认值是nil。
+程序如何与值为nil的channel交互？
+
+首先让我们 【从nil channel中读取数据】：
+```go
+var dataStream chan interface{}
+<- dataStream
+```
+会输出：
+```shell
+fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan receive (nil chan)]:
+main.main()
+        xxxxxxx/let-sGo/related_book_learn/Concurrency_in_go/chapter3/channel/c5/c5.go:11 +0x29
+
+Process finished with exit code 2
+```
+死锁，这表明从nilchannel读取数据将阻塞（尽管不一定是死锁）程序.
+
+【往nil channel中写入会发生什么呢？】
+```go
+var dataStream chan interface{}
+dataStream <- struct{}{}
+```
+输出依旧是死锁
+```shell
+atal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan receive (nil chan)]:
+main.main()
+        xxxxxxx/let-sGo/related_book_learn/Concurrency_in_go/chapter3/channel/c5/c5.go:16 +0x4c
+
+Process finished with exit code 2
+```
+即使写 nil channel也会阻塞。
+
+只剩最后一个操作可用，关闭。如果我们试图关闭 nil channel会发生什么？
+```go
+var dataStream chan interface{}
+close(dataStream)
+```
+输出如下：
+```shell
+panic: close of nil channel
+
+goroutine 1 [running]:
+main.main()
+        xxxx/let-sGo/related_book_learn/Concurrency_in_go/chapter3/channel/c5/c5.go:20 +0x2a
+
+Process finished with exit code 2
+```
+这是最糟糕的结果panic。
+
+所以确保你使用的channel都会被初始化。
+
+## 总结channel的类型以及处于相应状态是对应的操作会有什么结果
+| 操作        | 状态          | 结果      |
+| ----------- | -----------  | ----------- | 
+Read        | nil            | 阻塞 （死锁）  
+Read        | 打开且非空       | 输出值
+Read        | 打开但空         | 阻塞
+Read        | 关闭             | <默认值>, false
+Read        | 只写             | 编译报错
+Write       | nil             | 阻塞 （死锁）
+Write       | 打开但填满        | 阻塞
+Write       | 打开的且不满      | 写入
+Write       | 只读             | 编译报错
+Write       | 关闭的           | panic
+close       | nil             | panic
+close       | 打开且非空        | 关闭成功，读取成功，直到通道耗尽，然后读取产生值的默认值
+close       | 打开但空          | 关闭channel，读到生产者的默认值
+close       | 关闭的           | panic
+close       | 只读             | 编译报错
+
 
 
