@@ -14,8 +14,13 @@ func main() {
 		stringStream <- "hello"
 	}()
 	salutation, ok := <- stringStream
-	fmt.Printf("(ok: %v): %v", ok, salutation)
+	fmt.Printf("(ok: %v): %v\n", ok, salutation)
 	// 输出如下：
 	// (ok: true): hello
+
+	intStream := make(chan int)
+	close(intStream)
+	integer, ok := <- intStream
+	fmt.Printf("(ok? %v): %v", ok, integer)
 
 }

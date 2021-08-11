@@ -164,4 +164,64 @@ func main() {
 closed channel是什么?
 
 ### 关闭channel
+能够提示channel中是否会有新的值写入是非常有用的。
+这有助于下游的程序知道什么时候消费、退出、给新的channel重新建立连接等。
+我们可以给每个这样的的类型一个特殊标记，但是这将覆盖大多数开发人员的代码，
+channel只是一个简单的数据传输channel，而不是数据类型的函数，所以关闭channel是一个比较
+普通的操作，就好比哨兵说：嘿，上有不会写入任何有价值的数据了，想干嘛干嘛吧。
+我们使用close关键字关闭一个channel
+```go
+valueStream := make(chan interface{})
+close(valueStream)
+```
+有趣的是，我们也可以从一个已经关闭的channel读取数据。
+```go
+intStream := make(chan int)
+close(intStream)
+integer, ok := <- intStream
+fmt.Printf("(%v): %v", ok, integer)
+```
+输出：(ok? false): 0  [demo](c1/c1.go)
+
+注意我们从来没有把任何数据推送到channel上，立即关闭它。
+我们仍然能够执行读取操作，事实上，尽管channel已经关闭，我们仍然可以继续在这个channel上执行读取操作。
+
+这是为了支持一个channel有单个上游写入，有多个下游读取。
+第二个返回值（也就是ok的值）是false，这表示我们收到的值是 int 或者 0, 而不是推到stream上的值。
+
+这为我们提供了一些新的模式。第一个是从channel中获取。通过range作为参数遍历（for）并且在channel关闭时
+自动中断循环。这允许对channel上的值进行简洁的迭代。让我们看一个例子: 
+```go
+package main
+
+import "fmt"
+
+func main()  {
+	intStream := make(chan int)
+	go func() {
+		defer close(intStream)  // 确保goroutine 退出之前channel是关闭的。这是一个常见的模式。
+		for i := 1; i <= 5; i ++ {
+			intStream <- i
+		}
+	}()
+	for integer := range intStream {
+		fmt.Printf("%v ", integer)
+	}
+}
+```
+输出: 1 2 3 4 5   [demo](c2/c2.go)
+
+该循环不需要退出条件，并且range方法不返回第二个bool值。
+处理一个已关闭的channel的细节可以让你保持循环简洁。
+
+关闭channel也是一种同时给多个goroutine发信号的方法。
+如果有n个goroutine在一个channel上等待，
+而不是在channel上写n次来打开每个goroutine，你可以简单的关闭channel。
+由于一个被关闭的channel可以被无数次读取，所以不管有多少goroutine在等待它，
+关闭channel都比执行n次更合适，也更快。
+
+这里有一个例子， 可以同时打开多个goroutine:
+```go
+
+```
 
