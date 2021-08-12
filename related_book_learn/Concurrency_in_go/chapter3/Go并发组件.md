@@ -23,6 +23,8 @@
 - channel
     - [基本概念和demos](channel/base.md)
 - select
-    - [基本概念](select/select.md)
+    - [基本概念 demos](select/select.md)
 - GOMAXPROCS 控制
-    - []()
+    - [基本概念](GOMAXPROCS/GOMAXPROCS.md)
+    
+

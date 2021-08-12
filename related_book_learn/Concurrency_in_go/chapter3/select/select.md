@@ -67,9 +67,9 @@ Unblock 5.002684552s later.
 ```
 如你所见，在进入select模块后大约5s，我们就会解锁。
 这是一种简单而有效的方法来阻止我们等待某事的发生，但如果我们思考一下，我们可以提出一些问题：
-- **当多个channel有数据可供给下游读取的时候会发生什么？**
-- **如果没有任何可用的channel怎么办？**
-- **如果我们想要做一些事情，但是没有可用的channel怎么办？**
+- **1、当多个channel有数据可供给下游读取的时候会发生什么？**
+- **2、如果没有任何可用的channel怎么办？**
+- **3、如果我们想要做一些事情，但是没有可用的channel怎么办？**
 
 ### 多个channel同时可用的这个问题似乎很有趣，试一下：
 ```go
@@ -121,11 +121,119 @@ Go语言运行时无法解析select语句的意图，也就是说，它不能推
 
 Go语言的time包提供了一种优雅的方式，可以在select语句中很好的使用channel。这里有一个例子：
 ```go
+package main
 
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	var c <-chan int
+	select {
+	case <-c:  // 这个case永远不会被执行，因为我们是从 nil channel 读取的。死锁（永久阻塞）
+	case <- time.After(1 * time.Second):
+		fmt.Println("Time out!")
+	}
+}
 ```
+[【demo】](s3/s3.go)
 
+输出:
+```shell
+Time out!
+```
+time.After 函数通过传入time.Duration参数返回一个数值并写入channel，
+该channel会返回执行后的时间。
 
+这为select语句提供了一种简明的方法。我们将在第四章讨论这个模式，
+在这里我们将讨论一个更健壮的解决方案。
 
+### 最后一个问题：当没有可用的channel时，我们需要做些什么？
+像case语句一样，select语句也允许默认的语句。就像 "case" 语句一样，当"select"语句中
+的所有channel都被阻塞的时候，"select"语句也允许你调用默认语句。
+看示例：
+```go
+package main
 
+import (
+	"fmt"
+	"time"
+)
 
+func main() {
+	start := time.Now()
+	var c1, c2 <- chan int
+	select {
+	case <-c1:
+	case <-c2:
+	default:
+		fmt.Printf("In default after %v\n\n", time.Since(start))
+	}
+}
+```
+[【demo】](s4/s4.go)
+
+输出：
+```shell
+In default after 2.59µs
+```
+可以看到它几乎是瞬间运行了默认语句。这允许在不阻塞的情况下退出select模块。
+通常，你将看到一个默认的子句，它与for-select循环一起使用。
+
+！！这允许goroutine在等待一个另一个goroutine上报结果的同时，可以继续执行各自的操作。
+看示例：
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	done := make(chan interface{})
+	go func() {
+		defer close(done)
+		time.Sleep(5 * time.Second)
+	}()
+
+	workCounter := 0
+	loop:
+	for {
+		select {
+		case <- done:
+			break loop
+		default:
+		}
+		// 模拟工作行为
+		fmt.Printf("work: %v\n", workCounter)
+		workCounter ++
+		time.Sleep(1 * time.Second)
+	}
+	fmt.Printf("Achieved %v cycles of work before signalled to stop.\n", workCounter)
+}
+```
+[【demo】](s5/s5.go)
+
+输出:
+```shell
+work: 0
+work: 1
+work: 2
+work: 3
+work: 4
+Achieved 5 cycles of work before signalled to stop.
+```
+在这种情况下我们有一个循环，它在执行某种操作，偶尔检查它是否应该被停止。
+
+最后对于空的select语句有一个特殊的情况：选择没有case子句的语句。
+看起来像这样：
+```go
+select{}
+```
+这个语句将永远被阻塞。
+
+在第六章我们将深入研究select语句是如何工作的。从更高层次的角度来看，他应该是显而易见的，
+它可以帮助你安全高效地组合各种概念和子系统。
 
