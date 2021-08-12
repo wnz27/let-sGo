@@ -1,3 +1,3 @@
-- [读写锁](./chapter3/rw_lock/rwLock.go)
-- [channel](./chapter3/channel/chan_prac.go)
-- [select](./chapter3/select_prac/select_prac.go)
+# 目录
+- [并发组件](chapter3/Go并发组件.md)
+- [并发模式](chapter4/Go并发模式.md)

@@ -65,6 +65,7 @@
   - 线程
   - I/O
 - Go
+  - sync, RWMutex（理解不足）
   - context
   - goroutine
   - 内存重排，同步原语
