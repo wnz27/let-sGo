@@ -421,9 +421,9 @@ main.main()
 
 Process finished with exit code 2
 ```
-这是最糟糕的结果panic。
+这是最糟糕的结果panic。  [【demo】](c5/c5.go)
 
-所以确保你使用的channel都会被初始化。
+【所以确保你使用的channel都会被初始化。】
 
 ## 总结channel的类型以及处于相应状态是对应的操作会有什么结果
 | 操作        | 状态          | 结果      |
@@ -443,6 +443,127 @@ close       | 打开且非空        | 关闭成功，读取成功，直到通�
 close       | 打开但空          | 关闭channel，读到生产者的默认值
 close       | 关闭的           | panic
 close       | 只读             | 编译报错
+
+让门看看如何组织不同类型的channel来构建健壮和稳定的东西。
+
+我们应该做的第一件事是在正确的环境中配置channel，即分配channel所有权。
+我将把所有权定义为实例化、写入和关闭channel的goroutine。
+就像没有GC 的语言的内存一样，重要的是要弄清楚哪个goroutine 拥有channel，
+以便从逻辑上推演我们的程序。
+
+单向channel声明的是一种工具，它将运行于我们区分channel的拥有者和使用者：
+channel所有者对channel（chan 或者 chan<-）有一个写访问视图，
+而channel的使用者只对channel有一个只读视图（<-chan）。
+
+一旦我们将channel所有者和非channel所有者区分开来，前面的表的结果自然就会很清晰，
+我们可以开始将责任分配给那些拥有channel的goroutine和不拥有channel的goroutine。
+
+让我们从channel的所有者开始。拥有channel的goroutine应该具备以下：
+- 1、实例化channel
+- 2、执行写操作，或将所有权传递给另一个goroutine。
+- 3、关闭channel。
+- 4、执行在此列表中的前三件事，并通过一个只读channel将他们暴露出来
+
+通过将这些责任分配给channel所有者，一些事情发生了：
+- 因为我们初始化了channel，所以我们将死锁的风险转移到nil channel上
+- 因为我们初始化了channel，所以我们通过关闭一个nil channel来消除panic的风险。
+- 因为我们决定了channel何时关闭，所以我们通过写入一个关闭的channel来消除panic
+- 因为我们决定了channel何时关闭，所以我们不止一次关闭channel，从而消除了panic的风险。
+- 我们在编译时使用类型检查器，以防止写入channel异常。
+
+现在让我们看看在读取channel时可能发生的阻塞操作。作为一个channel的消费者，我只需要担心两件事：
+- 1、知道channel是何时关闭的。
+- 2、正确的处理阻塞。
+
+为了解决第一个问题，我们只需像之前说的那样从read操作中检查第二个返回值。
+
+第二点更难滴定，因为它取决于你的算法，可能想要超时，可能想要停止消费，
+或者可能只是对阻塞进程的生命周期有需求。重要的是，作为一个消费者，
+应该知道读取是阻塞的事实。后面的章节将会研究如何优雅的实现channel消费。
+
+现在让我们看一个例子来帮助阐明这些概念。
+让我们创建一个拥有channel的goroutine, 以及一个处理channel阻塞和关闭的消费者：
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	chanOwner := func() <-chan int {
+		resultStream := make(chan int, 5)  // 实例化一个缓冲channel。因为知道将产生6个结果，我们创建一个有5个缓冲的channel，这样goroutine就能尽快完成
+		go func() {  // 启动一个匿名的goroutine，它在resultStream上执行写操作。注意，我们已经颠倒了如何创建goroutine。它现在被封装在外围函数中
+			defer close(resultStream)  // 确保一旦执行完成resultStream就会关闭。作为channel所有者，这是我们必须做的。
+			for i := 0; i <=5; i ++ {
+				resultStream <- i
+				//if i == 5{
+				//	time.Sleep(2*time.Second)
+				//	resultStream <- i
+				//} else {
+				//	resultStream <- i
+				//}
+			}
+		}()
+		return resultStream  // 在这里我么你返回channel。由于返回值被声明为一个只读channel，因此resultStream将隐式的转换为只读消费者
+	}
+
+	resultStream := chanOwner()
+	// chan不关闭这个循环不会退出
+	for result := range resultStream {  // 遍历resultStream，作为消费者，我们只关心阻塞和channel的关闭
+		fmt.Printf("Received: %d\n", result)
+	}
+	fmt.Println("Done receiving!")
+}
+```
+[【demo】](c6/c6.go)
+
+输出:
+```shell
+Received: 0
+Received: 1
+Received: 2
+Received: 3
+Received: 4
+Received: 5
+Done receiving!
+```
+这个例子值得注意，resultStream channel的生命周期是如何封装在【chan所有者】函数中的。
+很明显，写入不会在nil或者已关闭的channel上发生，而且关闭总是只会发生一次。
+这从我们的程序中消除了大量的风险。我强烈建议在你的程序中，尽量保持channel所有权的范围很小，
+这样事情就变得显而易见了。
+
+如果有个channel作为结构体的成员变量，并且有许多方法，它将很快变得不清楚该channel的行为方式。
+
+消费者函数只能执行channel的读取方法，因此只需要知道它应该如何处理阻塞读取和channel的关闭。
+在这个小示例中，我们已经采取了这样的操作：在channel关闭之前，阻塞程序是完全可以运行的。
+
+如果你设计让你的代码遵循这一原则，那么你的系统就会变得更容易梳理，
+并且它也更有可能按照你的期望来执行。
+我不能保证你永远不会陷入死锁或者panic，但当你这么做的时候，我想你会发现你的channel所有权的范围已经变得太大了，
+或者所有权已经变得不清晰了。
+
+channel是吸引人们使用Go语言的原因之一。结合了goroutine和闭包的简单性，我很清楚地知道编写干净、正确
+的并发代码是多么的容易。在很多方面，channel是将goroutine绑定在一起的粘合剂。
+
+本章应该给了你一个关于什么是channel以及如何使用它们的很好的概述。真正的乐趣在于我们开始编写channel
+以及形成高阶并发设计模式。下一章讲到
+
+## select 语句
+select语句是将channel绑定在一起的粘合剂，这就是我们如何在一个程序中组合channel以形成更大的
+抽象事务的方式。
+
+如果channel是将goroutine连接在一起的黏合剂，那么声明select语句是做什么的呢？
+
+声明select语句是一个具有并发性的Go语言程序中最重要的事情之一，这并不是夸大其词。
+
+在一个系统中两个或多个组件的交集中，可以在本地、单个函数
+或类型以及全局范围内找到select语句绑定在一起的channel。
+
+除了连接组件之外，在程序中的这些关键节点上，select语句可以帮助安全地将channel与
+诸如取消、超时、等待和默认值之类的概念结合在一起。
+相反，如果select语句是程序的通用语言，它们只处理channel，那么程序的组件应该如何协调？
+我们将在第五章专门研究这个问题（提示：更推荐使用channel）
 
 
 
