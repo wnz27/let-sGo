@@ -66,6 +66,7 @@
   - I/O
 - Go
   - sync, RWMutex（理解不足）
+  - [ ] 如何让 select 语句更平均（随机变量引入到等式中？加权平均？怎么做？？）
   - context
   - goroutine
   - 内存重排，同步原语
