@@ -35,4 +35,19 @@ for{
     // 进行非抢占式任务
 }
 ```
-如果已经完成的channel未关闭，我们将退出select语句并继续执行for循环
+如果已经完成的channel未关闭，我们将退出select语句并继续执行for循环的其余部分
+
+第二种变体将工作嵌入到选择语句的默认句子中：
+```go
+for {
+	select {
+	case <-done:
+		return
+    default:
+    	// 进行非抢占式任务
+    }
+}
+```
+当我们输入select语句时，如果完成的channel尚未关闭，我们将执行default子句。
+
+
