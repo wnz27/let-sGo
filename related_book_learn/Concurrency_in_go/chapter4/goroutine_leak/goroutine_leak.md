@@ -123,5 +123,113 @@ Done
 这是因为在我们加入两个goroutine之前，我们创建了第三个goroutine来在doWork 执行
 1s之后取消doWork中的goroutine。我们成功消除了我们的goroutine泄露！
 
+前面的例子很好的处理了在channel上接收goroutine的情况，但是如果我们正在处理相反的情况：
+一个goroutine阻塞了向channel进行写入的请求？以下是演示此问题的简单示例：
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+)
+
+func main() {
+	newRandStream := func() <-chan int {
+		randStream := make(chan int)
+		go func() {
+			defer fmt.Println("newRandStream closure exited.")  // 在goroutine 成功终止时打印出一条消息
+			defer close(randStream)
+			for {
+				randStream <- rand.Int()
+			}
+		}()
+		return randStream
+	}
+
+	randStream := newRandStream()
+	fmt.Println("3 random ints:")
+	for i := 1; i <= 3; i ++ {
+		fmt.Printf("%d: %d\n", i, <-randStream)
+	}
+}
+```
+[【demo】](g3_block_write/g3.go)
+
+输出：
+```shell
+3 random ints:
+1: 5577006791947779410
+2: 8674665223082153551
+3: 6129484611666145821
+```
+
+你可以从输出中看到defer语句中的fmt.Println 语句永远不会运行。
+在循环的第三次迭代之后，我们的goroutine试图将下一个随机整数发送到不再被读取的channel、
+我们无法告知生产者它可以停止，解决方案就像接收案例一样，为生产者goroutine提供一个
+通知它退出的channel：
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func main() {
+	newRandStream := func(done <-chan interface{}) <-chan int {
+		randStream := make(chan int)
+		go func() {
+			defer fmt.Println("newRandStream closure exited.")
+			defer close(randStream)
+			for {
+				select {
+				case randStream <- rand.Int():
+				case <-done:
+					return
+				}
+			}
+		}()
+		return randStream
+	}
+
+	done := make(chan interface{})
+	randStream := newRandStream(done)
+
+	fmt.Println("3 random ints:")
+	for i := 1; i <= 3; i++ {
+		fmt.Printf("%d: %d\n", i, <-randStream)
+	}
+	close(done)
+
+	// 模拟正在进行的工作
+	time.Sleep(1 * time.Second)
+	fmt.Println("do some work use 1s")
+}
+```
+[【demo】](g4_block_write_iters/g4.go)
+
+输出
+```shell
+3 random ints:
+1: 5577006791947779410
+2: 8674665223082153551
+3: 6129484611666145821
+newRandStream closure exited.
+do some work use 1s
+```
+我们发现现在goroutine 已经被正确的清理了。
+
+现在我们知道如何确保goroutine不泄露，我们可以规定一个约定：
+如果goroutine负责创建goroutine，它也负责确保它可以停止goroutine。
+
+这个约定有助于确保你的程序在组合和扩展时可以扩展。
+
+我们将在本章后面的"channel" 和 "context 包"中重新讨论这种技术和规则。
+
+我们如何确保goroutine 能够被停止，可以根据goroutine 的类型和用途而有所不同，
+但是它们所有这些都是建立在done channel传递的基础上的。
+
+
 
 
