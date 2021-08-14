@@ -49,6 +49,8 @@ func main() {
 	fmt.Println("Done")
 }
 ```
+[【demo】](g1_leak_eg/g1.go)
+
 在这里我们看到 main goroutine 将一个空的channel传递给了doWork。
 因此，string channel 永远也不会获得任何string，并且包含doWork函数的goroutine
 会一直在程序的生命周期内保持在内存中
@@ -65,6 +67,61 @@ goroutine应该很常见的会在一个长寿的程序初始化的时候就被�
 按照惯例，这个信号通道是一个名为done的只读channel。父goroutine将该channel传给
 子goroutine，然后在想要取消子goroutine时关闭该channel。例如
 ```go
+package main
 
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	doWork := func(
+		done <-chan interface{},
+		strings <-chan string,
+	) <-chan interface {} {
+		terminated := make(chan interface{})
+		go func() {
+			defer fmt.Println("doWork exited.")
+			defer close(terminated)
+			for {
+				select {
+				case s := <-strings:
+					// 做一些有意思的事情
+					fmt.Println(s)
+				case <-done:
+					return
+				}
+			}
+		}()
+		return terminated
+	}
+
+	done := make(chan interface{})
+	terminated := doWork(done, nil)
+
+	go func() {
+		// 在 1s 之后取消本操作
+		time.Sleep(1 * time.Second)
+		fmt.Println("Canceling doWork goroutine...")
+		close(done)
+	}()
+
+	<-terminated
+	fmt.Println("Done")
+}
 ```
+输出：
+```shell
+Canceling doWork goroutine...
+doWork exited.
+Done
+```
+[【demo】](g2_done_eg/g2.go)
+
+可以看到，尽管我们给我们的字符串channel中传递了nil，我们的goroutine仍然成功退出。
+与之前的例子不同，在这个例子中，我们加入了两个goroutine，但是没有造成死锁。
+这是因为在我们加入两个goroutine之前，我们创建了第三个goroutine来在doWork 执行
+1s之后取消doWork中的goroutine。我们成功消除了我们的goroutine泄露！
+
+
 
