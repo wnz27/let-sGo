@@ -12,6 +12,8 @@
 - [约束](constrain/约束.md)
 - [for-select](for_select.md)
 - [防止goroutine泄露](goroutine_leak/goroutine_leak.md)
-
+- [or-channel](or_channel/or_channel.md)
+    - [ ] TODO 可以尝试把 or 函数时间复杂度改为 logn ？
+- 
 
 
