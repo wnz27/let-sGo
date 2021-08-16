@@ -15,5 +15,5 @@
 - [or-channel](or_channel/or_channel.md)
     - [ ] TODO 可以尝试把 or 函数时间复杂度改为 logn ？
 - [错误处理](err_handle/err_handle.md)
-
+- [pipeline](pipeline/pipeline.md)
 
