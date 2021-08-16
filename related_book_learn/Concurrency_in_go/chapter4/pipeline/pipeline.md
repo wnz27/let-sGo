@@ -51,7 +51,7 @@ ints := []int{1, 2, 3, 4}
 		fmt.Println(v)
 	}
 ```
-[【合成的demo】](batch_p/batch_p.go)
+[【批处理的demo】](batch_p/batch_p.go)
 
 输出：
 ```shell
@@ -127,9 +127,45 @@ pipeline 相同的好处。
 
 让我们将我们的stage 转换为以流为导向。看起来如下所示
 ```go
+package main
 
+import "fmt"
+
+func main() {
+	multiply := func(value int, multiplier int) int {
+		return value * multiplier
+	}
+	add := func(value, additive int) int {
+		return value + additive
+	}
+	ints := []int{1, 2, 3, 4}
+	for _, v := range ints {
+		fmt.Println(multiply(add(multiply(v, 2), 1), 2))
+	}
+}
 ```
+[【流处理demo】](stream_p/stream_p.go)
+输出：
+```shell
+6
+10
+14
+18
+```
+每个stage 都接收并发出一个离散值，我们的程序的内存占用空间将回落到只有pipeline
+输入的大小。但是我们不得不将pipeline写入到for 循环之内，
+并通过 range 语句为我们的pipeline进行笨拙的提升。
+这不仅限制了我们如何向重复利用的pipeline发送消息，而且将在本章后面介绍，
+这也限制了我们的扩展能力，还有其他问题。
 
+实际上，我们正在为循环的每次迭代实例化我们的pipeline。
+尽管进行函数调用代价很低，但我们为循环的每次迭代进行三次函数调用。
 
+并发性又如何？我前面说过，使用pipeline 的好处之一是能够同时处理各个 stage，
+并且我提到了一些关于扇出（fan-out）的内容。那么，它们是从什么地方冒出来的呢？
+
+我本可以通过稍微扩展一下 multiply 和 add 函数来介绍更多相关概念的，
+但已经完成了介绍流水线概念的工作。
+现在是时候开始学习在Go语言中构建pipeline 的最佳实践了，它始于channel！！
 
 
