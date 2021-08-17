@@ -42,7 +42,7 @@ func main() {
 				select {
 				case <-done:
 					return
-				case takeStream <- valueStream:
+				case takeStream <- <-valueStream:
 				}
 			}
 		}()
@@ -61,13 +61,9 @@ func main() {
 ```
 以上合起来 [【demo】](repeat_gen/repeat_gen.go)
 
-输出：
+书上的输出是：
 ```shell
-0xc0000640c0 0xc0000640c0 0xc0000640c0 0xc0000640c0 0xc0000640c0 0xc0000640c0 0xc0000640c0 0xc0000640c0 0xc0000640c0 0xc0000640c0
-```
-【TODO】书上的输出是：
-```shell
-1 1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1 1 1 
 ```
 在这个基本的例子中，我们创建了一个重复生成器来生成无限数量的数字1，
 但是只取前10个。因为这个"复制生成器"的发送逻辑会因为 "take stage" 没有进行取值而被阻塞，
@@ -77,8 +73,53 @@ func main() {
 我们可以扩展这一点，让我们创建另一个重复的生成器，但是这次我们创建一个重复调用函数的生成器。
 我们称之为repeatFn:
 ```go
+package main
 
+func main() {
+	repeatFn := func(
+		done <-chan interface{},
+		fn func() interface{},
+	) <-chan interface{} {
+		valueStream := make(chan interface{})
+		go func() {
+			defer close(valueStream)
+			for {
+				select {
+				case <-done:
+				case valueStream <- fn():
+				}
+			}
+		}()
+		return valueStream
+	}
+}
 ```
+我们用它来生成10个随机数字：
+```go
+done := make(chan interface{})
+	defer close(done)
+
+	rand := func() interface{} {return rand.Int()}
+
+	for num := range take(done, repeatFn(done, rand), 10) {
+		fmt.Println(num)
+	}
+```
+输出：
+```shell
+5577006791947779410
+8674665223082153551
+6129484611666145821
+4037200794235010051
+3916589616287113937
+6334824724549167320
+605394647632969758
+1443635317331776148
+894385949183117216
+2775422040480279449
+```
+非常酷炫，一个按需生成无限随机整数的 channel！
+
 
 
 

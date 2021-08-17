@@ -6,7 +6,9 @@
  **/
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	repeat := func(
@@ -16,11 +18,13 @@ func main() {
 		valueStream := make(chan interface{})
 		go func() {
 			defer close(valueStream)
-			for _, v := range values {
-				select {
-				case <-done:
-					return
-				case valueStream <- v:
+			for {
+				for _, v := range values {
+					select {
+					case <-done:
+						return
+					case valueStream <- v:
+					}
 				}
 			}
 		}()
@@ -39,7 +43,7 @@ func main() {
 				select {
 				case <-done:
 					return
-				case takeStream <- valueStream:
+				case takeStream <- <-valueStream:  // 太他吗容易错了！！！！！
 				}
 			}
 		}()
