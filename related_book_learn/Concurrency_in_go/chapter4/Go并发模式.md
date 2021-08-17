@@ -17,5 +17,6 @@
 - [错误处理](err_handle/err_handle.md)
 - [pipeline](pipeline/pipeline.md)
 - [构建 pipeline 的最佳实践](pipeline_prac/pipeline_prac.md)
-- [一些便利的生成器]()
+- [一些便利的生成器](generator/generator.md)
+- [扇出，扇入](fan_out_fan_in/fan_in_out.md)
 
