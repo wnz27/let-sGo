@@ -10,6 +10,3 @@
 - [11. Go - DNS & CDN & 多活架构](./week11_research.md)
 - [12. Go - 消息队列kafka](./week12_research.md)
 - [13. Go - 实践RunTime](./week13_research.md)
-
-- 最佳实践探索
-    - [分布式缓存](content/cache.md)

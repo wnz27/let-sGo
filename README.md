@@ -1,5 +1,4 @@
 # let-sGo
-learn go
 
 - [基础笔记](note_markdown/基础笔记.md)
 - [其他积累](code_content/go_struct/catalog.md)
