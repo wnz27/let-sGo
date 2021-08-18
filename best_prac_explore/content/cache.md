@@ -3,6 +3,9 @@
 ### reference
 #### redis
 - [ ] [使用Redis，你必须知道的21个注意要点](https://zhuanlan.zhihu.com/p/359284601)
+- [ ] [《Redis5设计与源码分析》](https://www.jianshu.com/p/65cc57c48f49)
+    - [副本](https://www.hz-bin.cn/Redis)
+- [] [Redis集群和持久化](https://zhuanlan.zhihu.com/p/57750101)
 #### 实践相关
 - facebook还是网飞 更新db前 给cache 设置一个很短的过期时间, 然后更新db
   防止瞬时太多流量直接打到db。
