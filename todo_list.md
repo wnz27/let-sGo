@@ -18,6 +18,9 @@
 ## 相关文章
 - [康威定律（略读）](https://segmentfault.com/a/1190000011118897)
 
+## 待整理 references
+- [ ] [Debugging by Pretty Printing](https://blog.josejg.com/debugging-pretty/)
+- 
 
 ## 其他
 - [ ] [浅析控制反转](https://zhuanlan.zhihu.com/p/60995312)
