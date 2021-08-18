@@ -48,7 +48,7 @@ func main() {
 	}
 
 	/*
-		g1 退出后, g2, g3, g4 都会随之退出
+		g1_leak_eg 退出后, g2, g3, g4 都会随之退出
 		然后 main 函数中的 g.Wait() 退出，所有协程都会退出
 	*/
 	g.Go(
@@ -56,7 +56,7 @@ func main() {
 			return serviceServer.ListenAndServe()
 		})
 	/*
-		g2 退出后, g1, g3, g4 都会随之退出
+		g2 退出后, g1_leak_eg, g3, g4 都会随之退出
 		然后 main 函数中的 g.Wait() 退出，所有协程都会退出
 	*/
 	g.Go(
@@ -65,7 +65,7 @@ func main() {
 		})
 
 	/*
-		g3 退出时，调用了 shutdown，g1 g2 会退出
+		g3 退出时，调用了 shutdown，g1_leak_eg g2 会退出
 		g3 退出后, context 将不再阻塞，g4 会随之退出
 		然后 main 函数中的 g.Wait() 退出，所有协程都会退出
 	*/
@@ -101,8 +101,8 @@ func main() {
 
 	/*
 		g4 捕获到 os 退出信号将会退出
-		g4 退出后, context 将不再阻塞，g2 g1 会退出
-		g4 退出时，调用了 shutdown，g1 会退出
+		g4 退出后, context 将不再阻塞，g2 g1_leak_eg 会退出
+		g4 退出时，调用了 shutdown，g1_leak_eg 会退出
 		然后 main 函数中的 g.Wait() 退出，所有协程都会退出
 	*/
 	g.Go(func() error {

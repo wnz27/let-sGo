@@ -9,7 +9,9 @@ learn go
 - [设计模式基础概念](./design-pattern/base_note/base_concept.md)
 - [软件设计基础概念](./soft-design/base_concept.md)
 - [职业规划思考](./career_think.md)
-- [Go-面试](./note_markdown/interview/go-interview.md)
+- 相关书籍学习积累
+  - [《G语言并发之道》](related_book_learn/Concurrency_in_go/learn_catagory.md)
+- 
 
 
 
