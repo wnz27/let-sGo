@@ -10,8 +10,22 @@ import (
 	"fmt"
 	"fzkprac/related_book_learn/Concurrency_in_go/chapter4/fan_out_fan_in/base_func"
 	"math/rand"
+	"runtime"
 	"time"
 )
+
+func demo() {
+	done := make(chan interface{})
+	defer close(done)
+	rand := func() interface{} { return rand.Intn(50000000)}
+	randIntStream := base_func.ToInt(done, base_func.RepeatFn(done, rand))
+
+	numFinders := runtime.NumCPU()
+	finders := make([]<-chan int, numFinders)
+	for i := 0; i < numFinders; i ++ {
+		finders[i] = base_func.PrimeFinder2(done, randIntStream)
+	}
+}
 
 func Con_slow_prime_demo() {
 	rand := func() interface{} { return rand.Intn(50000000)}

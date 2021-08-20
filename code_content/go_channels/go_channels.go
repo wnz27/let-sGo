@@ -32,28 +32,40 @@ func main() {
 	//	fmt.Println(i)
 	//}
 
-	repeat := func(
-		done <-chan interface{},
-		values ...interface{},
-	) <-chan interface{} {
-		valueStream := make(chan interface{})
-		go func() {
-			defer close(valueStream)
-			for _, v := range values {
-				select {
-				case <-done:
-					return
-				case valueStream <- v:
-				}
-			}
-		}()
-		return valueStream
+	//repeat := func(
+	//	done <-chan interface{},
+	//	values ...interface{},
+	//) <-chan interface{} {
+	//	valueStream := make(chan interface{})
+	//	go func() {
+	//		defer close(valueStream)
+	//		for _, v := range values {
+	//			select {
+	//			case <-done:
+	//				return
+	//			case valueStream <- v:
+	//			}
+	//		}
+	//	}()
+	//	return valueStream
+	//}
+	//done2 := make(chan interface{})
+	//defer close(done2)
+	//for nnn := range repeat(done2, 2, 3, 4) {
+	//	fmt.Println(nnn)
+	//}
+
+	done := make(chan int)
+	go func() {
+		defer close(done)
+		//for i := 0; i < 10; i ++ {
+		//	done <- i
+		//}
+	}()
+	for a := range done{
+		fmt.Println(a)
 	}
-	done2 := make(chan interface{})
-	defer close(done2)
-	for nnn := range repeat(done2, 2, 3, 4) {
-		fmt.Println(nnn)
-	}
+
 }
 
 

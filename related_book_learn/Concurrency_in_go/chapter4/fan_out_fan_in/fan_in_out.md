@@ -77,4 +77,135 @@ PrimeFinder stage。PrimeFinder天真地开始试图将输入流上的数字除�
 
 作为代替，我们将会看看那我们如何扇出一个或者多个stage来让运行缓慢的操作快一些。
 
+这是一个相对简单的例子，而我们只有两个stage：随机数生成和素数筛选。
+在更大型的程序中，你的pipeline可能由更多的stage 组成，我们怎么知道该在哪个 stage 扇出？
+请记住我们之前的条件：相对顺序独立性和持续时间。
+我们的随机数生成器肯定是顺序无关的，因为整数可以是素数也可以不是素数，只有这两种结果，
+因为我们所使用的寻找素数的算法，它肯定需要很长时间才能运行。所以他看起来是一个很好的使用
+扇出模式的候选。
 
+幸运的是，在pipeline 中分散 stage 的过程非常容易。我们所要做的就是启动多版本的 stage。
+我们可以这么做（我这个程序本机原因和书上不太一样，具体可以看书的配到源码，在主目录有贴出来）：
+```go
+numFinders := runtime.NumCPU()
+	finders := make([]<-chan int, numFinders)
+	for i := 0; i < numFinders; i ++ {
+		finders[i] = base_func.PrimeFinder2(done, randIntStream)
+	}
+```
+[代码见](con_demo/con_1.go)
+
+在这里我们启动了这个 stage 的许多副本，因为我们有多个CPU核心。在我的计算机上，
+runtime.NumCPU() 返回8，所以我们将继续在我们的讨论中使用这个数字。
+在生产中，我们可能会做一些经验性的测试来确定CPU 的最佳数量，但在这里我们将保持简单，
+并且假设只有一个 findPrimes stage 的CPU会被占用。 
+
+我们现在有8个从随机数生成器中取值并试图确定该数字时候是素数的goroutine。
+生成随机数不应该花费太多时间，因此 findPrimes stage 的每个goroutine 应该
+能够确定它的数字是否为素数，然后立即有另一个随机数可用。（我理解是生产者比消费者快，可以保证这个设想）
+但是我们依旧还有一个问题：现在我们有4个goroutine，因此也就输出了4个不同的channel，
+但是我们对素数进行迭代的range语句，只能有一个 channel作为输入。
+这将是我们使用扇入（fan-in）模式的绝佳实例。
+
+正如我们前面所讨论的，**扇入意味着将多个数据流复用或合并成一个流。**
+这样做的算法相对简单：
+```go
+// FanIn 我们这里采用标准的 done channel 来使我们的 goroutine 可以被关闭，
+// 然后用一个可变的interface{} 切片的channel 来进行 扇入
+func FanIn(
+	done <-chan interface{},
+	channels ...<-chan interface{},
+) <-chan interface{} {
+	// 我们用一个 wait group 来等所有channel 都被处理完
+	var wg sync.WaitGroup
+	multiplexedStream := make(chan interface{})
+	// 在这里我们创建一个函数，他在传递时将从 channel 中读取，并将读取的值传递到 multiplexedStream channel
+	multiplex := func(c <-chan interface{}) {
+		defer wg.Done()
+		for i := range c {
+			select {
+			case <-done:
+				return
+			case multiplexedStream <- i:
+			}
+		}
+	}
+
+	// 从所有的 channel 里取值， 往wg 中增加channel 的数量
+	wg.Add(len(channels))
+	for _, c := range channels {
+		go multiplex(c)
+	}
+
+	// 等待所有的读操作结束
+	go func() {
+		// 我们创建一个goroutine 来等待我们多路复用 的 所有channel 被耗尽，
+		// 这样我们可以关闭 multiplexedStream channel
+		wg.Wait()
+		close(multiplexedStream)
+	}()
+	return multiplexedStream
+}
+```
+[【demo】](base_func/base_func.go)
+
+简而言之，扇入涉及创建用户将读取的多路复用channel，然后为每个传入channel 启动一个
+goroutine，以及在传入channel 全部关闭时关闭复用 channel的goroutine。
+由于我们要创建一个等待 N个 其他分区完成的 goroutine，创建一个sync.WaitGroup 来
+协调是很有意义的。
+多路复用功能还通知 WaitGroup 它已完成。
+
+### 额外提醒
+> 原生的的扇出扇入算法的实现，仅会在结果到达的顺序不重要的情况。
+我们没有做任何事情来保证从 randIntStream 中读取项目的顺序在筛选过程中保留下来。
+稍后，我们将看一个保持运行顺序的例子。
+
+让我们把素有这些放一起看看运行时间是否有所减少:
+```go
+func Con_d_time_dome() {
+	done := make(chan interface{})
+	defer close(done)
+	start := time.Now()
+
+	rand := func() interface{} {
+		return rand.Intn(50000000)
+	}
+
+	randIntStream := base_func.ToInt(done, base_func.RepeatFn(done, rand))
+
+	numFinders := runtime.NumCPU()
+	fmt.Printf("Spinning up %d prime finders.\n", numFinders)
+
+	finders := make([]<-chan interface{}, numFinders)
+	fmt.Println("Primes:")
+	for i := 0; i < numFinders; i++ {
+		finders[i] = base_func.PrimeFinder(done, randIntStream)
+	}
+
+	for prime := range base_func.Take(done, base_func.FanIn(done, finders...), 10) {
+		fmt.Printf("\t%d\n", prime)
+	}
+
+	fmt.Printf("Search took: %v", time.Since(start))
+}
+```
+输出：
+```shell
+Spinning up 8 prime finders.
+Primes:
+        6410693
+        24941317
+        10128161
+        36122539
+        25511527
+        2107939
+        14004383
+        7190363
+        2393161
+        45931967
+Search took: 6.323565707s
+```
+所以运行时间从27s降到6s。这清楚地表明了扇出，扇入模式的好处，
+它重新定义了pipeline 的用途。我们将执行时间缩短了大约70%多，也不会大幅改变程序的结构。
+
+！！！！太精妙了这个并发模式！！！叹叹叹！！！
