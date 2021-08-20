@@ -21,5 +21,5 @@
 - [扇出，扇入](fan_out_fan_in/fan_in_out.md)
 - [or-done-channel](or_done_channel/or-done-channel.md)
 - [tee-channel](tee_channel/tee_channel.md)
-
+- [桥接 channel](bridge_channel/bridge_channel.md)
 
