@@ -143,7 +143,7 @@ func FanIn(
 	var wg sync.WaitGroup
 	multiplexedStream := make(chan interface{})
 	// 在这里我们创建一个函数，他在传递时将从 channel 中读取，并将读取的值传递到 multiplexedStream channel
-	multiplex := func(c <-chan interface{}) {
+	multiplex := func(c <-chan interface{}) { // 处理单个channel 的策略
 		defer wg.Done()
 		for i := range c {
 			select {
@@ -157,7 +157,7 @@ func FanIn(
 	// 从所有的 channel 里取值， 往wg 中增加channel 的数量
 	wg.Add(len(channels))
 	for _, c := range channels {
-		go multiplex(c)
+		go multiplex(c)  // 实际扇出
 	}
 
 	// 等待所有的读操作结束
