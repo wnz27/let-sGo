@@ -1,14 +1,70 @@
-# tee-channel
-有时候你可能想分割一个来自channel 的值，以便将它们发送到你的代码的两个独立区域中。
-设想一下，一个传递用户指令的channel：你可能想要在一个channel上接收一系列用户指令，
-将它们发送给相应的执行器，并将它们发送给记录命令以供日后审计的东西。
-
-从类 UNIX 系统中的tee 命令中获得它的名字，tee-channel 就是这样做的。
-你可以将它传递给一个读channel，并且它会返回两个单独的channel，以获得相同的值：
-```go
+/**
+ * @project let-sGo
+ * @Author 27
+ * @Description //TODO
+ * @Date 2021/8/21 01:55 8月
+ **/
 package main
 
+import "fmt"
+
+func ToInt(
+	done <-chan interface{},
+	valueStream <-chan interface{},
+) <-chan int {
+	intStream := make(chan int)
+	go func() {
+		defer close(intStream)
+		for v := range valueStream {
+			select {
+			case <-done:
+			case intStream <- v.(int):
+			}
+		}
+	}()
+	return intStream
+}
+
 func main() {
+	repeat := func(
+		done <-chan interface{},
+		values ...interface{},
+	) <-chan interface{} {
+		valueStream := make(chan interface{})
+		go func() {
+			defer close(valueStream)
+			for {
+				for _, v := range values {
+					select {
+					case <-done:
+						return
+					case valueStream <- v:
+					}
+				}
+			}
+		}()
+		return valueStream
+	}
+
+	take := func(
+		done <-chan interface{},
+		valueStream <-chan interface{},
+		num int,
+	) <-chan interface{} {
+		takeStream := make(chan interface{})
+		go func() {
+			defer close(takeStream)
+			for i := 0; i < num; i ++ {
+				select {
+				case <-done:
+					return
+				case takeStream <- <-valueStream:  // 太他吗容易错了！！！！！
+				}
+			}
+		}()
+		return takeStream
+	}
+
 	orDone := func(
 		done,
 		c <-chan interface{},
@@ -63,31 +119,17 @@ func main() {
 		}()
 		return out1, out2
 	}
-}
-```
 
-注意写入out1和out2是紧密耦合的，直到out1，和out2 都被写入，迭代才会继续。
-通常来说这不是问题，因为处理来自每个channel 的吞吐量都应该是一个确定的某个之外而不是像
-tee命令那样，但这并没有任何价值（这句翻译的又没读懂）。下面是一个快速示例
-```go
-done := make(chan interface{})
+	done := make(chan interface{})
 	defer close(done)
 
 	out1, out2 := tee(done, take(done, repeat(done, 1, 2), 4))
 	for val1 := range out1 {
 		fmt.Printf("out1: %v, out2: %v\n", val1, <-out2)
 	}
-```
-输出
-```shell
-out1: 1, out2: 1
-out1: 2, out2: 2
-out1: 1, out2: 1
-out1: 2, out2: 2
-```
-我们清晰的看到重复利用一个值。
-[【Demo】](tee_channel.go)
 
-通过这种模式，对于你的系统来说，继续使用channel 作为 "join点" 将会是易如反掌的事。
-
-
+	done2 := make(chan interface{})
+	for i := range ToInt(done, take(done2, repeat(done2, 1, 3), 4)) {
+		fmt.Println(i)
+	}
+}
