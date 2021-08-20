@@ -2,7 +2,7 @@
 有时候，你需要处理来系统各个分散部分的channel。
 与操作pipeline 所不同的是，你不能对你通过 done channel 
 进行取消了的 channel 上的代码将会表现成什么样子做断言。
-也就是说，你不知道你的goroutine 是否被取消，这意味着你正在读取的channel 将被取消。
+也就是说，你不知道你的goroutine 是否被取消，这意味着你正在读取的channel 将被取消。([从关闭的channel读的值一般是不期望的默认值](../../chapter3/channel/base.md))
 处于这个原因，正如在本章前面 "防止 goroutine泄露" 中所阐述的那样，我们需要用channel 
 中的select 语句来包装我们的读操作，并从已完成的channel 中进行选择。
 这非常好，但是这样做需要的代码很容易读取，如下所示：
