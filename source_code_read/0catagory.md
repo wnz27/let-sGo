@@ -1,7 +1,7 @@
 # 尝试阅读源码
 
 ## 个人
-- [go 官方]
+- [go 官方](https://github.com/wnz27/go/tree/read-source-base-1.17)
 - [redis]
 - [ini]
 - [httprouter]
