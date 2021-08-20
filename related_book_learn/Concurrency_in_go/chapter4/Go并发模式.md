@@ -19,4 +19,5 @@
 - [构建 pipeline 的最佳实践](pipeline_prac/pipeline_prac.md)
 - [一些便利的生成器](generator/generator.md)
 - [扇出，扇入](fan_out_fan_in/fan_in_out.md)
+- [or-done-channel](or_done_channel/or-done-channel.md)
 
