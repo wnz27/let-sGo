@@ -4,6 +4,9 @@
 - [redis]
 - [ini]
 - [httprouter]
+- [kratos]
+- [go-zero]
+- [ego]
 - [gin]
 
 
