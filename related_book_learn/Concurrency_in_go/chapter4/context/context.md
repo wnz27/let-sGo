@@ -188,9 +188,111 @@ func TODO() Context
 所以让我们把所有这些用于使用。我们来看一个使用完成channel模式的例子，并且看看我们切换到使用 context 包获得什么好处。
 这是一个同时打印问候和告别的程序"
 ```go
+package main
 
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	var wg sync.WaitGroup
+	done := make(chan interface{})
+	defer close(done)
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := printGreeting(done); err != nil {
+			fmt.Printf("%v", err)
+			return
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := printFarewell(done); err != nil {
+			fmt.Printf("%v", err)
+			return
+		}
+	}()
+
+	wg.Wait()
+}
+
+func printGreeting(done <-chan interface{}) error {
+	greeting, err := genGreeting(done)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s world!\n", greeting)
+	return nil
+}
+
+func printFarewell(done <-chan interface{}) error {
+	farewell, err := genFarewell(done)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s world!\n", farewell)
+	return nil
+}
+
+func genGreeting(done <-chan interface{}) (string, error) {
+	switch locale, err := locale(done); {
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "hello", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
+
+func genFarewell(done <-chan interface{}) (string, error) {
+	switch locale, err := locale(done); {
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "goodbye", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
+
+func locale(done <-chan interface{}) (string, error) {
+	select {
+	case <-done:
+		return "", fmt.Errorf("canceled")
+	case <-time.After(3 * time.Second):
+	}
+	return "EN/US", nil
+}
 ```
+输出：
+```shell
+goodbye world!
+hello world!
+```
+忽略竞争条件（顺序不定）, 我们可以看到我们的程序有两个分支同时运行。
+我们通过创建完成通道并将其传递给我们的调用图来设置标准抢占方法。
+如果我们在main 的任何一点关闭done channel，那么两个分支都将被取消。
 
+通过引入goroutine, 我们已经开辟了以几种不同且有趣的方式来控制该程序的可能性。
+我们可能希望genGreeting 在耗时过长的时候发生超时。也许我们不希望genFarewell
+调用locale，如果我们知道其父函数将很快被取消。
+在每个堆栈框架中，一个函数可以影响其下的整个调用堆栈。
+
+使用 done channel 模式的话，我们可以通过将输入的 done channel 都包装到统一的
+done channel中，并在任意done channel 被关闭的时候关闭所有done channel，
+【但是这样做的话我们没办法获得Context 所能给我们提供的关于错误以及超时的额外信息】。
+
+为了比较 done channel 和 context 包，我们用树来表示这个程序，树中每个节点代表一个
+函数的调用
+![](call_1.jpg)
+
+让我们修改我们的程序，使用 context 包而不是 done channel。因为我们现在
+具有 context.Context 的灵活性，所以我们可以引入一个有趣的场景。
 
 
 

@@ -25,8 +25,8 @@ func main() {
 	fmt.Println(arr)
 
 	s2 := arr[:]
-	fmt.Println("互斥锁 =", s2)
-	fmt.Println("After updateSlice(互斥锁)")
+	fmt.Println("mutex =", s2)
+	fmt.Println("After updateSlice(mutex)")
 	updateSlice(s2)
 	fmt.Println(s2)
 	fmt.Println(arr)
@@ -45,7 +45,7 @@ func main() {
 	s1 = arr1[2:6]
 	s2 = s1[3:5]
 	fmt.Println("waitGroup = ", s1)
-	fmt.Println("互斥锁 = ", s2)
+	fmt.Println("mutex = ", s2)
 	/*
 		slice:
 		ptr 指向开头元素 len 长度，方括号取值小于这个长度，大于等于报错越界
@@ -56,7 +56,7 @@ func main() {
 	fmt.Println("arr1 =", arr1)
 
 	fmt.Printf("waitGroup=%v, len(waitGroup) = %d, cap(waitGroup) = %d\n", s1, len(s1), cap(s1))
-	fmt.Printf("互斥锁=%v, len(互斥锁) = %d, cap(互斥锁) = %d\n", s2, len(s2), cap(s2))
+	fmt.Printf("mutex=%v, len(mutex) = %d, cap(mutex) = %d\n", s2, len(s2), cap(s2))
 
 
 	fmt.Println("========================================================================")
