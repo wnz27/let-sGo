@@ -269,6 +269,8 @@ func locale(done <-chan interface{}) (string, error) {
 	return "EN/US", nil
 }
 ```
+[【demo】](context_demo1/cd1_done.go)
+
 输出：
 ```shell
 goodbye world!
@@ -294,7 +296,217 @@ done channel中，并在任意done channel 被关闭的时候关闭所有done ch
 让我们修改我们的程序，使用 context 包而不是 done channel。因为我们现在
 具有 context.Context 的灵活性，所以我们可以引入一个有趣的场景。
 
+假设 genGreeting 只想在放弃调用 locale 之前 等待 1s，超时时间就应该为1s。
+我们也想要在 main 函数中建立一些智能逻辑。如果 printGreeting 不成功，
+我们也想取消我们对printFarewell 的调用。毕竟，如果我们不打声招呼，说再见就没有意义了。
+
+使用context 包实现这一点很简单：
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	var wg sync.WaitGroup
+	// 1、这里 main 用 context.Background() 创建一个 Context 并用 context.WithCancel 包装它以允许取消。
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := printGreeting(ctx); err != nil {
+			fmt.Printf("cannot print greeting: %v\n", err)
+			// 2、这一行上，如果从打印语问候语返回错误，main将取消这个context。
+			cancel()
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := printFarewell(ctx); err != nil {
+			fmt.Printf("cannot print farewell: %v\n", err)
+		}
+	}()
+	wg.Wait()
+}
+
+func printGreeting(ctx context.Context) error {
+	greeting, err := genGreeting(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s world!\n", greeting)
+	return nil
+}
+
+func printFarewell(ctx context.Context) error {
+	farewell, err := genFarewell(ctx)
+	if err != nil {return err}
+	fmt.Printf("%s world!\n", farewell)
+	return nil
+}
+
+func genGreeting(ctx context.Context) (string, error) {
+	// 3、这里genGreeting 用context.WithTimeout 包装它的Context。这将
+	// 在1s 后自动取消返回的 context，从而取消它传递该 context 的任何子函数，即语言环境。
+	ctx, cancel := context.WithTimeout(ctx, 1 * time.Second)
+	defer cancel()
+	switch locale, err := locale(ctx); {
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "hello", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
+
+func genFarewell(ctx context.Context) (string, error) {
+	switch locale, err := locale(ctx); {
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "goodbye", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
+
+func locale(ctx context.Context) (string, error) {
+	select {
+	case <-ctx.Done():
+		// 这一行返回为什么Context 被取消对的原因。该错误将会一直弹出到main， 这会导致取消。
+		return "", ctx.Err()
+	case <-time.After(30 * time.Second):
+	}
+	return "EN/US", nil
+}
+```
+[【demo】](context_demo2/cd2_ctx.go)
+
+输出：
+```shell
+cannot print greeting: context deadline exceeded
+cannot print farewell: context canceled
+```
+让我们看使用调用图了解发生了什么。这里数字对应前面例子中的代码标注
+![](call_2.jpg)
+
+我们可以从我们的输出中看到该系统运行的很完美。
+由于我们确保local 至 少需要一分钟来运行，因此我们在genGreeting 中的调用将
+始终超时，这意味着main 会始终取消 printFarewell 下面的调用图。
+
+请注意，genGreeting 是如何构建自定义的Context.Context 以满足其需求，
+而不必影响父级的context。如果 genGreeting 成功返回，并且 printGreeting 
+需要再次调用，则可以在不泄露有关genGreeting 如何操作的信息的情况下进行。
+这种可组合性使你能够编写大型系统，而无需在整个调用图中混淆问题。
+
+我们可以对这个程序进行另一个改进：因为我们知道locale 需要大约一分钟的时间来运行，
+在locale的内部，我们可以检查是否已经设置了超时时间，如果已经设置了超时时间的话，
+我们是否已经超时。下面例子展示了如何使用context.Context 的 Deadline 方法：
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	var wg sync.WaitGroup
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		if err := printGreeting(ctx); err != nil {
+			fmt.Printf("cannot print greeting: %v\n", err)
+			cancel()
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := printFarewell(ctx); err != nil {
+			fmt.Printf("cannot print farewell: %v\n", err)
+		}
+	}()
+
+	wg.Wait()
+}
+
+func printGreeting(ctx context.Context) error {
+	greeting, err := genGreeting(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s world!\n", greeting)
+	return nil
+}
+
+func printFarewell(ctx context.Context) error {
+	farewell, err := genFarewell(ctx)
+	if err != nil {return err}
+	fmt.Printf("%s world!\n", farewell)
+	return nil
+}
+
+func genGreeting(ctx context.Context) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 2 * time.Second)
+	defer cancel()
+	switch locale, err := locale(ctx); {
+	case err != nil:
+		return "", err
+	case locale == "EV/US":
+		return "hello", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
+
+func genFarewell(ctx context.Context) (string, error) {
+	switch locale, err := locale(ctx); {
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "goodbye", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
 
 
+func locale(ctx context.Context) (string, error) {
+	// 这里我们检查我们的context 是否提供了超时时间。如果确实如此，并且我们的系统时钟已经超过截止时间，
+	// 那么我们只会返回context 包中定义的特定错误，即 DeadlineExceeded 
+	if deadline, ok := ctx.Deadline(); ok {
+		if deadline.Sub(time.Now().Add(1 * time.Minute)) <= 0 {
+			return "", context.DeadlineExceeded
+		}
+	}
+	select {
+	case <- ctx.Done():
+		return "", ctx.Err()
+	case <-time.After(1 * time.Minute):
+	}
+	return "EN/US", nil
+}
+```
+输出
+```shell
+cannot print greeting: context deadline exceeded
+cannot print farewell: context canceled
+```
+虽然在迭代程序之间的差异很小，但它允许locale 函数很快就会失败。
+在调用下一个函数的成本很高的程序中，这可能会节省大量的时间，但
+至少它也允许该函数立即失效，而不必等待实际的超时发生。
+唯一的问题是，你必须知道你的下级调用图需要多长时间，这个实践起来可能非常困难。
 
 
