@@ -509,4 +509,204 @@ cannot print farewell: context canceled
 至少它也允许该函数立即失效，而不必等待实际的超时发生。
 唯一的问题是，你必须知道你的下级调用图需要多长时间，这个实践起来可能非常困难。
 
+这将我们带到了 context 包提供的另一半功能: 用于存储和检索请求范围数据
+的 Context 的数据包。请记住，当一个函数创建一个 goroutine 和 Context 时，
+它通常会启动一个将为请求提供服务的 goroutine，并且进一步向下的函数可能需要
+有关请求的信息。以下是如何下上下文中存储数据以及如何检索数据的示例：
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+)
+
+func main() {
+	ProcessRequest("jane", "abc123")
+}
+
+func ProcessRequest(userID, authToken string) {
+	ctx := context.WithValue(context.Background(), "userID", userID)
+	ctx = context.WithValue(ctx, "authToken", authToken)
+	//fmt.Printf("-->: %v\n", ctx)
+	HandleResponse(ctx)
+}
+
+func HandleResponse(ctx context.Context) {
+	fmt.Printf(
+		"handling response for userID: %v (authToken: %v)",
+		ctx.Value("userID"),
+		ctx.Value("authToken"),
+	)
+}
+```
+[【demo】](context_demo4/cd4_req.go)
+
+输出：
+```shell
+handling response for userID: jane (authToken: abc123)
+```
+很简单的东西，唯一的限制条件是：
+- 你使用的键值必须满足Go语言的可比性概念（这里可以点进去看到源码）,也就是运算符
+ == 和 != 在使用时需要返回正确的结果。
+- 返回值必须安全，才能从多个 goroutine 访问。
+
+由于 Context 的键值都被定义为 interface{}，所以当试图检索值时，
+我们会失去Go语言的类型安全性。key 可以是不同的类型，或者与我们提供的key略有所不同。
+值可能与我们预期的不同。出于这些原因，Go语言作者建议你在从Context 中存储和检索值时
+遵循一些规则。
+
+首先，它们建议你在软件包中定义一个自定义键类型。只要其他软件包执行相同的操作，则可以
+防止上下文中的冲突。作为一个提醒我们为什么要这么做的例子，我们来看看如下这个尝试将
+相同的内部值存储在不同key 类型的简短程序：
+```go
+package main
+
+import "fmt"
+
+type foo int
+type bar int
+
+func main() {
+	m := make(map[interface{}]int)
+	m[foo(1)] = 1
+	m[bar(1)] = 2
+	fmt.Printf("%v\n", m)
+}
+```
+[【demo】](context_demo5/cd5_samev_notsk.go)
+
+输出
+```shell
+map[1:2 1:1]
+```
+可以看到，虽然基础值是相同的，但不同的类型信息在map 中区分它们。
+由于你为软件包 key 定义的类型未导出，因此其他软件包不能与你在软件包中生成的key 冲突。
+
+由于我们不导出用于存储数据的key，因此我们必须导出为我们检索数据的函数。
+这能很好地工作，因为它允许这些数据的使用者使用静态的、类型安全的函数。
+
+当你把所有这些放在一起时，你会得到类似下面的这个例子：
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+)
+
+type ctxKey int
+
+const (
+	ctxUserID ctxKey = iota
+	ctxAuthToken
+)
+
+func UserID(c context.Context) string {
+	return c.Value(ctxUserID).(string)
+}
+
+func AuthToken(c context.Context) string {
+	return c.Value(ctxAuthToken).(string)
+}
+
+func ProcessRequest(userID, authToken string) {
+	ctx := context.WithValue(context.Background(), ctxUserID, userID)
+	ctx = context.WithValue(ctx, ctxAuthToken, authToken)
+	HandleResponse(ctx)
+}
+
+func HandleResponse(ctx context.Context) {
+	fmt.Printf(
+		"handle response for userID: %v (authToken: %v)",
+		UserID(ctx),
+		AuthToken(ctx),
+	)
+}
+
+func main() {
+	ProcessRequest("jane", "abc12")
+}
+```
+[【demo】](context_demo6/cd6_use_key.go)
+
+输出：
+```shell
+handle response for userID: jane (authToken: abc12)
+```
+我们现在有一种类型安全的函数来从context 获取值，如果消费者在不同的包中，
+它们不会知道或关心用于存储信息的key。但是，这种技术确实会造成问题。
+
+在前面的例子中，我们假设 HandleResponse 确实存在于另一个名为response 的包中，
+我们假设 ProcessRequest 位于名为 process 的包中。
+process 包必须导入响应包才能调用 HandleResponse，但 HandleResponse 无法访问
+process 包中定义的访问器函数，因为导入过程会形成循环依赖关系。
+由于用于在 Context 中存储key 的类型对于 process 包来说是私有的，所以 response
+包无法检索这些数据！
+
+这就迫使了创建以某种数据类型为中心的包被不同的地方导入的架构。这样做当然不是一件坏事，
+但确实是一个值得三思之后的决定。
+
+context 包非常整洁，但尚未被整个Go语言社区所赞美。在Go语言社区中，
+context包一直存在争议。建议取消 context 包的提议已经相当受欢迎，而且在context 中
+存储任意数据的能力以及存储数据的类型不安全的方式造成了一些分歧。
+虽然已经减少了部分访问函数缺乏类型安全性，但是仍然可以通过存储不正确的类型来引入错误。
+然而，更大的问题肯定是开发人员应该在 context 的实例中存储什么的问题。
+
+关于什么是适当的、最普遍的指导，下面是context包中的下面有点函数的注释：
+> // Package context defines the Context type, which carries deadlines,
+// cancellation signals, and other request-scoped values across API boundaries
+// and between processes.
+
+这个翻译可能比较早
+> 仅将上下文值用于传输进程和请求的请求范围数据，API边界，而不是将可选参数传递给函数。
+
+你应该很清楚什么是可选参数（你不应该使用context 来满足你对Go语言支持可选参数的奇怪需求），
+但什么是"请求范围数据"？据说它"转换进程 和 API 边界"，但它也可以描述很多东西。
+我发现定义它的最哈方法是与团队一起提出一些启发式方法， 并在代码评审中评估它们。
+这是我的启发式的建议：（有的没看懂）
+1. ***数据应该通过进程或API边界***
+   > 如果你在进程的内存中生成数据，那么除非你通过API边界传递数据，否则可能不是一个很好的选择。
+2. ***数据应该是不可变的***
+   > 如果不是，那么根据定义，你存储的内容不是来自请求的内容。
+3. ***数据应该趋向简单类型***
+   > 如果请求范围数据是为了传递进进程和API边界，那么如果另一方不需要导入一个复杂的包的图，
+   那么将这些数据拉出就容易的多。
+4. ***数据应该是数据，而不是类型和方法***
+   > 操作是逻辑的，属于消耗这些数据的东西。
+5. ***数据应该用于修饰操作，而不是驱动操作***
+   > 如果你的算法根据 context 中包含或不包含的内容而有所不同，你可能会跨越可选参数的范围。（目前我理解这是不应该的，逻辑不应该放在这里吧）
+
+以上皆非硬性规定，只是用来启发你编程时候思维的建议。但是，
+如果你发现存储在上下文中的数据违反了上述所有五条准则，你可能需要仔细观察下你正在做什么。
+
+需要考虑的另一个方面是该数据在使用之前可能需要经过多少层。如果在接收数据的地方和使用的点之间
+有几个框架和几十个函数，你是否想要倾向于冗长的自解释的参数名，并将数据作为参数添加？
+或者你更愿意将它放在 context 中，从而创建一个不可见的依赖关系？
+每种方法都有优点，最终这是你和你的团队必须做出的决定。
+
+即使采用这些启发式方法，值是否是请求范围数据仍然是一个难以回答的问题。看看下面的表格。
+它列出了我对每种数据是否满足我列出的五种启发式的看法。
+
+| 数据 | 1 | 2 | 3 | 4 | 5 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| RequestID | ✔️ | ✔️ | ✔️ | ✔️| ✔️ |  
+| UserID | ✔️ | ✔️ | ✔️ | ✔️| |  
+| URL | ✔️ | ✔️ | ️ | ️| ️ |  
+| API Server Connection |  | ️ |️ | ️|️ |
+| Authorization Token | ✔️ | ✔️ | ✔️ | ✔️| |
+| Request Token | ✔️ | ✔️ | ✔️ | |  |  
+
+有时很明显，某些内容不应该存储在上下文中，因为它与API 服务器连接有关，但
+有时不太清楚。什么是授权令牌？它是不可变的，它可能是一部分字节，但是这些
+数据的接收者不会使用它来确定是否要求字段？这些数据是否属于上下文？
+为了让情况更加难以预测：很可能在一个团队可以被接受的编程方式，在另一个团队中
+是不可被接受的。
+
+总而言之，这个问题并没有一个一概而就的答案。该软件包已被纳入标准库，
+因此你必须对其使用形成一些意见，但该意见可能（也可能应该）根据你所触及
+的项目而改变。我留给你的最后意见是，context 提供的取消功能非常有用，
+你对数据包的感受不应该阻止你使用它。
+
+
 
