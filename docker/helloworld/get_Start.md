@@ -65,5 +65,32 @@ $ docker run -dp 3000:3000 YOUR-USER-NAME/getting-started
 You should see the image get pulled down and eventually start up!
 
 ## Persist the DB
+#### The container’s filesystem
+
+When a container runs, it uses the various layers from an image for its filesystem. 
+Each container also gets its own “scratch space” to create/update/remove files. 
+Any changes won’t be seen in another container, even if they are using the same image.
+
+
+#### Container volumes
+With the previous experiment, we saw that each container starts from the image definition each time it starts. While containers can create, update, and delete files, those changes are lost when the container is removed and all changes are isolated to that container. With volumes, we can change all of this.
+
+Volumes provide the ability to connect specific filesystem paths of the container back to the host machine. If a directory in the container is mounted, changes in that directory are also seen on the host machine. If we mount that same directory across container restarts, we’d see the same files.
+
+There are two main types of volumes. We will eventually use both, but we will start with named volumes.
+
+#### Persist the todo data
+
+With the database being a single file, if we can persist that file on the host and make it available to the next container, it should be able to pick up where the last one left off. By creating a volume and attaching (often called “mounting”) it to the directory the data is stored in, we can persist the data. As our container writes to the todo.db file, it will be persisted to the host in the volume.
+
+As mentioned, we are going to use a named volume. Think of a named volume as simply a bucket of data. Docker maintains the physical location on the disk and you only need to remember the name of the volume. Every time you use the volume, Docker will make sure the correct data is provided.
+
+#### Dive into the volume
+A lot of people frequently ask “Where is Docker actually storing my data when I use a named volume?” If you want to know, you can use the docker volume inspect command.
+```shell
+$ docker volume inspect todo-db
+```
+
+## Use bind mounts
 
 
