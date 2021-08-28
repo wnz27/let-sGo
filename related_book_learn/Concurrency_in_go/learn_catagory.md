@@ -5,3 +5,6 @@
 ## 目录
 - [并发组件](chapter3/Go并发组件.md)
 - [并发模式](chapter4/Go并发模式.md)
+- [大规模并发](chapter5/大规模并发.md)
+
+
