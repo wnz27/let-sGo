@@ -92,5 +92,61 @@ $ docker volume inspect todo-db
 ```
 
 ## Use bind mounts
+#### Quick volume type comparisons
+Bind mounts and named volumes are the two main types of volumes that come with the Docker engine. However, additional volume drivers are available to support other uses cases (SFTP, Ceph, NetApp, S3, and more).
 
+| - | **Named Volumes** | **Bind Mounts** |
+| :---: | :---: | :---: |
+| Host Location | Docker chooses | You control |
+| Mount Example (using -v) | my-volume:/usr/local/data | /path/to/data:/usr/local/data |
+| Populates new volume with container contents | yes | no |
+| Supports Volume Drivers | yes | no |
+
+
+#### Start a dev-mode container
+To run our container to support a development workflow, we will do the following:
+- Mount our source code into the container
+- Install all dependencies, including the “dev” dependencies
+- Start nodemon to watch for filesystem changes
+  
+So, let’s do it!
+1. Make sure you don’t have any previous getting-started containers running.
+2. Run the following command. We’ll explain what’s going on afterwards:
+   ```shell
+    docker run -dp 3000:3000 \
+     -w /app -v "$(pwd):/app" \
+     node:12-alpine \
+     sh -c "yarn install && yarn run dev"
+   ```
+   If you are using PowerShell then use this command:
+   ```shell
+   docker run -dp 3000:3000 `
+     -w /app -v "$(pwd):/app" `
+     node:12-alpine `
+     sh -c "yarn install && yarn run dev"
+   ```
+   - `-dp 3000:3000` - same as before. Run in detached (background) mode and create a port mapping
+   - `-w /app` - sets the “working directory” or the current directory that the command will run from
+   - `-v "$(pwd):/app"` - bind mount the current directory from the host in the container into the `/app` directory
+   - `node:12-alpine` - the image to use. Note that this is the base image for our app from the Dockerfile
+   - `sh -c "yarn install && yarn run dev"` - the command. 
+     We’re starting a shell using `sh` (alpine doesn’t have `bash`) and running `yarn install` to install all dependencies 
+     and then running `yarn run dev`. If we look in the `package.json`, we’ll see that the `dev` script is starting `nodemon.`
+3. You can watch the logs using docker logs -f <container-id>. You’ll know you’re ready to go when you see this:
+   ![](img/d_img1.png)
+   When you’re done watching the logs, exit out by hitting `Ctrl+C`.
+4. Now, let’s make a change to the app. In the `src/static/js/app.js` file, 
+   let’s change the “Add Item” button to simply say “Add”. This change will be on line 109:
+   ```shell
+   -                         {submitting ? 'Adding...' : 'Add Item'}
+   +                         {submitting ? 'Adding...' : 'Add'}
+   ```
+5. Simply refresh the page (or open it) and you should see the change reflected in the browser almost immediately. 
+   It might take a few seconds for the Node server to restart, so if you get an error, just try refreshing after a few seconds.
+6. Feel free to make any other changes you’d like to make. When you’re done, stop the container and build your 
+   new image using `docker build -t getting-started .` .
+
+Using bind mounts is very common for local development setups. The advantage is that the dev machine doesn’t need to have all of the build tools and environments installed. With a single docker run command, the dev environment is pulled and ready to go. We’ll talk about Docker Compose in a future step, as this will help simplify our commands (we’re already getting a lot of flags).
+
+## Multi container apps
 
