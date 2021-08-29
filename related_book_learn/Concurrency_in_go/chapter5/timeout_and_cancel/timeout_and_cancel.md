@@ -42,14 +42,90 @@
 现在我们已经掌握应当何时使用超时了，让我们把注意力转向取消，以及如何建立一个并发处理来优雅地处理取消。
 并发进程可能被取消的原因有很多：
 - ***超时***
+  > 超时是隐式取消
 - ***用户干预***
+  > 为了获得良好的用户体验，通常建议维持一个长链接，然后以轮询间隔将状态报告给用户，或允许用户查看他们
+  > 认为合适的状态。当用户使用并发程序时，有时需要允许用户取消他们已经开始的操作。
 - ***父进程取消***
+  > 对于这个问题，如果任何一种并发操作的父进程停止，那子进程也将被取消。
 - ***复制请求***
+  > 我们可能希望将数据发送到多个并发进程，以尝试从其中一个进程获得更快的响应。当第一个回来的时候，
+  > 我们就会取消其余的进程。我们将在第 5 章 "复制请求" 中详细讨论。
 
 也可能有其他的原因。然而，"为何"这个问题并不像"如何"这样的问题那么困难或有趣。
 在第4章中，我们讨论了两种取消并发进程的方法：`channel done` 和 `context.Context` 类型。
 这是相对容易的一部分，在这里我们想要探索更复杂的问题：
 - **当一个并发进程被取消时，对于正在执行的算法及其下游消费者意味着什么？**
 - **在编写可随时终止的并发代码时，需要考虑哪些事项？**
+
+为了回答这些问题，我们需要探索的第一件事是并发进程的可抢占性。观察下面的代码，并假设它在自己的 goroutine 中运行：
+```go
+    var value interface{}
+	select {
+	case <-done:
+		return
+	case value = <- valueStream:
+	}
+
+	result := reallyLongCalculation(value)
+
+	select {
+	case <-done:
+		return
+	case resultStream <-result:
+	}
+```
+我们已经可以从 valueStream 的读取数据然后写入 resultStream，并监听 channel done，检查
+goroutine 是否被取消了，但是仍然有一些问题。reallyLongCalculation 似乎不能抢占，而且根据
+名字来看，可能需要很长时间！这意味着，如果在长时间计算正在执行的时候，如果有东西试图取消这个 goroutine，
+那么在我们确认取消和停止之前可能需要很长时间。让我们试着让 reallyLongCalculation 支持抢占，看看会发生什么：
+```go
+func reallyLongCalculation(done <-chan interface{}, value interface{}) interface{} {
+	intermediateResult := longCalculation(value)
+	select {
+	case <-done:
+		return nil
+	default:
+	}
+	return longCalculattion(intermediateResult)
+}
+```
+我们已经取得了一些进展：reallyLongCalculation 现在可以被抢占了，不过我们只解决了一半的问题：
+我们只能在reallyLongCalculation 调用其他函数实现抢占。
+为了解决这个问题，我们需要编写 longCalculation， 就像下面这样
+```go
+func reallyLongCalculation2(done <-chan interface{}, value interface{}) interface{} {
+	intermediateResult := longCalculation(done, value)
+	return longCalculattion(done, intermediateResult)
+}
+```
+如果认为这个推理的结论是合乎逻辑的，那就能得出以下两个必要的任务：
+- 定义我们的并发进程可抢占的周期。
+- 确保运行周期比抢占周期长的功能本身都是可抢占的。
+
+一个简单的方法是将你的goroutine 代码段分解成小段。你应该注意那些不可抢占的原子操作，
+确保它们的运行时间小于你认为可以接受的时间。
+
+这里还有另外一个潜在的问题：如果我们的goroutine 恰好修改了共享状态（例如数据库，文件，内存数据结构），
+那当 goroutine 被取消时会发生什么？你的 goroutine 会试图将这个中间状态回滚吗？回滚过程需要多长时间？
+goroutine 已经接收到了停止的信号，所以它不应该花太长的时间来回滚它之前的工作，对吧？
+
+就如何处理这个问题很难给出通用的建议，因为你的算法的性质很大程度上决定了你应该如何解决这个问题。
+然而，如果你将对共享状态的修改保持在一个很小的范围内，并且确保这些修改很容易回滚，那么你可以很好地处理取消。
+如果可能的话，将中间结果存储在内存，然后尽可能快的修改状态。下面是一个错误的示范：
+```go
+result := add(1, 2, 3)
+writeTallyToState(result)
+result = add(result, 4, 5, 6)
+writeTallyToState(result)
+result = add(result, 7, 8, 9)
+writeTallyToState(result)
+```
+这里我们改了三次状态。如果运行这个代码的goroutine 在最后写入之前被取消，
+【我们需要以某种方式回滚前两个调用来修改TallyToState】。对比这个方法：
+```go
+result
+```
+
 
 
