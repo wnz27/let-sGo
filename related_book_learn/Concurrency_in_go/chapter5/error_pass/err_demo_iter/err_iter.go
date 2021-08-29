@@ -2,6 +2,11 @@
  * @project let-sGo
  * @Author 27
  * @Description //TODO
+ * @Date 2021/8/29 20:52 8月
+ **//**
+ * @project let-sGo
+ * @Author 27
+ * @Description //TODO
  * @Date 2021/8/29 01:06 8月
  **/
 package main
@@ -65,9 +70,18 @@ func runJob(id string) error {
 	isExcutable, err := isGloballyExec(jobBinPath)
 
 	if err != nil {
-		return err
+		return IntermediateErr{wrapError(
+			err,
+			"cannot run job %q: requisite binaries not available",
+			id,
+		)} // 这里我们使用进行设计的异常信息。在这种情况下，我们想隐藏异常的底层细节，因为我们觉得这
+		// 对我们模块的调用者来说并不重要。
 	} else if isExcutable == false {
-		return wrapError(nil, "job binary is not executable")
+		return wrapError(
+			nil,
+			"cannot run job %q: requistite binaries are not executable",
+			id,
+		)
 	}
 	// 这里我们传递来自底层模块的异常。因为我们的体系结构决定，我们需要考虑从其他模块传递来的错误，
 	// 而不是将它们用我们自己的错误类型封装，这里会存在一些问题，后面会提到。
@@ -76,7 +90,6 @@ func runJob(id string) error {
 
 func handleError(key int, err error, message string) {
 	log.SetPrefix(fmt.Sprintf("[logID: %v]: \n", key))
-	// 我们记录下异常的所有内容，以备有人需要深入了解发生的事情。
 	log.Printf("%#v", err)
 	fmt.Printf("[%v] %v", key, message)
 }
@@ -87,12 +100,11 @@ func main() {
 	err := runJob("1")
 	if err != nil {
 		msg := "There was an unexpected issue; please report this as a bug."
-		// 我们检查一下异常是否是预期的类型。如果是，那么可以确定这是一个结构完整的异常，
-		// 我们只要简单地将其中的消息传递给用户即可。
+
 		if _, ok := err.(IntermediateErr); ok {
 			msg = err.Error()
 		}
-		// 我们将日志和异常消息与一个ID 绑定在一起。我们可以使用一个自增ID，或者用GUID 来保证ID 的 唯一性。
 		handleError(1 ,err, msg)
 	}
 }
+
