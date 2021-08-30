@@ -131,6 +131,104 @@ pulse
 思考下面的例子。我们将在两次迭代后停止goroutine，但却不关闭我们的任何一个channel，
 来模拟一个产生了异常的goroutine。让我们看下代码：
 ```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	doWork := func(
+		done <-chan interface{},
+		pulseInterval time.Duration,
+	) (<-chan interface{}, <-chan time.Time) {
+		// 我们建立了一个发送心跳的 channel 我们把这个返回给 doWork
+		heartbeat := make(chan interface{})
+		results := make(chan time.Time)
+		go func() {
+
+			pulse := time.Tick(pulseInterval)
+			workGen := time.Tick(2 * pulseInterval)
+			sendPulse := func() {
+				select {
+				case heartbeat <-struct{}{}:
+				default:
+				}
+			}
+
+			sendResult := func(r time.Time) {
+				for {
+					select {
+					case <-pulse:
+						sendPulse()
+					case results <- r:
+						return
+					}
+				}
+			}
+			// 这是我们模拟的问题。所以它不是无限循环的，不需要我们动手停止
+			// 就像墙面的例子一样，我们只会循环两次
+			for i := 0; i < 2; i ++ {
+				select {
+				case <-done:
+					return
+				case <-pulse:
+					sendPulse()
+				case r := <-workGen:
+					sendResult(r)
+				}
+			}
+		}()
+		return heartbeat, results
+	}
+
+	done := make(chan interface{})
+	time.AfterFunc(10 * time.Second, func() {
+		close(done)
+	})
+	const timeout = 2 * time.Second
+	heartbeat, results := doWork(done, timeout / 2)
+	for {
+		select {
+		// 这里我们处理心跳。当没有消息时，我们至少知道每过 timeout / 2 的时间会从心跳 channel 发出一条消息。
+		// 如果我们什么都没有收到，我们更知道是goroutine 本身出了问题。
+		case _, ok := <-heartbeat:
+			if ok == false {
+				return
+			}
+			fmt.Println("pulse")
+		case r, ok := <-results:
+			if ok == false {
+				return
+			}
+			fmt.Printf("results %v\n", r.Second())
+		// 如果我们没有收到心跳或其他消息，就会超时。
+		case <-time.After(timeout):
+			fmt.Println("worker goroutine is not healthy!")
+			return
+		}
+	}
+}
+```
+[【demo】](hb_iter/he_iters.go)
+
+运行得到如下:
+```shell
+pulse
+pulse
+worker goroutine is not healthy!
+```
+非常好，在两秒之内，我们的系统意识到我们的 goroutine 有一些不妥之处，中断了for-select 循环。
+通过使用心跳，我们已经成功地避免了死锁，并且我们不需要依赖更长的超时时间来保持确定性。
+我们将在本章后面 "治愈异常的goroutine" 中进一步讨论如何进一步采用这个概念。
+
+另外请注意，心跳也会有反作用：虽然它让我们知道，长时间运行的 goroutine 依然正常工作着，但是这需要一点时间运行，
+计算出值并发送给channel。
+
+现在让我们暂时放下间隔心跳，来看看在一个工作单元开始时发出的心跳。
+他对于测试来说非常有效。以下是在每个工作单元开始之前发送的例子：
+```go
 
 ```
 
