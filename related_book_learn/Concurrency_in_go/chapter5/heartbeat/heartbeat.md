@@ -229,7 +229,97 @@ worker goroutine is not healthy!
 现在让我们暂时放下间隔心跳，来看看在一个工作单元开始时发出的心跳。
 他对于测试来说非常有效。以下是在每个工作单元开始之前发送的例子：
 ```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+)
+
+func main() {
+	doWork := func(done <-chan interface{}) (<-chan interface{}, <-chan int) {
+		// 创建一个缓冲区大小为1 的heartbeat channel。这确保了即使没有及时接收发送的消息，
+		// 至少也会发出一个心跳。
+		heartbeatStream := make(chan interface{}, 1)
+		workStream := make(chan int)
+		go func() {
+			defer close(heartbeatStream)
+			defer close(workStream)
+
+			for i:=0; i< 10; i++ {
+				// 我们为心跳设置了一个单独的select 块。我们希望将发送results 和心跳分开，
+				// 因为如果接收者没有准备好接收结果，作为替代它将接收到一个心跳，而代表当前结果的值将会丢失。
+				// 由于我们有默认逻辑，所以这里也没有包含对 done channel 的处理。
+				select {
+				case heartbeatStream <- struct{}{}:
+				// 为了防止没人接收我们的心跳，我们增加了默认逻辑。因为我们的 heartbeat channel
+				// 创建时有一个容量的缓冲区，所以如果有人正在监听，但是没有及时收到第一个心跳，
+				// 接收者仍然可以收到心跳。
+				default:
+				}
+				select {
+				case <-done:
+					return
+				case workStream <- rand.Intn(10):
+				}
+			}
+		}()
+		return heartbeatStream, workStream
+	}
+
+	done := make(chan interface{})
+	defer close(done)
+
+	heartbeat, results := doWork(done)
+	for {
+		select {
+		case _, ok := <-heartbeat:
+			if ok {
+				fmt.Println("pulse")
+			} else {
+				return
+			}
+		case r, ok := <-results:
+			if ok {
+				fmt.Printf("results %v\n", r)
+			} else {
+				return
+			}
+		}
+	}
+}
+```
+[【demo】](heart_before_work/heart_before_work.go)
+
+运行输出:
+```shell
+pulse
+results 1
+pulse
+results 7
+pulse
+results 7
+pulse
+results 9
+pulse
+results 1
+pulse
+results 8
+pulse
+results 5
+pulse
+results 0
+pulse
+results 6
+pulse
+results 0
+```
+你可以看到，每个结果都如预期一样伴随着一个心跳。
+
+这种写法真正的亮点在于测试。基于时间间隔的心跳可以以相同的方式使用，
+但是如果你只关心 goroutine 是否开始了它的工作，这有一种很简单的方式。
+观察下面的代码:
+```go
 
 ```
-
 
