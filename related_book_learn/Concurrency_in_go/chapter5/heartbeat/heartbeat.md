@@ -320,6 +320,85 @@ results 0
 但是如果你只关心 goroutine 是否开始了它的工作，这有一种很简单的方式。
 观察下面的代码:
 ```go
+func DoWork(
+	done <-chan interface{},
+	nums ...int,
+) (<-chan interface{}, <-chan int) {
+	heartbeat := make(chan interface{}, 1)
+	intStream := make(chan int)
+	go func() {
+		defer close(heartbeat)
+		defer close(intStream)
+
+        // 我们模拟在 goroutine 开始工作之前的某种延迟。在实践中，这可能是
+        // 各种各样的问题，而且无法确定。我曾经见过CPU 负载过高、磁盘抢占、
+        // 网络延迟和 goblins 造成的延迟
+		time.Sleep(2 * time.Second)
+
+		for _, n := range nums {
+			select {
+			case heartbeat <- struct{}{}:
+			default:
+			}
+			select {
+			case <- done:
+				return
+			case intStream <- n:
+			}
+		}
+	}()
+
+	return heartbeat, intStream
+}
+```
+Dowork 函数是一个非常简单的生成器，它将我们传入的数字转发到它返回的channel 中。
+让我们为这个函数写个测试。下面是一个不那么好的测试样例:
+```go
+func TestDoWorkGeneratesAllNumbers(t *testing.T) {
+	done := make(chan interface{})
+	defer close(done)
+
+	intSlice := []int{0, 1, 2, 3, 5}
+	_, results := DoWork(done, intSlice...)
+
+	for i, expected := range intSlice {
+		select {
+		case r := <-results:
+			if r != expected {
+				t.Errorf(
+					"index %v: expected %v, but received %v,",
+					i,
+					expected,
+					r,
+				)
+			}
+        // 在这里我们设置一个合理的超时时间，避免 goroutine 陷入死锁
+        case <-time.After(1 * time.Second):
+			t.Fatal("test time out")
+		}
+	}
+}
+```
+运行得到：
+```go
+--- FAIL: TestDoWorkGeneratesAllNumbers (1.00s)
+    heartbeat_test.go:33: test time out
+FAIL
+exit status 1
+FAIL    fzkprac/related_book_learn/Concurrency_in_go/chapter5/heartbeat/heartbeat_with_test     1.489s
+```
+这个测试不够好，因为它是非确定性的。虽然在我们的示例函数中，已经确保这个测试总会失败，
+但如果我要删除这个time.Sleep 的话，情况可能变得更糟：这个测试有时通过，有时失败。
+
+我们前面提到过，一些外部的因素会导致 goroutine 花费更长的时间来进行第一次迭代。无论 goroutine 在
+调度中是否是第一位执行的，这都是一个令人担忧的问题。关键是我们无法保证 goroutine 的第一个迭代是否会在
+超时时间结束之前执行，我们思考一下这个概率：这个超时有多大可能是有意义的？
+我们可以增加超时时间，但这意味着将需要很长时间才知道执行失败，从而减慢我们的测试过程。
+
+这会产生一些非常可怕的后果。我们慢慢开始不相信测试，然后开始忽略测试，之前的努力将一点点被瓦解。
+
+幸运的是，利用心跳可以很轻易的解决这个问题。这是一个确定性的测试：
+```go
 
 ```
 
