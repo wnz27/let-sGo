@@ -6,7 +6,9 @@
  **/
 package heartbeat_with
 
-import "time"
+import (
+	"time"
+)
 
 func DoWork(
 	done <-chan interface{},
@@ -38,5 +40,4 @@ func DoWork(
 
 	return heartbeat, intStream
 }
-
 

@@ -351,6 +351,8 @@ func DoWork(
 	return heartbeat, intStream
 }
 ```
+[【demo】](heartbeat_with_test/heartbeat_main.go)
+
 Dowork 函数是一个非常简单的生成器，它将我们传入的数字转发到它返回的channel 中。
 让我们为这个函数写个测试。下面是一个不那么好的测试样例:
 ```go
@@ -399,6 +401,120 @@ FAIL    fzkprac/related_book_learn/Concurrency_in_go/chapter5/heartbeat/heartbea
 
 幸运的是，利用心跳可以很轻易的解决这个问题。这是一个确定性的测试：
 ```go
+func TestDoWork_GeneratesAllNumbers(t *testing.T) {
+	done := make(chan interface{})
+	defer close(done)
 
+	intSlice := []int{0, 1, 2, 3, 5}
+	heartbeat, results := DoWork(done, intSlice...)
+
+	<- heartbeat  // 这里我们等待 goroutine 开始处理迭代信号
+
+	i := 0
+	for r := range results {
+		if expected := intSlice[i]; r != expected {
+			t.Errorf("index %v: expected %v, but received %v,", i, expected, r)
+		}
+		i ++
+	}
+}
 ```
+[【demo】](heartbeat_with_test/heartbeat_test.go)
+运行得到以下输出
+```shell
+--- PASS: TestDoWork_GeneratesAllNumbers (2.00s)
+```
+由于有了心跳，我们可以安全的编写测试而不需要加入超时机制。
+除此以外还有一个风险，就是我们的一个迭代要花费大量的时间。
+如果这对我们很重要，那我们可以利用更安全的间隔心跳，从而实现完美的安全性。
 
+下面是一个使用心跳进行测试的例子：
+```go
+package hb_with_test_iters
+
+import (
+	"testing"
+	"time"
+)
+
+func DoWork(
+	done <-chan interface{},
+	pulseInterval time.Duration,
+	nums ...int,
+) (<-chan interface{}, <-chan int) {
+	heartbeat := make(chan interface{}, 1)
+	intStream := make(chan int)
+	go func() {
+		defer close(heartbeat)
+		defer close(intStream)
+
+		time.Sleep(2 * time.Second)
+
+		pulse := time.Tick(pulseInterval)
+
+		numLoop:  // 使用一个跳转标志来简化内部循环
+		for _, n := range nums {
+			// 我们需要两个循环, 一个循环遍历数列，内部循环持续执行，直到intStream 中的数字成功发送。
+			for {
+				select {
+				case <-done:
+					return
+				case <-pulse:
+					select {
+					case heartbeat <- struct{}{}:
+					default:
+					}
+				case intStream <- n:
+					// 跳回 numLoop 标签继续执行外部循环
+					continue numLoop
+				}
+			}
+		}
+	}()
+	return heartbeat, intStream
+}
+
+func TestDoWork_GeneratesAllNumbers(t *testing.T) {
+	done := make(chan interface{})
+	defer close(done)
+
+	intSlice := []int{0, 1, 2, 3, 5}
+	const timeout = 2 * time.Second
+
+	heartbeat, results := DoWork(done, timeout / 2, intSlice...)
+
+	<- heartbeat  // 等待第一次心跳到达，来确认 goroutine 已经进入了循环。
+
+	i := 0
+	for {
+		select {
+		case r, ok := <-results:
+			if ok == false {
+				return
+			} else if expected := intSlice[i]; r != expected {
+				t.Errorf(
+					"index %v: expected %v, but received %v,",
+					i,
+					expected,
+					r,
+				)
+			}
+			i ++
+		case <-heartbeat:  // 接收心跳，防止超时
+		case <-time.After(timeout):
+			t.Fatal("test timed out")
+		}
+	}
+}
+```
+运行得到：
+```shell
+--- PASS: TestDoWork_GeneratesAllNumbers (3.00s)
+```
+你应该注意到了，这个版本的测试不太清晰，我们测试的逻辑有点儿混乱。
+因此，如果你确信 goroutine 的循环一旦执行就不会停止，那么我建议只阻塞第一次心跳，
+然后进入一个简单的range 语句。
+你可以编写单独的测试，专门测试未能关闭channel，耗时太长的迭代，以及其他与实践有关的问题。
+
+在编写并发代码时，心跳并不是必须的，但这部分展示了一些它的实际效果。
+对于任何长时间运行或需要被测试的goroutine，我强烈推荐这种模式。
