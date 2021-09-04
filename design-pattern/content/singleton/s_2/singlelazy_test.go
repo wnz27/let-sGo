@@ -7,7 +7,7 @@
 package s_2_test
 
 import (
-	"fzkprac/design-pattern/singleton/s_2"
+	"fzkprac/design-pattern/content/singleton/s_2"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

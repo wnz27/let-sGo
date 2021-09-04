@@ -1,5 +1,5 @@
 # 设计模式Demo
-- [单例](singleton)
+- [单例](content/singleton)
 - 
 
 # 面向对象三大特征

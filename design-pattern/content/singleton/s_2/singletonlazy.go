@@ -7,7 +7,7 @@
 package s_2
 
 import (
-	"fzkprac/design-pattern/singleton/s_1"
+	"fzkprac/design-pattern/content/singleton/s_1"
 	"sync"
 )
 
