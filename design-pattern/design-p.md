@@ -1,6 +1,7 @@
 # 设计模式Demo
 - [单例](content/singleton)
-- 
+- [工厂&DI](content/factory)
+- [建造者模式](content/builder)
 
 # 面向对象三大特征
 ## 多态
