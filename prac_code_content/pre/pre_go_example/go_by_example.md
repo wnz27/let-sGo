@@ -40,13 +40,13 @@
     - [json package](https://pkg.go.dev/encoding/json)
 - [XML](e_xml/xml.go)
 - [Time](e_time/time.go)
-- Epoch
-- Time Formatting / Parsing
-- Random Numbers
-- Number Parsing
-- URL Parsing
-- SHA1 Hashes
-- Base64 Encoding
+- [Epoch]()
+- [Time Formatting / Parsing]
+- [Random Numbers]
+- [Number Parsing]
+- [URL Parsing]
+- [SHA1 Hashes]
+- [Base64 Encoding]
 - Reading Files
 - Writing Files
 - Line Filters
