@@ -170,10 +170,6 @@ Only talk to you immediate friends.
 这个人不太愿意和陌生人说话，只和他走得最近的朋友们交流。
 
 
-
-
-
-
-
+# [设计模式](../design-p.md)
 
 

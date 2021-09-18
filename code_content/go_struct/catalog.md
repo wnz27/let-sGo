@@ -1,3 +1,3 @@
 - [运行文件](other_learn.go)
-- [结构体比较问题 ](contentbout_go_struct.go)--源自文章[《用 Go struct 不能犯的一个低级错误！》](https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247488256&idx=1&sn=adf0f5906407d5d9c52e65c7530fd106&chksm=f904065dce738f4bc943aa7d82eb5d7e3fe35c3ed92bbf8e7f6bae16bc226b8357606606727f&mpshare=1&scene=1&srcid=0415iVjV99RhHVH46i2ooUvN&sharer_sharetime=1618478667436&sharer_shareid=d94ad27d4946e2a1fa2bda2006d8985f&version=3.0.36.2330&platform=mac#rd) 
+- [结构体比较问题 ](content/about_go_struct.go)--源自文章[《用 Go struct 不能犯的一个低级错误！》](https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247488256&idx=1&sn=adf0f5906407d5d9c52e65c7530fd106&chksm=f904065dce738f4bc943aa7d82eb5d7e3fe35c3ed92bbf8e7f6bae16bc226b8357606606727f&mpshare=1&scene=1&srcid=0415iVjV99RhHVH46i2ooUvN&sharer_sharetime=1618478667436&sharer_shareid=d94ad27d4946e2a1fa2bda2006d8985f&version=3.0.36.2330&platform=mac#rd) 
 - 
