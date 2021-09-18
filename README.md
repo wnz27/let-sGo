@@ -8,7 +8,5 @@
 - [软件设计基础概念](./soft-design/base_concept.md)
 - 相关书籍学习积累
   - [《G语言并发之道》](related_book_learn/Concurrency_in_go/learn_catagory.md)
-- [乱七八糟的Todo list](./todo_list.md)
-
 
 
