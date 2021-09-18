@@ -40,8 +40,8 @@
     - [json package](https://pkg.go.dev/encoding/json)
 - [XML](e_xml/xml.go)
 - [Time](e_time/time.go)
-- [Epoch]()
-- [Time Formatting / Parsing]
+- [Epoch](e_epoch/epoch.go)
+- [Time Formatting / Parsing](time_fmt_parse/time_fmt_parse.go)
 - [Random Numbers]
 - [Number Parsing]
 - [URL Parsing]
