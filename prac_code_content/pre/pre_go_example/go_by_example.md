@@ -43,7 +43,7 @@
 - [Epoch](e_epoch/epoch.go)
 - [Time Formatting / Parsing](time_fmt_parse/time_fmt_parse.go)
 - [Random Numbers](e_random_num/random_num.go)
-- [Number Parsing]
+- [Number Parsing](number_parse/number_parse.go)
 - [URL Parsing]
 - [SHA1 Hashes]
 - [Base64 Encoding]
