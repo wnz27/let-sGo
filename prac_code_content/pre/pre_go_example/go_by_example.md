@@ -49,7 +49,7 @@
 - [Base64 Encoding](e_base64/base64.go)
 - [Reading Files](e_read_file/read_file.go)
 - [Writing Files](e_write_file/write_file.go)
-- Line Filters
+- [Line Filters](e_line_filter/line_filter.go)
 - File Paths
 - Directories
 - Temporary Files and Directories
