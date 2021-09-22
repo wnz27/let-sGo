@@ -51,7 +51,7 @@
 - [Writing Files](e_write_file/write_file.go)
 - [Line Filters](e_line_filter/line_filter.go)
 - [File Paths](e_file_path/file_path.go)
-- Directories
+- [Directories](e_directories/dir.go)
 - Temporary Files and Directories
 - Testing
 - Command-Line Arguments
