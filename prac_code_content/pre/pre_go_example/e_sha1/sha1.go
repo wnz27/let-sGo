@@ -4,4 +4,8 @@
 * Date:    2021/9/22 11:10 上午
 * Description:
  */
-package e_sha1
+package main
+
+func main() {
+
+}
