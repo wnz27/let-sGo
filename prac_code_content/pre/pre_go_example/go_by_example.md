@@ -52,7 +52,7 @@
 - [Line Filters](e_line_filter/line_filter.go)
 - [File Paths](e_file_path/file_path.go)
 - [Directories](e_directories/dir.go)
-- Temporary Files and Directories
+- [Temporary Files and Directories](e_tmp_file_and_dir/tmp_file_dir.go)
 - Testing
 - Command-Line Arguments
 - Command-Line Flags
