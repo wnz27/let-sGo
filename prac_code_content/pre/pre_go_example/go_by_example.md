@@ -50,7 +50,7 @@
 - [Reading Files](e_read_file/read_file.go)
 - [Writing Files](e_write_file/write_file.go)
 - [Line Filters](e_line_filter/line_filter.go)
-- File Paths
+- [File Paths](e_file_path/file_path.go)
 - Directories
 - Temporary Files and Directories
 - Testing
