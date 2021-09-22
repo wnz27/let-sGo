@@ -46,7 +46,7 @@
 - [Number Parsing](number_parse/number_parse.go)
 - [URL Parsing](url_parse/url_parse.go)
 - [SHA1 Hashes](e_sha1/sha1.go)
-- [Base64 Encoding]
+- [Base64 Encoding](e_base64/base64.go)
 - Reading Files
 - Writing Files
 - Line Filters
