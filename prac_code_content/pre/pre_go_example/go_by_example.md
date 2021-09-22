@@ -48,7 +48,7 @@
 - [SHA1 Hashes](e_sha1/sha1.go)
 - [Base64 Encoding](e_base64/base64.go)
 - [Reading Files](e_read_file/read_file.go)
-- Writing Files
+- [Writing Files](e_write_file/write_file.go)
 - Line Filters
 - File Paths
 - Directories
