@@ -44,8 +44,8 @@
 - [Time Formatting / Parsing](time_fmt_parse/time_fmt_parse.go)
 - [Random Numbers](e_random_num/random_num.go)
 - [Number Parsing](number_parse/number_parse.go)
-- [URL Parsing]
-- [SHA1 Hashes]
+- [URL Parsing](url_parse/url_parse.go)
+- [SHA1 Hashes](e_sha1/sha1.go)
 - [Base64 Encoding]
 - Reading Files
 - Writing Files
