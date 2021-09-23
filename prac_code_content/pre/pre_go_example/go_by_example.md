@@ -59,10 +59,10 @@
 - [Command-Line Subcommands](e_cl_sub_cmd/cl_sub_cmd.go)
 - [Environment Variables](env_var/env_var.go)
   - [conveying configuration information to Unix programs](https://www.12factor.net/config)
-- HTTP Clients
-- HTTP Servers
-- Context
-- Spawning Processes
-- Exec'ing Processes
-- Signals
-- Exit
+- [HTTP Clients](e_http_c/http_client.go)
+- [HTTP Servers]()
+- [Context]()
+- [Spawning Processes]()
+- [Exec'ing Processes]()
+- [Signals]()
+- [Exit]()
