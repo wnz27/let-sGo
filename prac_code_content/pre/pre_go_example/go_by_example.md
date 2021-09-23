@@ -55,7 +55,7 @@
 - [Temporary Files and Directories](e_tmp_file_and_dir/tmp_file_dir.go)
 - [Testing](e_test/testing_test.go)
 - [Command-Line Arguments](e_cmd_line_arg/cmd_line_arg.go)
-- Command-Line Flags
+- [Command-Line Flags](e_cmd_flag/cmd_flag.go)
 - Command-Line Subcommands
 - Environment Variables
 - HTTP Clients
