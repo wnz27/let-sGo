@@ -1,4 +1,4 @@
-## 目录
+## Go by example 目录
 
 - [Variadic Functions](VariadicFunctions/v_func.go)
 - [Closures](closure/closures.go)
