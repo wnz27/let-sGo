@@ -58,6 +58,7 @@
 - [Command-Line Flags](e_cmd_flag/cmd_flag.go)
 - [Command-Line Subcommands](e_cl_sub_cmd/cl_sub_cmd.go)
 - [Environment Variables](env_var/env_var.go)
+  - [conveying configuration information to Unix programs](https://www.12factor.net/config)
 - HTTP Clients
 - HTTP Servers
 - Context
