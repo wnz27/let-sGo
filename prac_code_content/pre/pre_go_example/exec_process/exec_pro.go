@@ -6,6 +6,15 @@
  */
 package main
 
+/*
+
+In the previous example we looked at spawning external processes.
+We do this when we need an external process accessible to a running Go process.
+
+Sometimes we just want to completely replace the current Go process with another (perhaps non-Go) one.
+To do this we’ll use Go’s implementation of the classic exec function.
+ */
+
 func main() {
 
 }
