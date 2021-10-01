@@ -41,7 +41,7 @@ func TstStructCmp2() {
 	// 对例子进行逃逸分析：
 	/*
 	// 源代码结构
-	$ cat -n main.go
+	$ cat -n cli.go
 	     5 func main() {
 	     6  a := new(struct{})
 	     7  b := new(struct{})
@@ -54,13 +54,13 @@ func TstStructCmp2() {
 	    14 }
 
 		// 进行逃逸分析
-		$ go run -gcflags="-m -l" main.go
+		$ go run -gcflags="-m -l" cli.go
 		# command-line-arguments
-		./main.go:6:10: a does not escape
-		./main.go:7:10: b does not escape
-		./main.go:10:10: c escapes to heap
-		./main.go:11:10: d escapes to heap
-		./main.go:12:13: ... argument does not escape
+		./cli.go:6:10: a does not escape
+		./cli.go:7:10: b does not escape
+		./cli.go:10:10: c escapes to heap
+		./cli.go:11:10: d escapes to heap
+		./cli.go:12:13: ... argument does not escape
 		*/
 
 		/*
@@ -112,7 +112,7 @@ func TstStructCmp2() {
 		没逃逸让他相等
 		既然我们知道了他是在代码优化阶段被优化的，那么相对的，知道了原理的我们也可以借助在 go 编译运行时的 gcflags 指令，让他不优化。
 		在运行前面的例子时，执行 -gcflags="-N -l" 指令：
-		$ go run -gcflags="-N -l" main.go
+		$ go run -gcflags="-N -l" cli.go
 		0xc00005ef06 0xc00005ef06 true
 		&{} &{}
 		0x118b370 0x118b370 true
