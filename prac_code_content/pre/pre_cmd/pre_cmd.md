@@ -92,3 +92,5 @@ GLOBAL OPTIONS:
 --help, -h     show help
 --version, -v  print the version
 ```
+
+[【demo】](./cmd_hw/cli/cli.go)
