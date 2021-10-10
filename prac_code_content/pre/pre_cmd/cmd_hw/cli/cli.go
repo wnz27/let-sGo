@@ -343,14 +343,14 @@ func ParseFlag()  {
 
 
 var (
-	inputCmd1 = `command c=123 env=dev1`
+	inputCmd1 = `command -c 123 -env dev1`
 	inputCmd2 = `command -c 345 -m release`
 )
 
-func wToStdin() {
-	in := bufio.NewWriter(os.Stdin)
-	defer in.Flush()
-	fmt.Fprintln(in, inputCmd1)
+func wToStdout() {
+	out := bufio.NewWriter(os.Stdout)
+	defer out.Flush()
+	fmt.Fprintln(out, inputCmd1)
 }
 
 func main() {
