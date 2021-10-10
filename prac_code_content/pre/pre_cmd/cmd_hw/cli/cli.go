@@ -353,9 +353,14 @@ func wToStdout() {
 	fmt.Fprintln(out, inputCmd1)
 }
 
+func stringL() {
+	fmt.Println(len(""))
+}
+
 func main() {
 	//homework()
-	ParseFlag()
+	//ParseFlag()
+	//stringL()
 }
 
 
