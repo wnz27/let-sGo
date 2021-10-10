@@ -7,6 +7,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"log"
@@ -300,9 +301,61 @@ func nsHandle(c *cli.Context) error {
 }
 
 
+// todo 解析cmd 参数 有问题
+func ParseFlag()  {
+	cmd := &cli.App{
+		Name: "Ads-Serving Run Cli",
+		Usage: "项目启动 读取必要变量 和 配置",
+		Version: "0.0.0",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "config",
+				Aliases: []string{"c"},
+				Value: "./config.json",
+				Usage: "当前仅支持json文件, 默认为当前目录下的config.json文件",
+			},
+			&cli.StringFlag{
+				Name:  "env",
+				Value: "dev",
+				Usage: "app运行环境, 当前仅支持: dev、test、prod",
+			},
+			&cli.StringFlag{
+				Name:  "mode",
+				Aliases: []string{"m"},
+				Value: "",
+				Usage: "app运行模式, 仅支持debug, release",
+			},
+			&cli.StringFlag{
+				Name:  "encrypt",
+				Aliases: []string{"e"},
+				Value: "",
+				Usage: "加密, 值为要加密的文本",
+			},
+		},
+	}
+
+	err := cmd.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+
+
+var (
+	inputCmd1 = `command c=123 env=dev1`
+	inputCmd2 = `command -c 345 -m release`
+)
+
+func wToStdin() {
+	in := bufio.NewWriter(os.Stdin)
+	defer in.Flush()
+	fmt.Fprintln(in, inputCmd1)
+}
 
 func main() {
-	homework()
+	//homework()
+	ParseFlag()
 }
 
 

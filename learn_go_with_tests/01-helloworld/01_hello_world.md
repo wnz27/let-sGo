@@ -1,4 +1,3 @@
-# [此为学习笔记，来源于 - Learn Go with Tests](https://quii.gitbook.io/learn-go-with-tests/)
 
 重构和工具
 
