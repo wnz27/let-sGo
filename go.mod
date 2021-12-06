@@ -3,12 +3,11 @@ module fzkprac
 go 1.16
 
 require (
-	github.com/agiledragon/gomonkey/v2 v2.2.0 // indirect
+	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/go-kit/kit v0.11.0
 	github.com/pkg/errors v0.9.1
-	github.com/smartystreets/goconvey v1.6.6 // indirect
+	github.com/shirou/gopsutil v3.21.10+incompatible
 	github.com/stretchr/testify v1.7.0
-	github.com/urfave/cli v1.22.5
 	github.com/urfave/cli/v2 v2.3.0
 	go.opencensus.io v0.23.0
 	go.uber.org/zap v1.17.0
