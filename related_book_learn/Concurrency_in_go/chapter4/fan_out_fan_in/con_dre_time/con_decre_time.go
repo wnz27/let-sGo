@@ -23,6 +23,7 @@ func Con_d_time_dome() {
 		return rand.Intn(50000000)
 	}
 
+	// 数据流
 	randIntStream := base_func.ToInt(done, base_func.RepeatFn(done, rand))
 
 	numFinders := runtime.NumCPU()
