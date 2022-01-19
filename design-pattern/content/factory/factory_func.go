@@ -1,3 +1,11 @@
+/*
+ * @Author: 27
+ * @LastEditors: 27
+ * @Date: 2021-10-29 03:35:12
+ * @LastEditTime: 2022-01-19 15:00:06
+ * @FilePath: /let-sGo/design-pattern/content/factory/factory_func.go
+ * @description: type some description
+ */
 /**
  * @project let-sGo
  * @Author 27
@@ -9,7 +17,7 @@ package factory
 /*
 当对象的创建逻辑比较复杂，不只是简单的 new 一下就可以，而是要组合其他类对象，做各种初始化操作的时候，
 推荐使用工厂方法模式，将复杂的创建逻辑拆分到多个工厂类中，让每个工厂类都不至于过于复杂。
- */
+*/
 
 // IRuleConfigParserFactory 工厂方法接口
 type IRuleConfigParserFactory interface {
@@ -44,5 +52,3 @@ func NewIRuleConfigParserFactory(t string) IRuleConfigParserFactory {
 	}
 	return nil
 }
-
-
