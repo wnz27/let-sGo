@@ -41,6 +41,8 @@
 .idea/
 .idea/*
 
+bin*
+subdir*
 
 # End of https://www.toptal.com/developers/gitignore/api/go
 n
