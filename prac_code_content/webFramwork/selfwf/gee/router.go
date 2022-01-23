@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-01-21 15:42:04
- * @LastEditTime: 2022-01-21 17:01:21
+ * @LastEditTime: 2022-01-23 08:53:52
  * @FilePath: /let-sGo/prac_code_content/webFramwork/selfwf/gee/router.go
  * @description: type some description
  */
@@ -39,6 +39,7 @@ func (r *router) handle(c *Context) {
 		c.Params = params
 		c.handlers = append(c.handlers, r.handlers[key])
 	} else {
+
 		c.handlers = append(c.handlers, func(c *Context) {
 			c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
 		})
