@@ -2,8 +2,8 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-01-26 12:05:57
- * @LastEditTime: 2022-01-26 15:02:34
- * @FilePath: /let-sGo/prac_code_content/webFramwork/jkwf/jkframe/tree.go
+ * @LastEditTime: 2022-01-26 15:43:53
+ * @FilePath: /let-sGo/prac_code_content/webFramwork/jkwf/jkframe/trie.go
  * @description: type some description
  */
 
@@ -28,10 +28,10 @@ type Tree struct {
 
 // 代表节点
 type node struct {
-	isLast  bool              // 代表这个节点是否可以成为最终的路由规则。该节点是否能成为一个独立的uri, 是否自身就是一个终极节点
-	segment string            // uri中的字符串，代表这个节点表示的路由中某个段的字符串
-	handler ControllerHandler // 代表这个节点中包含的控制器，用于最终加载调用
-	childs  []*node           // 代表这个节点下的子节点
+	isLast   bool                // 代表这个节点是否可以成为最终的路由规则。该节点是否能成为一个独立的uri, 是否自身就是一个终极节点
+	segment  string              // uri中的字符串，代表这个节点表示的路由中某个段的字符串
+	handlers []ControllerHandler // 中间件+控制器
+	childs   []*node             // 代表这个节点下的子节点
 }
 
 func newNode() *node {
@@ -52,13 +52,13 @@ func isWildSegment(segment string) bool {
 	return strings.HasPrefix(segment, ":")
 }
 
-// 过滤下一层满足 segment 规则的子节点
+// 过滤下一层满足segment规则的子节点
 func (n *node) filterChildNodes(segment string) []*node {
 	if len(n.childs) == 0 {
 		return nil
 	}
 
-	// 如果 segment 是通配符，则所有下一层子节点都满足需求
+	// 如果segment是通配符，则所有下一层子节点都满足需求
 	if isWildSegment(segment) {
 		return n.childs
 	}
@@ -117,16 +117,16 @@ func (n *node) matchNode(uri string) *node {
 	return nil
 }
 
-// 增加路由节点
+// 增加路由节点, 路由节点有先后顺序
 /*
 /book/list
 /book/:id (冲突)
 /book/:id/name
 /book/:student/age
-/:user/name
-/:user/name/:age(冲突)
+/:user/name(冲突)
+/:user/name/:age
 */
-func (tree *Tree) AddRouter(uri string, handler ControllerHandler) error {
+func (tree *Tree) AddRouter(uri string, handlers []ControllerHandler) error {
 	n := tree.root
 	if n.matchNode(uri) != nil {
 		return errors.New("route exist: " + uri)
@@ -162,7 +162,7 @@ func (tree *Tree) AddRouter(uri string, handler ControllerHandler) error {
 			cnode.segment = segment
 			if isLast {
 				cnode.isLast = true
-				cnode.handler = handler
+				cnode.handlers = handlers
 			}
 			n.childs = append(n.childs, cnode)
 			objNode = cnode
@@ -175,10 +175,10 @@ func (tree *Tree) AddRouter(uri string, handler ControllerHandler) error {
 }
 
 // 匹配uri
-func (tree *Tree) FindHandler(uri string) ControllerHandler {
+func (tree *Tree) FindHandler(uri string) []ControllerHandler {
 	matchNode := tree.root.matchNode(uri)
 	if matchNode == nil {
 		return nil
 	}
-	return matchNode.handler
+	return matchNode.handlers
 }
