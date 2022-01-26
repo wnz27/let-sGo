@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-01-21 17:37:40
- * @LastEditTime: 2022-01-26 15:41:07
+ * @LastEditTime: 2022-01-26 17:02:57
  * @FilePath: /let-sGo/prac_code_content/webFramwork/jkwf/jkframe/core.go
  * @description: type some description
  */
@@ -85,7 +85,7 @@ func (c *Core) Group(prefix string) IGroup {
 }
 
 // 匹配路由，如果没有匹配到，返回nil
-func (c *Core) FindRouteByRequest(request *http.Request) []ControllerHandler {
+func (c *Core) FindRouteNodeByRequest(request *http.Request) *node {
 	// uri 和 method 全部转换为大写，保证大小写不敏感
 	uri := request.URL.Path
 	method := request.Method
@@ -93,7 +93,7 @@ func (c *Core) FindRouteByRequest(request *http.Request) []ControllerHandler {
 
 	// 查找第一层map
 	if methodHandlers, ok := c.router[upperMethod]; ok {
-		return methodHandlers.FindHandler(uri)
+		return methodHandlers.root.matchNode(uri)
 	}
 	return nil
 }
@@ -107,19 +107,23 @@ func (c *Core) ServeHTTP(response http.ResponseWriter, request *http.Request) {
 	ctx := NewContext(request, response)
 
 	// 寻找路由
-	handlers := c.FindRouteByRequest(request)
-	if handlers == nil {
+	node := c.FindRouteNodeByRequest(request)
+	if node == nil {
 		// 如果没有找到，这里打印日志
-		ctx.Json(404, "not found")
+		ctx.SetStatus(404).Json("not found")
 		return
 	}
 
 	// 设置context中的handlers字段
-	ctx.SetHandlers(handlers)
+	ctx.SetHandlers(node.handlers)
+
+	// 设置路由参数
+	params := node.parseParamsFromEndNode(request.URL.Path)
+	ctx.SetParams(params)
 
 	// 调用路由函数，如果返回err 代表存在内部错误，返回500状态码
 	if err := ctx.Next(); err != nil {
-		ctx.Json(500, "inner error")
+		ctx.SetStatus(500).Json("inner error")
 		return
 	}
 }

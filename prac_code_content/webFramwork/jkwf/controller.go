@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-01-26 11:07:29
- * @LastEditTime: 2022-01-26 11:34:45
+ * @LastEditTime: 2022-01-26 16:32:10
  * @FilePath: /let-sGo/prac_code_content/webFramwork/jkwf/controller.go
  * @description: type some description
  */
@@ -36,7 +36,7 @@ func FooControllerHandler(c *jkframe.Context) error {
 		}()
 		// 这里做具体的业务
 		time.Sleep(10 * time.Second)
-		c.Json(200, "ok")
+		c.SetOkStatus().Json("ok")
 		// 新的 goroutine 结束的时候通过一个 finish 通道告知父 goroutine
 		finish <- struct{}{}
 	}()
@@ -47,13 +47,13 @@ func FooControllerHandler(c *jkframe.Context) error {
 		c.WriterMux().Lock()
 		defer c.WriterMux().Unlock()
 		log.Println(p)
-		c.Json(500, "panic")
+		c.SetStatus(500).Json("panic")
 	case <-finish:
 		fmt.Println("finish")
 	case <-durationCtx.Done():
 		c.WriterMux().Lock()
 		defer c.WriterMux().Unlock()
-		c.Json(500, "time out")
+		c.SetStatus(500).Json("time out")
 		c.SetHasTimeout()
 	}
 	return nil
