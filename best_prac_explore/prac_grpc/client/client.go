@@ -1,14 +1,18 @@
-/**
- * @project prac_grpc
- * @Author 27
- * @Description //TODO
- * @Date 2021/5/23 13:23 5月
- **/
+/*
+ * @Author: 27
+ * @LastEditors: 27
+ * @Date: 2021-10-29 03:35:12
+ * @LastEditTime: 2022-03-18 14:32:15
+ * @FilePath: /let-sGo/best_prac_explore/prac_grpc/client/client.go
+ * @description: type some description
+ */
+
 package main
 
 import (
 	"fmt"
-	hello_service "fzkprac/prac_grpc/server/service"
+
+	hello_service "fzkprac/best_prac_explore/prac_grpc/server/service"
 )
 
 func main() {
@@ -30,6 +34,5 @@ func main() {
 		&hello_service.Input{Name: "fzkkkkkkk"})
 
 	fmt.Println(msg)
-
 
 }
