@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-03-21 14:58:44
- * @LastEditTime: 2022-03-22 01:18:56
+ * @LastEditTime: 2022-03-26 16:22:57
  * @FilePath: /let-sGo/source_code_read/go-ctx-1.16.10/context-learn.md
  * @description: type some description
 -->
@@ -80,3 +80,16 @@ Context 应该放在第一个参数，通常名字为 ctx。
 // Contexts are safe for simultaneous use by multiple goroutines.
 ```
 4、同一个Context 也许会传给不同运行的 `goroutines` 的函数，Context 可以安全的同时被多个 groutines 使用
+
+
+```go
+// See https://blog.golang.org/context for example code for a server that uses
+// Contexts.
+```
+浏览 https://blog.golang.org/context 示例代码看服务如何使用 Context
+- [示例代码分析](./Context-demo.md)  TODO
+
+```go
+
+```
+
