@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-04-09 10:11:25
- * @LastEditTime: 2022-04-09 11:09:04
+ * @LastEditTime: 2022-04-09 11:13:41
  * @FilePath: /let-sGo/go-high-perfomence/algorithm-explore/graph_none_dir/g_n_d.go
  * @description: type some description
  */
@@ -38,6 +38,27 @@ func maxDegree(G NoneDirectionGraph) int {
 	return max
 }
 
+// 所有顶点的平均度数
 func avgDegree(G NoneDirectionGraph) float64 {
 	return float64(2.0*G.E()) / float64(G.V())
 }
+
+// 计算自环的度数
+func numberOfSelfLoop(G NoneDirectionGraph) int {
+	return 0
+}
+
+// 图的邻接表的字符串表示（Graph 的实例方法）java
+/*
+public String toString()
+{
+   String s = V + " vertices, " + E + " edges\n";
+   for (int v = 0; v < V; v++)
+   {
+      s += v + ": ";
+      for (int w : this.adj(v))
+         s += w + " ";
+      s += "\n";
+}
+return s; }
+*/
