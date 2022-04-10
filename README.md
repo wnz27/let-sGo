@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2021-10-29 03:35:12
- * @LastEditTime: 2022-04-10 17:31:13
+ * @LastEditTime: 2022-04-10 17:36:25
  * @FilePath: /let-sGo/README.md
  * @description: type some description
 -->
@@ -14,8 +14,8 @@
 - [go demo 练习](prac_code_content/catagory.md)
 - 相关书籍学习积累
   - [《G语言并发之道》](related_book_learn/Concurrency_in_go/learn_catagory.md)
-- 源码阅读记录
-  - [Context](./source_code_read/go-ctx-1.16.10/context-learn.md)
+- 源码阅读
+  - [~~Context~~ 未完](./source_code_read/go-ctx-1.16.10/context-learn.md)
 
 - [~~learn-go-with-tests-学习(未完)~~](./related_book_learn/learn_go_with_tests/0-catalog.md)
   - 学习源：[测试驱动学习](https://quii.gitbook.io/learn-go-with-tests/)
