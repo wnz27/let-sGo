@@ -2,15 +2,15 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2021-10-29 03:35:12
- * @LastEditTime: 2022-04-10 17:21:00
+ * @LastEditTime: 2022-04-10 17:31:13
  * @FilePath: /let-sGo/README.md
  * @description: type some description
 -->
 
 # let-sGo
 
-- [基础笔记](note_markdown/基础笔记.md)
-- [其他杂记](prac_code_content/7788/go_struct/catalog.md)
+- [基础笔记--努力更新。。。。。](./note_markdown/基础笔记.md)
+- [其他杂记](./jottings.md)
 - [go demo 练习](prac_code_content/catagory.md)
 - 相关书籍学习积累
   - [《G语言并发之道》](related_book_learn/Concurrency_in_go/learn_catagory.md)
