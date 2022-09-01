@@ -38,7 +38,7 @@ func structValues(passStruct interface{}) string {
 	builder.WriteString(structName + " values(")
 
 	fieldCount := sValue.NumField()
-	for i := 0; i < fieldCount; i ++ {
+	for i := 0; i < fieldCount; i++ {
 		// 处理字段类型
 		currField := sType.Field(i)
 
@@ -52,13 +52,14 @@ func structValues(passStruct interface{}) string {
 		fieldKey := currField.Name
 		builder.WriteString(fieldKey + ": " + fieldValue)
 
-		if i != fieldCount - 1{
+		if i != fieldCount-1 {
 			builder.WriteString(", ")
 		}
 	}
 	builder.WriteString(")")
 	return builder.String()
 }
+
 // reflect
 func createQuery(q interface{}) {
 	if reflect.TypeOf(q).Kind().String() != "struct" {
@@ -88,8 +89,6 @@ func main() {
 	createQuery(i)
 }
 
-
-
 /*
 insert into order values(456, 56)
 insert into employee values("Naveen", 565, "Coimbatore", 90000, "India")
@@ -98,10 +97,10 @@ func (o order) String() string {
 	return fmt.Sprintf("insert into order values(%d, %d)", o.ordId, o.customerId)
 }
 
-
 func (e employee) String() string {
 	return fmt.Sprintf("insert into employee values(%s, %d, %s, %d, %s)", e.name, e.id, e.address, e.salary, e.country)
 }
+
 // switch type assert 缺点是struct 一改，相应 String 方法就需要调整
 func createQuerySwitch(q interface{}) {
 	switch t := q.(type) {
