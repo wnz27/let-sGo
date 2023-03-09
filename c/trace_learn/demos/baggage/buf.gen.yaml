@@ -1,0 +1,8 @@
+version: v1
+plugins:
+  - name: go
+    out: ../proto_gen
+  - name: go-grpc
+    out: ../proto_gen
+  - name: gokit-endpoint
+    out: ../proto_gen

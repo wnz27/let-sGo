@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package hello.v1;
+
+option go_package = "t1/v1;hello_v1";
+
+message Req1 {
+    string a1 = 1;
+}
+
+message Res1 {
+    string b1 = 1;
+}
+
+
+service HelloService{
+    rpc Hello111(Req1)returns (Res1){}
+}
