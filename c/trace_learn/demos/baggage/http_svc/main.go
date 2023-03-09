@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2023-03-09 11:51:43
- * @LastEditTime: 2023-03-09 15:50:46
+ * @LastEditTime: 2023-03-09 17:40:50
  * @FilePath: /let-sGo/c/trace_learn/demos/baggage/http_svc/main.go
  * @description: type some description
  */
@@ -18,9 +18,9 @@ import (
 	// opt "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin" // http
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/baggage"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 
 	"fzkprac/c/trace_learn/demos/baggage/other"
 	h_v1 "fzkprac/c/trace_learn/demos/proto_gen/t1/v1"
@@ -45,15 +45,22 @@ func lalala(c *gin.Context) {
 	}()
 	conn1 := h_v1.NewHelloServiceClient(conn)
 
-	tidParam, _ := baggage.NewMember("tid", "tid_12345678")
-	bag, _ := baggage.New(tidParam)
-	reqCtx := baggage.ContextWithBaggage(c.Request.Context(), bag)
-	ctx, span := tracer.Start(reqCtx, c.FullPath())
+	// tidParam, _ := baggage.NewMember("tid", "tid_12345678")
+	// bag, _ := baggage.New(tidParam)
+
+	// reqCtx := baggage.ContextWithBaggage(c.Request.Context(), bag)
+	ctx, span := tracer.Start(c.Request.Context(), c.FullPath())
 	defer span.End()
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	r, receiveCountErr := conn1.Hello111(ctx, &h_v1.Req1{
+	ctx1 := metadata.AppendToOutgoingContext(ctx, "tid", "tid_12345678")
+
+	// err1 := grpc.SetHeader(ctx, metaHeader)
+	// if err1 != nil {
+	// 	panic(err1)
+	// }
+	r, receiveCountErr := conn1.Hello111(ctx1, &h_v1.Req1{
 		A1: "xxx",
 	})
 	if receiveCountErr != nil {

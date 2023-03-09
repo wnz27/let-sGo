@@ -19,7 +19,6 @@ import (
 
 	// "codeup.aliyun.com/63a12bb98d9a873a30aad6aa/LBM/mock-demo/observability/tracing"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -91,16 +90,23 @@ func NewH1Service() *H1Service {
 }
 
 func (srv *H1Service) Hello111(ctx context.Context, req *h_v1.Req1) (*h_v1.Res1, error) {
-	ctxFunc := GRPCToContext(otel.GetTracerProvider(), "Hello111", log.Logger{})
-	ctx1 := ctxFunc(ctx, metadata.MD{})
-	b := propagation.Baggage{}
-	c1 := propagation.MapCarrier{}
-	b.Inject(ctx1, c1)
+	md1, exist1 := metadata.FromIncomingContext(ctx)
+	fmt.Println("-----<>>", exist1)
+	tidmd := md1.Get("tid")
+	fmt.Println(" ==================================== ", tidmd)
+
+	tracer := otel.GetTracerProvider().Tracer("local-rpc")
+	ctx, span := tracer.Start(ctx, "Hello111")
+	defer span.End()
+	// aa := propagation.Baggage{}
+	// c1 := propagation.MapCarrier{}
+	// aa.Inject(ctx, c1)
 
 	// reqCtx := baggage.ContextWithBaggage(ctx, bag)
 
 	return &h_v1.Res1{
-		B1: "【" + c1.Get("tid") + "】" + "---- done",
+		// B1: "【" + c1.Get("tid") + "】" + "---- done",
+		B1: "【" + tidmd[0] + "】" + "---- done",
 	}, nil
 }
 
