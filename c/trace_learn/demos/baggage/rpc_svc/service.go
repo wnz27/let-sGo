@@ -58,7 +58,17 @@ type serverInfo struct {
 
 const traceIdKey = "uber-trace-id"
 
-func ContextToGRPC(tp trace.TracerProvider, logger log.Logger) func(ctx context.Context, md *metadata.MD) context.Context {
+func ContextWithGRPC(ctx context.Context, md *metadata.MD) context.Context {
+	if span := trace.SpanFromContext(ctx); span != nil {
+		spanContext := span.SpanContext()
+		traceId := spanContext.TraceID
+		spanId := spanContext.SpanID
+		md.Set(traceIdKey, fmt.Sprintf("%s:%s:%s:%s", traceId().String(), spanId().String(), "00000000", "1"))
+	}
+	return ctx
+}
+
+func ContextToGRPC() func(ctx context.Context, md *metadata.MD) context.Context {
 	return func(ctx context.Context, md *metadata.MD) context.Context {
 		if span := trace.SpanFromContext(ctx); span != nil {
 			spanContext := span.SpanContext()
@@ -70,7 +80,7 @@ func ContextToGRPC(tp trace.TracerProvider, logger log.Logger) func(ctx context.
 	}
 }
 
-func GRPCToContext(tp trace.TracerProvider, operationName string, logger log.Logger) func(ctx context.Context, md metadata.MD) context.Context {
+func GRPCToContext(logger log.Logger) func(ctx context.Context, md metadata.MD) context.Context {
 	return func(ctx context.Context, md metadata.MD) context.Context {
 		metadata := md.Get(traceIdKey)
 		ctx = context.WithValue(ctx, serverInfo{}, serverInfo{Type: "GRPC"})
@@ -96,8 +106,13 @@ func (srv *H1Service) Hello111(ctx context.Context, req *h_v1.Req1) (*h_v1.Res1,
 	fmt.Println(" ==================================== ", tidmd)
 
 	tracer := otel.GetTracerProvider().Tracer("local-rpc")
-	ctx, span := tracer.Start(ctx, "Hello111")
+	l := log.Logger{}
+	f1 := GRPCToContext(l)
+	ctx1 := f1(ctx, md1)
+	ctx2, span := tracer.Start(ctx1, "Hello111")
 	defer span.End()
+	f12 := ctx2
+	fmt.Println(f12)
 	// aa := propagation.Baggage{}
 	// c1 := propagation.MapCarrier{}
 	// aa.Inject(ctx, c1)

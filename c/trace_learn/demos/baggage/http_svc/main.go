@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2023-03-09 11:51:43
- * @LastEditTime: 2023-03-09 18:55:08
+ * @LastEditTime: 2023-03-10 11:06:44
  * @FilePath: /let-sGo/c/trace_learn/demos/baggage/http_svc/main.go
  * @description: type some description
  */
@@ -11,6 +11,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 	// opt "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin" // http
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -25,6 +27,18 @@ import (
 	"fzkprac/c/trace_learn/demos/baggage/other"
 	h_v1 "fzkprac/c/trace_learn/demos/proto_gen/t1/v1"
 )
+
+const traceIdKey = "uber-trace-id"
+
+func ContextWithGRPC(ctx context.Context, md *metadata.MD) context.Context {
+	if span := trace.SpanFromContext(ctx); span != nil {
+		spanContext := span.SpanContext()
+		traceId := spanContext.TraceID
+		spanId := spanContext.SpanID
+		md.Set(traceIdKey, fmt.Sprintf("%s:%s:%s:%s", traceId().String(), spanId().String(), "00000000", "1"))
+	}
+	return ctx
+}
 
 func lalala(c *gin.Context) {
 	tracerP := otel.GetTracerProvider()
@@ -54,7 +68,11 @@ func lalala(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	ctx1 := metadata.AppendToOutgoingContext(ctx, "tid", "tid_12345678", "tid", "111122222333")
+	newMd := &metadata.MD{}
+	outCtx := metadata.NewOutgoingContext(ctx, *newMd)
+	// 注入trace id  span id
+	ctx222 := ContextWithGRPC(outCtx, newMd)
+	ctx1 := metadata.AppendToOutgoingContext(ctx222, "tid", "tid_12345678", "tid", "111122222333")
 
 	// err1 := grpc.SetHeader(ctx, metaHeader)
 	// if err1 != nil {
