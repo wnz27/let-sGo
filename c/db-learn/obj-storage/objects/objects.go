@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-03-18 14:38:43
- * @LastEditTime: 2023-06-23 22:49:55
+ * @LastEditTime: 2023-06-23 22:57:41
  * @FilePath: /let-sGo/c/db-learn/obj-storage/objects/objects.go
  * @description: type some description
  */
@@ -24,7 +24,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if m == http.MethodGet {
-		get(w, r)
+		// get(w, r)
 		return
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
