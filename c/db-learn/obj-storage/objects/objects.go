@@ -2,8 +2,8 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2022-03-18 14:38:43
- * @LastEditTime: 2022-03-18 14:40:29
- * @FilePath: /let-sGo/db-learn/obj-storage/objects/objects.go
+ * @LastEditTime: 2023-06-23 22:49:55
+ * @FilePath: /let-sGo/c/db-learn/obj-storage/objects/objects.go
  * @description: type some description
  */
 
