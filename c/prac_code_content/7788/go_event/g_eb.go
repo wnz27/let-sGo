@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2024-05-24 01:48:45
- * @LastEditTime: 2024-05-24 04:25:59
+ * @LastEditTime: 2024-05-26 14:13:09
  * @FilePath: /let-sGo/c/prac_code_content/7788/go_event/g_eb.go
  * @description: type some description
  */
@@ -76,12 +76,15 @@ type Param struct {
 	GroupID int
 	AType   string
 	fn      func(a int) int
+	bus     *eventbus.EventBus
 }
 
 func handler(topic string, payload Param) error {
 	fmt.Printf("topic:%s, payload:%v\n", topic, payload)
 	a1 := payload.fn(123)
 	fmt.Println("xxxxx", a1)
+	e2 := payload.bus.Unsubscribe(topic, handler)
+	fmt.Println("-->", e2)
 	return nil
 }
 
@@ -97,16 +100,23 @@ func example2() {
 	bus.Publish("testtopic", Param{GroupID: 100, AType: "test", fn: func(a int) int {
 		return a + 1
 	},
+		bus: bus,
 	})
 
 	// 同步方式发布消息
 	bus.PublishSync("testtopic2", Param{GroupID: 200, AType: "prod123", fn: func(a int) int {
 		return a + 2
-	}})
+	},
+		bus: bus,
+	})
 
 	// 订阅者接收消息。为了确保订阅者可以接收完所有消息的异步消息，这里在取消订阅之前给了一点延迟。
 	time.Sleep(time.Millisecond)
-	bus.Unsubscribe("testtopic", handler)
+	e1 := bus.Unsubscribe("testtopic", handler)
+	if e1 != nil {
+		fmt.Println("=========> ", e1.Error())
+	}
+
 	bus.Close()
 }
 
