@@ -1,0 +1,15 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: h-trigger
+spec:
+    broker: kafka-broker
+    filter:
+      attributes:
+        type: greeting
+        source: send
+    subscriber:
+      ref: 
+        apiVersion: v1
+        kind: Service
+        name: hello-display

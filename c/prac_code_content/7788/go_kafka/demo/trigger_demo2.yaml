@@ -1,0 +1,13 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: h-trigger2
+spec:
+    broker: kafka-broker
+    filter:
+      attributes:
+        type: greeting2
+        source: send2
+    subscriber:
+      uri: https://hello-event.newtest.k8s.guanmai.cn/
+        

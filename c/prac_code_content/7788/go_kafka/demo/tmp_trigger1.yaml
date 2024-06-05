@@ -1,0 +1,58 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  annotations:
+    eventing.knative.dev/creator: system:serviceaccount:env-feature-docking-gmold:default
+    eventing.knative.dev/lastModifier: system:serviceaccount:env-feature-docking-gmold:default
+  creationTimestamp: "2024-04-19T01:48:54Z"
+  finalizers:
+  - kafka.triggers.eventing.knative.dev
+  generation: 1
+  labels:
+    eventing.knative.dev/broker: kafka-broker
+    receiver: ceres.production.MaterialOrderDetail2
+    service: production
+  name: kafka-trigger-production-ceres.production.materialorderdetail2-2eeac2ad76e3415d8bf72825c8e4fe09
+  namespace: env-feature-docking-gmold
+  resourceVersion: "74216014663"
+  selfLink: /apis/eventing.knative.dev/v1/namespaces/env-feature-docking-gmold/triggers/kafka-trigger-production-ceres.production.materialorderdetail2-2eeac2ad76e3415d8bf72825c8e4fe09
+  uid: a3b1db92-0f47-4496-affb-ee9d8da1b2c7
+spec:
+  broker: kafka-broker
+  filter: {}
+  filters:
+  - cesql: namespace = 'env-feature-docking-gmold' AND source = 'ceres.manage-inventory'
+      AND type IN ('ceres.manage-inventory.BusinessDoc.create', 'ceres.manage-inventory.BusinessDoc.update',
+      'ceres.manage-inventory.BusinessDoc.delete') AND (docstate = 'true')
+  subscriber:
+    ref:
+      apiVersion: eventing.knative.dev/v1alpha1
+      kind: KafkaSink
+      name: kafka-sink-production-ceres.production.materialorderdetail2-bd374ca7a7db48f4bd8dafe55f49286d
+      namespace: env-feature-docking-gmold
+status:
+  conditions:
+  - lastTransitionTime: "2024-06-04T18:31:21Z"
+    status: "True"
+    type: BrokerReady
+  - lastTransitionTime: "2024-04-19T01:50:21Z"
+    message: No dead letter sink is configured.
+    reason: DeadLetterSinkNotConfigured
+    status: "True"
+    type: DeadLetterSinkResolved
+  - lastTransitionTime: "2024-04-19T01:50:21Z"
+    status: "True"
+    type: DependencyReady
+  - lastTransitionTime: "2024-06-04T18:31:21Z"
+    status: "True"
+    type: Ready
+  - lastTransitionTime: "2024-04-19T01:50:21Z"
+    message: 'Subscriber will receive events with the delivery order: UNORDERED'
+    reason: SubscriberResolved
+    status: "True"
+    type: SubscriberResolved
+  - lastTransitionTime: "2024-04-19T01:50:21Z"
+    status: "True"
+    type: SubscriptionReady
+  observedGeneration: 1
+  subscriberUri: http://kafka-sink-ingress.knative-eventing.svc.cluster.local/env-feature-docking-gmold/kafka-sink-production-ceres.production.materialorderdetail2-bd374ca7a7db48f4bd8dafe55f49286d

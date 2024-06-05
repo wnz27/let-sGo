@@ -1,0 +1,56 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: KafkaSink
+metadata:
+  annotations:
+    eventing.knative.dev/creator: system:serviceaccount:env-feature-docking-gmold:default
+    eventing.knative.dev/lastModifier: system:serviceaccount:env-feature-docking-gmold:default
+  creationTimestamp: "2024-04-19T01:48:54Z"
+  finalizers:
+  - kafkasinks.eventing.knative.dev
+  generation: 1
+  labels:
+    receiver: ceres.production.MaterialOrderDetail2
+    service: production
+  name: kafka-sink-production-ceres.production.materialorderdetail2-bd374ca7a7db48f4bd8dafe55f49286d
+  namespace: env-feature-docking-gmold
+  resourceVersion: "74228739867"
+  selfLink: /apis/eventing.knative.dev/v1alpha1/namespaces/env-feature-docking-gmold/kafkasinks/kafka-sink-production-ceres.production.materialorderdetail2-bd374ca7a7db48f4bd8dafe55f49286d
+  uid: 3d2ee478-1863-49e3-b6d8-f70d8cdb439b
+spec:
+  bootstrapServers:
+  - ha-kafka-0.ha-kafka-headless.kafka-ha.svc.cluster.local:9092
+  - ha-kafka-1.ha-kafka-headless.kafka-ha.svc.cluster.local:9092
+  - ha-kafka-2.ha-kafka-headless.kafka-ha.svc.cluster.local:9092
+  contentMode: binary
+  topic: kafka-sink-topic-env-feature-docking-gmold-production-ceres.production.materialorderdetail2
+status:
+  address:
+    url: http://kafka-sink-ingress.knative-eventing.svc.cluster.local/env-feature-docking-gmold/kafka-sink-production-ceres.production.materialorderdetail2-bd374ca7a7db48f4bd8dafe55f49286d
+  annotations:
+    eventing.knative.dev/topic.owner: external
+  conditions:
+  - lastTransitionTime: "2024-04-19T01:50:04Z"
+    status: "True"
+    type: Addressable
+  - lastTransitionTime: "2024-04-19T01:49:08Z"
+    reason: Config map knative-eventing/kafka-sink-sinks updated
+    status: "True"
+    type: ConfigMapUpdated
+  - lastTransitionTime: "2024-04-19T01:49:08Z"
+    status: "True"
+    type: ConfigParsed
+  - lastTransitionTime: "2024-04-19T01:49:08Z"
+    status: "True"
+    type: DataPlaneAvailable
+  - lastTransitionTime: "2024-06-05T00:32:21Z"
+    status: "True"
+    type: ProbeSucceeded
+  - lastTransitionTime: "2024-06-05T00:32:21Z"
+    status: "True"
+    type: Ready
+  - lastTransitionTime: "2024-04-19T01:49:08Z"
+    reason: Topic kafka-sink-topic-env-feature-docking-gmold-production-ceres.production.materialorderdetail2
+      (owner external)
+    status: "True"
+    type: TopicReady
+  observedGeneration: 1

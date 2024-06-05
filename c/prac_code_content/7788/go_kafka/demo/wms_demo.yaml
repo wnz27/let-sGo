@@ -1,0 +1,41 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: KafkaSink
+metadata:
+  annotations:
+    eventing.knative.dev/creator: system:serviceaccount:env-feature-docking-gmold:default
+    eventing.knative.dev/lastModifier: system:serviceaccount:env-feature-docking-gmold:default
+  name: kafka-sink-wms-demo-sink
+  namespace: env-feature-docking-gmold
+spec:
+  bootstrapServers:
+  - ha-kafka-0.ha-kafka-headless.kafka-ha.svc.cluster.local:9092
+  - ha-kafka-1.ha-kafka-headless.kafka-ha.svc.cluster.local:9092
+  - ha-kafka-2.ha-kafka-headless.kafka-ha.svc.cluster.local:9092
+  contentMode: binary
+  topic: kafka-sink-topic-env-feature-docking-gmold-wms-demo
+
+
+---
+
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  annotations:
+    eventing.knative.dev/creator: system:serviceaccount:env-feature-docking-gmold:default
+    eventing.knative.dev/lastModifier: system:serviceaccount:env-feature-docking-gmold:default
+  name: kafka-trigger-wms-demo-trigger
+  namespace: env-feature-docking-gmold
+spec:
+  broker: kafka-broker
+  filter:
+    attributes:
+      type: greeting2
+      source: send2
+  subscriber:
+    ref:
+      apiVersion: eventing.knative.dev/v1alpha1
+      kind: KafkaSink
+      name: kafka-sink-wms-demo-sink
+      namespace: env-feature-docking-gmold
+
+
