@@ -9,5 +9,5 @@ spec:
         type: greeting2
         source: send2
     subscriber:
-      uri: https://hello-event.newtest.k8s.guanmai.cn/
+      uri: https://hello-event.newtest.k8s.guanmai.cn/msg/receive
         

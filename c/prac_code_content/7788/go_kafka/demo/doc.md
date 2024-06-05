@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2024-06-04 14:19:43
- * @LastEditTime: 2024-06-05 09:58:31
+ * @LastEditTime: 2024-06-05 11:43:43
  * @FilePath: /let-sGo/c/prac_code_content/7788/go_kafka/demo/doc.md
  * @description: type some description
 -->
@@ -19,6 +19,7 @@ k label namespace event-demo knative-eventing-injection=enabled
 ## web server
 ```shell
 k apply -f web.yaml -n env-feature-docking-gmold
+k apply -f web.yaml -n op-demo
 ```
 
 ## 启动一个可以发 curl 的 pod
@@ -79,7 +80,7 @@ curl -v "http://kafka-broker-ingress.knative-eventing.svc.cluster.local/env-feat
   -H "Content-Type: application/json" \
   -d '{"msg":"Hello Kafka!!!!"}'
 
-  curl -v "localhost:8080" \
+  curl -v "localhost:8080/msg/receive" \
   -X POST \
   -H "Ce-Id: say-hello" \
   -H "Ce-Specversion: 0.3" \
@@ -88,7 +89,7 @@ curl -v "http://kafka-broker-ingress.knative-eventing.svc.cluster.local/env-feat
   -H "Content-Type: application/json" \
   -d '{"msg":"Hello other service !!!!"}'
 
-  curl -v "https://hello-event.newtest.k8s.guanmai.cn/" \
+  curl -v "https://hello-event.newtest.k8s.guanmai.cn/msg/receive" \
   -X POST \
   -H "Ce-Id: say-hello" \
   -H "Ce-Specversion: 0.3" \
