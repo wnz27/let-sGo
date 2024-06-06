@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: event-display
-        image: wnz27/web_demo:v3
+        image: wnz27/web_demo:v13
 
 ---
 

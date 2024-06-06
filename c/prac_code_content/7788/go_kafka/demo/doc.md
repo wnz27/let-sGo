@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2024-06-04 14:19:43
- * @LastEditTime: 2024-06-05 11:43:43
+ * @LastEditTime: 2024-06-06 15:19:23
  * @FilePath: /let-sGo/c/prac_code_content/7788/go_kafka/demo/doc.md
  * @description: type some description
 -->
@@ -107,6 +107,43 @@ curl -v "http://kafka-broker-ingress.knative-eventing.svc.cluster.local/env-feat
   -H "Ce-Source: send2" \
   -H "Content-Type: application/json" \
   -d '{"msg":"Hello other service !!!!"}'
+
+  curl -v "https://marketing-interaction-layer-test.guanmai.cn/wms/api/business_doc/push" \
+  -X POST \
+  -H "Ce-Id: say-hello" \
+  -H "Ce-Specversion: 0.3" \
+  -H "Ce-Type: greeting2" \
+  -H "Ce-Source: send2" \
+  -H "Content-Type: application/json" \
+  -d '{"msg":"Hello other service !!!!"}'
+
+    curl -v "https://marketing-interaction-layer-test.guanmai.cn/wms/api/business_doc/push" \
+  -X POST \
+  -H "Ce-Id: say-hello" \
+  -H "Ce-Specversion: 0.3" \
+  -H "Ce-Type: greeting2" \
+  -H "Ce-Source: send2" \
+  -H "Content-Type: application/json" \
+  -d '{"13451345134509890":"Hello other service !!!!"}'
+
+  curl -v "https://marketing-interaction-layer-test.guanmai.cn/wms/api/business_doc_detail/push" \
+  -X POST \
+  -H "Ce-Id: say-hello" \
+  -H "Ce-Specversion: 0.3" \
+  -H "Ce-Type: greeting2" \
+  -H "Ce-Source: send2" \
+  -H "Content-Type: application/json" \
+  -d '{"msg":"Hello other service !!!!"}'
+
+
+  curl -v "https://marketing-interaction-layer-test.guanmai.cn/wms/api/business_doc_detail/push" \
+  -X POST \
+  -H "Ce-Id: say-hello" \
+  -H "Ce-Specversion: 0.3" \
+  -H "Ce-Type: greeting2" \
+  -H "Ce-Source: send2" \
+  -H "Content-Type: application/json" \
+  -d '{"256234506234750923487":"Hello other service !!!!"}'
 ```
 
 ## 测试 trigger 使用 uri 配置

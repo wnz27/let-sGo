@@ -2,7 +2,7 @@
  * @Author: 27
  * @LastEditors: 27
  * @Date: 2024-06-04 14:25:19
- * @LastEditTime: 2024-06-05 16:46:24
+ * @LastEditTime: 2024-06-06 08:42:46
  * @FilePath: /let-sGo/c/prac_code_content/7788/go_kafka/demo/main.go
  * @description: type some description
  */
@@ -187,19 +187,25 @@ func UpdateIncomingContextWithMap(ctx context.Context, aMap map[string]any) (con
 	if typeStr, ok := aMap["type"]; ok {
 		eventType = typeStr.(string)
 	}
+
 	if sourceStr, ok := aMap["source"]; ok {
 		eventSource = sourceStr.(string)
 	}
+
 	var res []string
-	userInfo := &UserInfo{
-		EventType: eventType,
-		Source:    eventSource,
-	}
-	metaPairs, err := NewMDPairsWithUserInfo(metadata.Pairs(res...), userInfo)
-	if err != nil {
-		return nil, err
-	}
-	ctx = metadata.NewIncomingContext(ctx, metadata.Pairs(metaPairs...))
+	res = append(res, "source", eventSource)
+	res = append(res, "type", eventType)
+	ctx = metadata.NewIncomingContext(ctx, metadata.Pairs(res...))
+
+	// userInfo := &UserInfo{
+	// 	EventType: eventType,
+	// 	Source:    eventSource,
+	// }
+	// metaPairs, err := NewMDPairsWithUserInfo(metadata.Pairs(res...), userInfo)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// ctx = metadata.NewIncomingContext(ctx, metadata.Pairs(metaPairs...))
 
 	// if clientIdStr, ok := aMap["clientid"]; ok {
 	// 	clientId, _ = strconv.ParseUint(clientIdStr.(string), 10, 64)
@@ -283,27 +289,79 @@ func UpdateIncomingContextWithEvent(ctx context.Context, event cloudEvents.Event
 	return ctx, nil
 }
 
+func extractEventExtensions(ctx context.Context, event cloudEvents.Event) (context.Context, error) {
+	var eventType, eventSource string
+
+	typeStr, e := event.Context.GetExtension("type")
+	if e != nil {
+		return nil, e
+	}
+	eventType = typeStr.(string)
+
+	sourceStr, e2 := event.Context.GetExtension("source")
+	if e2 != nil {
+		return nil, e2
+	}
+	eventSource = sourceStr.(string)
+
+	var res []string
+	res = append(res, "source", eventSource)
+	res = append(res, "type", eventType)
+	return metadata.NewIncomingContext(ctx, metadata.Pairs(res...)), nil
+}
+
 func display(event cloudEvents.Event) {
 
 	fmt.Printf("☁️  cloudevents.Event =========== start ===========\n")
 
-	ctx, e1 := UpdateIncomingContextWithEvent(context.Background(), event)
+	// ctx, e1 := UpdateIncomingContextWithEvent(context.Background(), event)
+	// if e1 != nil {
+	// 	fmt.Println("err =========> ", e1.Error())
+	// } else {
+	// 	// 打印 source 和 type
+	// 	a, b := metadata.FromIncomingContext(ctx)
+	// 	if b {
+	// 		type1 := a.Get("type")
+	// 		source := a.Get("source")
+	// 		fmt.Println("取出成功-type: ", type1)
+	// 		fmt.Println("取出成功-source: ", source)
+	// 	} else {
+	// 		fmt.Println("取出失败")
+	// 	}
+	// }
+	// ctx, e1 := extractEventExtensions(context.Background(), event)
+	// if e1 != nil {
+	// 	fmt.Println("err =========> ", e1.Error())
+	// } else {
+	// 	// 打印 source 和 type
+	// 	a, b := metadata.FromIncomingContext(ctx)
+	// 	if b {
+	// 		type1 := a.Get("type")
+	// 		source := a.Get("source")
+	// 		fmt.Println("取出成功-type: ", type1)
+	// 		fmt.Println("取出成功-source: ", source)
+	// 	} else {
+	// 		fmt.Println("取出失败")
+	// 	}
+	// }
+
+	// fmt.Println(event.Extensions())
+	fmt.Println(" >>>>>>>>>>>>>>>>>>>>>>> ", event.Context.GetType())
+	fmt.Println(" >>>>>>>>>>>>>>>>>>>>>>> ", event.Context.GetSource())
+	// fmt.Println(" >>>>>>>>>>>>>>>>>>>>>>> ", event.Extensions()["type"])
+	var m MsgT
+	e1 := json.Unmarshal(event.Data(), &m)
 	if e1 != nil {
-		fmt.Println("err =========> ", e1.Error())
+		fmt.Println("error->", e1)
 	} else {
-		// 打印 source 和 type
-		a, b := metadata.FromIncomingContext(ctx)
-		if b {
-			type1 := a.Get("type")
-			source := a.Get("source")
-			fmt.Println("取出成功-type: ", type1)
-			fmt.Println("取出成功-source: ", source)
-		} else {
-			fmt.Println("取出失败")
-		}
+		fmt.Println(" msg data is ====>", m)
 	}
 
-	fmt.Printf(" --------- ---- end ---- -------- \n%s", event.String())
+	fmt.Printf("%s --------- ---- end ---- -------- \n", event.String())
+}
+
+type MsgT struct {
+	Msg string `json:"msg"`
 }
 
 func main() {
